@@ -1,0 +1,85 @@
+#if($!objs.size()>0)
+<script>
+function ajaxPage(url,page,obj){
+var id = jQuery("#id").val();
+jQuery.ajax({type:'POST',url:url,data:{"currentPage":page,"id":id},
+success:function(data){
+jQuery("#free_list_left_discuss").html(data);	
+}					
+				 });
+}
+//获取evaluateViewTools类中的方法queryEvaImgSrc($!obj.evaluate_photos)图片
+function show_bigimg(obj1,obj2){	
+	jQuery(obj1).parent().parent().parent().find(".img_list_dl_img_one_top").removeClass("this");	
+	jQuery(obj1).parent().parent().parent().find(".tm_photos_arrow").hide();
+	jQuery(obj1).parent().parent().find(".tm_photos_arrow").show();
+	jQuery(obj1).parent().addClass("this");
+	var src=jQuery(obj1).find("img").attr("src");
+	jQuery("#eva_bigimg_top_"+obj2).show();
+	jQuery("#eva_bigimg_"+obj2).attr("src",src);	
+	var img = new Image();
+	img.src =jQuery('.img').attr("src") ;
+	var w = img.width;
+	var h = img.height;
+	if(w>=h){
+	jQuery("#eva_bigimg_"+obj2).attr("height",h/w*300);
+	jQuery("#eva_bigimg_"+obj2).attr("width",300);
+	}
+	if(w<h){
+	jQuery("#eva_bigimg_"+obj2).attr("width",w/h*300);
+	jQuery("#eva_bigimg_"+obj2).attr("height",300);
+	}	
+}
+
+//事件触发（原图）
+function proimg(obj){
+	var src=jQuery("#eva_bigimg_"+obj).attr("src");
+	window.open(src);
+}
+
+//事件触发（收起）
+function hideimg(obj){
+	jQuery("#eva_bigimg_top_"+obj).parent().find(".img_list_dl_img_one_top").removeClass("this");	
+	jQuery("#eva_bigimg_top_"+obj).parent().find(".tm_photos_arrow").hide();
+	jQuery("#eva_bigimg_top_"+obj).hide();
+}
+</script>
+<div class="free_list_left_discuss" >
+<ul id="evas">
+#foreach($obj in $objs)
+					#set($us = $!freeTools.queryEvaluteUser("$!{obj.user_id}"))
+					#if($!us.photo)
+          			#set($user_photo="$!us.photo.path/$!us.photo.name")
+          			#else 
+          			#set($user_photo="$!config.memberIcon.path/$!config.memberIcon.name")
+          			#end
+<li>
+<span class="discuss_img"><a href="$!webPath/sns/other_sns_$!{obj.user_id}.htm"><img src="$!user_photo" /></a></span>
+<span class="discuss_word">
+<i></i>
+<h3><a href="$!webPath/sns/view_$!{obj.user_id}.htm">$!CommUtil.fuzzy($!us.userName)</a></h3>
+<b>$!obj.use_experience</b>
+<h4>$!CommUtil.formatLongDate($!obj.evaluate_time)</h4>
+
+#set($imgs=$!evaluateViewTools.queryEvaImgSrc($!obj.evaluate_photos))
+#if($imgs.size()>0)
+#foreach($!img in $imgs)
+  <div class="img_list_dl_img_one">
+    <div class="img_list_dl_img_one_top"><a href="javascript:void(0)" onclick="show_bigimg(this,'$!obj.id')"><img src="$!img.path/$!img.name" /></a></div>
+      <b class="tm_photos_arrow" style="display:none"><img src="$!webPath/resources/style/system/front/default/images/tm-photos-arrow.png" /></b> </div>
+      #end
+   <div class="img_list_dl_img_one_b" id="eva_bigimg_top_$!obj.id" style="display:none">
+      <div class="img_list_dl_img_one_b_top"> <a href="javascript:void(0)" class="img_list_dl_img_one_b_top_back" onclick="hideimg($!obj.id)">收起</a> <a href="javascript:void(0)" class="img_list_dl_img_one_b_top_big" onclick="proimg($!obj.id)">原图</a> </div>
+        <div class="img_list_dl_img_one_b_img"> <img id="eva_bigimg_$!obj.id"/></div>
+   </div> 
+#end
+</span>
+</li>
+#end
+</ul>
+</div>
+<div class="fenye">
+<span>
+$!gotoPageAjaxHTML </span>
+</div>
+#end

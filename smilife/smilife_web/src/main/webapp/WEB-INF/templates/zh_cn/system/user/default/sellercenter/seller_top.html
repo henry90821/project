@@ -1,0 +1,12 @@
+#if($!config.websiteLogo)
+#set($img="$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+#else
+#set($img="$!webPath/resources/style/system/front/default/images/logo.png")
+#end
+<div class="head_seller_top">
+  <div class="head_seller">
+    <h1 class="logo" title=""><span class="img_cspan">
+      <p><a href="$!webPath/seller/index.htm"><img src="$!img" width="209" height="70" alt="网上购物网站排名上星美汇商城,购青春,惠生活" /></a></p>
+      </span></h1>
+    <span class="logo_seller">卖家中心</span> <span class="logo_login">欢迎您，<b>$!{user.sellerLoginAccount}</b> 您已经登录商城<a href="$!webPath/seller/account_password.htm">修改密码</a><a href="$!webPath/xmh_logout.htm">退出</a></span> </div>
+</div>

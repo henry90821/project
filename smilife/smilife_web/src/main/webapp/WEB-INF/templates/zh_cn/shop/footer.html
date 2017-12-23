@@ -1,0 +1,91 @@
+ <div class="footer">
+    <div class="links">
+      <a href="$!webPath/about.htm" target="_blank">关于我们</a>|
+      <a href="$!webPath/contact.htm" target="_blank" >联系我们</a>|
+      <a href="$!webPath/friendly_link.htm" target="_blank">友情链接</a>|
+      <a href="http://www.xingmeihui.com/articlelist_help_47.htm" target="_blank">星美汇资讯</a>
+    </div>
+	<ul>
+      #set($navs=$!navTools.queryNav(1,-1))
+      #if($!navs.size()>0)
+      <li> #foreach($nav in $navs)
+        #if($!CommUtil.indexOf("$!nav.url","http://")>=0)
+        #set($url="$!nav.url")
+        #else
+        #set($url="$!webPath/$!{nav.url}")
+        #end <a href="$!url" #if($!nav.new_win==1)target="_blank"#end>$!{nav.title}</a>#if($!{velocityCount}<$navs.size())|#end
+    #end 
+    </li>
+      #end
+      <li class="hui2">$!{config.copyRight}</li>
+      <li class="hui2">$!{config.poweredby}</li>
+    </ul>
+  </div>
+<!--返回最顶部-->
+<div id="back_box" style="position:fixed;width:40px; height:118px; float:left; right:0; display:none; bottom:150px; _position:absolute;/*兼容IE6的代码*/
+_bottom:auto;/*兼容IE6的代码*/
+_top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||0)-(parseInt(this.currentStyle.marginBottom,10)||0)));">
+  <div class="back_index"><a href="$!webPath/index.htm" target="_blank"  title="返回主页"></a></div>
+  <div class="back_top"><a id="toTop" href="#" bosszone="hometop" style="display: block;"  title="返回顶部" target="_self" ></a></div>
+</div>
+
+<script>
+	var Global = {
+    		webPath : "$!webPath",
+    		preInputKeys : "$!config.preInputKeys"
+    	}
+</script>
+
+
+
+<script src="http://apps.bdimg.com/libs/require.js/2.1.11/require.min.js"></script>
+<script>
+	require.config({
+		baseUrl: Global.webPath + '/resources/js/',
+		paths: { 
+			'jquery':'http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min',
+			'lazyload' :'http://apps.bdimg.com/libs/jquery-lazyload/1.9.5/jquery.lazyload.min',
+			'superslide' : 'jquery.SuperSlide.2.1.1',
+			'layer' : 'layer/layer',
+			'cookie': 'http://apps.bdimg.com/libs/jquery.cookie/1.4.1/jquery.cookie.min',
+			'validator' : 'http://cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min',
+			'jqzoom' : "jquery.jqzoom-core"
+		},
+		shim : {
+			superslide : {
+				deps : ['jquery']
+			},
+			lazyload : {
+				deps : ['jquery']
+			},
+			jqzoom : {
+				deps : ['jquery']
+			},
+			layer : {
+				deps : ['jquery']
+			}
+		}
+}); 
+
+if(!window.jQuery){
+	require(["common", "layer"], function(c, layer){
+		layer.config({
+			path: Global.webPath + "/resources/js/layer/"
+		});
+		window.search_data_del_all = c.search_data_del_all;
+		window.search_form = c.search_form;
+		window.menu_cart_remove = c.menu_cart_remove;
+	});
+}
+else {
+	document.write("<script src='"+ Global.webPath +"/resources/js/jquery.cookie.js'><\/script>");
+}
+</script>
+<script>
+	if(window.jQuery){
+		document.write("<script src='"+ Global.webPath +"/resources/js/common.old.js'><\/script>");
+	}
+</script>
+<script>
+$!{config.codeStat}
+</script>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smi.mc.dao.cust.OrgOpMapper">
+	<!-- 根据channel_code查询system_user_id -->
+	<select id="queryOrgOpId" parameterType="java.util.Map"
+	          resultType="java.lang.String">
+		select t.SYSTEM_USER_ID from ORG_OP t
+		<where>
+			1=1
+			<if test="ORG_ID!=null and ORG_ID!=''">
+				and t.ORG_ID=#{ORG_ID}
+			</if>
+		</where>
+	</select>
+
+</mapper>
+

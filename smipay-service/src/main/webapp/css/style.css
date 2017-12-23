@@ -1,0 +1,9 @@
+/*.panel{border: 1px solid}*/
+.panel-heading,.panel-body{border: 0.2px solid #e5e5e5}
+.panel-body{margin-top: 1px}
+.panel-heading .icon1{width: 50%}
+.panel-heading .icon1 img{float: right;margin: 5px}
+.h{float: left;}
+.panel-body .icon2{width: 15%}
+.panel-body .tips2{width: 70%}
+.panel-body .select1{width: 15%;}

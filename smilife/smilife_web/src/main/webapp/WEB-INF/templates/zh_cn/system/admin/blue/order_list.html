@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery(" select #payment").val("$!payment");
+	jQuery("#order_status").val("$!order_status");
+      jQuery("#type").val("$!type");
+      jQuery("#payment").val("$!payment");
+  jQuery('#beginTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#endTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  
+  jQuery('#startPayTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#endPayTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#startConfirmTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#endConfirmTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  //
+});
+
+function export_excel(){
+	#if($!objs.size()>0)	
+		//订单状态
+		var order_status = jQuery("#order_status").val();
+		//订单类型
+		var type = jQuery("#type").val();
+		//订单类型值
+		var type_data = jQuery("#type_data").val();
+		//收货人
+		var receiver_Name = jQuery("#receiver_Name").val();
+		//支付方式
+		var payment = jQuery("#payment").val();
+		//下单开始时间
+		var beginTime = jQuery("#beginTime").val();
+		//下单结束时间
+		var endTime = jQuery("#endTime").val();
+		//付款开始时间
+		var startPayTime = jQuery("#startPayTime").val();
+		//付款结束时间
+		var endPayTime = jQuery("#endPayTime").val();
+		//订单最小金额
+		var begin_price = jQuery("#begin_price").val();
+		//订单最大金额
+		var end_price = jQuery("#end_price").val();
+		//确认收货开始时间
+		var startConfirmTime = jQuery("#startConfirmTime").val();
+		//确实收货结束时间
+		var endConfirmTime = jQuery("#endConfirmTime").val();
+		if((beginTime && endTime) || (startPayTime && endPayTime) || (startConfirmTime && endConfirmTime)){
+			window.location.href="$!webPath/admin/order_list_excel.htm?type="+type+"&type_data="+type_data+"&beginTime="+beginTime+"&endTime="+endTime+"&order_status="+order_status+"&receiver_Name="+receiver_Name+"&payment="+payment+"&startPayTime="+startPayTime+"&endPayTime="+endPayTime+"&begin_price="+begin_price+"&end_price="+end_price+"&startConfirmTime="+startConfirmTime+"&endConfirmTime="+endConfirmTime;
+		}else{
+			alert("请选择开始时间与结束时间！");
+			}		
+	#else
+		alert("当前没有可以导出的数据！");
+	#end		
+}
+</script>
+</head>
+<body>
+
+<div class="cont">
+  <h3 class="seth">订单管理</h3>
+  <div class="nav_list">
+  	<ul>
+    	<li><a href="javascript:void(0);" class="this"><b>所有订单</b></a></li>
+    </ul>
+  </div>
+  <form action="$!webPath/admin/order_list.htm" method="post" id="queryForm" >
+  <div class="search">
+    <ul>
+      <li> <span>订单状态</span><span>
+      
+        <select name="order_status" id="order_status">
+          <option value="">所有订单</option>
+          <option value="10">待付款</option>
+          <option value="20">待发货</option>
+          <option value="30">已发货</option>
+          <option value="40">已收货</option>
+          <option value="50">已完成</option>
+          <option value="25">审核中</option>
+          <option value="27">审核不通过</option>
+          <option value="80">退款中</option>
+          <option value="85">退款已提交</option>
+          <option value="87">退款失败</option>
+          <option value="90">退款已完成</option>
+          <option value="0">已取消</option>
+        </select>
+      </span><span>类型</span><span>
+        <select name="type" id="type">
+          <option value="store">店铺名称</option>
+          <option value="buyer">买家名称</option>
+          <option value="order">订单号</option>
+          <option value="outOrder">支付单号</option>
+        </select>
+        </span> <span class="size200">
+        <input name="type_data" type="text" value="$!type_data" id="type_data" />
+         </span>
+        <span>收货人</span>
+        <span class="size150">
+        	<input name="receiver_Name" value="$!receiver_Name" type="text" id="receiver_Name"/>
+        </span>
+      #set($payments=$!paymentTools.queryAllBank())
+      <span>支付方式</span><span>
+        <select name="payment" id="payment">
+        <option value="">所有支付方式</option>      
+	        #foreach($payment in $!payments) 
+	          <option value="$!{payment.mark}">$!{payment.name}</option>
+	        #end
+	          <option value="apyafter">货到付款</option>
+        </select>
+        </span></li>
+        
+      <li> <span>下单时间</span><span class="size70">
+        <input name="beginTime" type="text" id="beginTime" value="$!beginTime"  readonly="readonly"/>
+        </span><span>—</span><span class="size70">
+        <input name="endTime" type="text" value="$!endTime" id="endTime" readonly="readonly" />
+        </span> 
+        <span>付款时间</span>
+        <span class="size70">
+        	<input type="text" id="startPayTime" name="startPayTime" value="$!startPayTime"  readonly="readonly"/>
+        </span>
+        <span>—</span> 
+        <span class="size70">
+        	<input name="endPayTime" type="text" id="endPayTime" value="$!endPayTime" readonly="readonly"/>
+        </span>
+        <span>收货时间</span>
+        <span class="size70">
+        	<input type="text" id="startConfirmTime" name="startConfirmTime" value="$!startConfirmTime"  readonly="readonly"/>
+        </span>
+        <span>—</span> 
+        <span class="size70">
+        	<input type="text" id="endConfirmTime" name="endConfirmTime" value="$!endConfirmTime" readonly="readonly"/>
+        </span>
+        <span>订单金额</span><span class="size100">
+        <input name="begin_price" type="text" value="$!begin_price" id="begin_price" />
+        </span><span>—</span><span class="size100">
+        <input name="end_price" type="text" value="$!end_price" id="end_price" />
+        </span> <span >
+        <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+        <input name="" type="button"  value="导出EXCEL" onclick="export_excel()" style="cursor:pointer;" class="search_btn"/>
+      </span> </li>
+    </ul>
+  </div>
+  </form>
+  <form action="$!webPath/admin/order_list.htm" method="post" id="ListForm" >
+    <div class="fshoptb">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+      <tr>
+        <th width="15%"><span class="form_btna">店铺名称</span></th>
+        <th width="15%"><span class="form_btna">订单号/支付单号</span></th>
+        <th width="10%"><span class="form_btna">买家名称</span></th>
+        <th  width="15%"><span class="form_btna">下单时间</span></th>
+        <th  width="8%"><span class="form_btna">订单总额</span></th>
+        <th width="10%"><span class="form_btna">支付方式</span></th>
+        <th width="8%"><span class="form_btna">订单状态</span></th>
+        <th align="center"><b class="form_btnb">操作</b></th>
+      </tr>
+      #foreach($obj in $objs)
+      <tr>
+        <td align="center">#if($!obj.order_form==0)$!obj.store_name #else【自营商品】#end</td>
+        <td align="center">
+        	#if($!obj.out_order_id && $!obj.out_order_id != "")
+        		$!obj.order_id  <br/>$!obj.out_order_id
+            #elseif($!obj.payCenterNo && $!obj.payCenterNo != "")
+                $!obj.order_id  <br/>$!obj.payCenterNo
+        	#else	
+        		$!obj.order_id
+        	#end
+        </td>
+        <td align="center">$!obj.user_name</td>
+        <td align="center">$!CommUtil.formatLongDate($!obj.addTime)</td>
+        <td align="center">$!obj.totalPrice</td>
+       	#if($!obj.payType == "payafter")
+          	<td align="center">货到付款</td>
+        #elseif(!$!obj.payType && !$!obj.payment)
+        	<td align="center">未支付</td>
+        #else
+        	<td align="center">$!obj.payment.name</td>
+        #end
+            #if($!obj.order_status==0)
+            #set($status="已取消")
+            #end
+            #if($!obj.order_status==10)
+            #set($status="待付款")
+            #end
+            #if($!obj.order_status==16)
+            #set($status="货到付款待发货")
+            #end
+            #if($!obj.order_status==20)
+            #set($status="已付款待发货")
+            #end
+            #if($!obj.order_status==30)
+            #set($status="已发货待收货")        
+            #end                
+            #if($!obj.order_status==35)
+            #set($status="自提点已代收")        
+            #end  
+            #if($!obj.order_status==40)
+            #set($status="已收货")
+            #end
+            #if($!obj.order_status==50)
+            #set($status="已完成,已评价")                                              
+            #end
+            #if($!obj.order_status==60)
+            #set($status="已结束")                                              
+            #end 
+            #if($!obj.order_status==25)
+            #set($status="审核中")                                              
+            #end  
+            #if($!obj.order_status==27)
+            #set($status="审核不通过")                                              
+            #end  
+            #if($!obj.order_status==80)
+            #set($status="退款中")                                              
+            #end  
+            #if($!obj.order_status==85)
+            #set($status="退款已提交")                                              
+            #end  
+            #if($!obj.order_status==87)
+            #set($status="退款失败")                                              
+            #end  
+            #if($!obj.order_status==90)
+            #set($status="退款已完成")                                              
+            #end    
+        <td align="center">$!status</td>
+        <td align="center" class="hui oprate_con"><a href="$!webPath/admin/order_view.htm?id=$!obj.id&type=all" class="blue">查看</a></td>
+      </tr>
+     #end
+    </table>
+  </div>
+  <div class="operate_bar">
+    <div class="fenye">
+        <input name="end_price" type="hidden" id="end_price" value="$!end_price" />
+        <input name="begin_price" type="hidden" id="begin_price" value="$!begin_price" />
+        <input name="endTime" type="hidden" id="endTime" value="$!endTime" />
+        <input name="beginTime" type="hidden" id="beginTime" value="$!beginTime" />
+        <input name="type_data" type="hidden" id="type_data" value="$!type_data" />
+        <input name="type" type="hidden" id="type" value="$!type" />
+        <input name="order_status" type="hidden" id="order_status" value="$!order_status" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        <input name="payment" type="hidden" id="payment" value="$!payment" />
+        <!-- 由于没有传递搜索值入后台分页，导致分页功能失效 -->
+        <input type="hidden" id="startPayTime" name="startPayTime" value="$!startPayTime"  readonly="readonly"/>
+        <input name="endPayTime" type="hidden" id="endPayTime" value="$!endPayTime" readonly="readonly"/>
+        <input type="hidden" id="startConfirmTime" name="startConfirmTime" value="$!startConfirmTime"  readonly="readonly"/>
+        <input type="hidden" id="endConfirmTime" name="endConfirmTime" value="$!endConfirmTime" readonly="readonly"/>
+        $!gotoPageFormHTML
+    </div>   
+  </div>
+  <div class="fenye">
+    </div>
+  </form>
+</div>
+</body>
+</html>

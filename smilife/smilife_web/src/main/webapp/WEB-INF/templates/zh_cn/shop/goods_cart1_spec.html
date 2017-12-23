@@ -1,0 +1,107 @@
+<script>
+require(["jquery"], function(){
+	$(document).off("click.choose_standard").on("click.choose_standard", "a[name='choose-standard']", function(){
+		goods_spec_set(this);
+	});
+	$(document).off("click.cancle_change").on("click.cancle_change", "a[name='cancle-change']", cancle_change);
+
+	#if($!{cart.goods.goods_specs_info})
+	 var goods_specs_info=eval($!{cart.goods.goods_specs_info});
+	$.each(goods_specs_info,function(index,item){
+        var a=$("a[gsp="+item.id+"]");
+		a.attr("sname",item.name);
+		a.text(item.name);
+    });
+	#end													
+	#foreach($gps_temp in $cart.gsps)
+	$("a[gsp=$!{gps_temp.id}]").addClass("this");
+	#end
+	
+	var confirm_btu = $("#confirm_btu").on("click", function(){
+		confirm_change_spec(this);
+	});
+	function goods_spec_set(obj){
+		var spec = $(obj).attr("spec");
+		$(".pro_choose_li_standard a[spec="+spec+"]").removeClass("this");
+		$(obj).addClass("this");
+		var gsp="";
+		$(obj).parent().parent().parent().find("li").each(function(){
+				 $.each($(this).find("a[class='choose_notype_standard this']"),function(){								 
+					 gsp=$(this).attr("gsp")+","+gsp; 
+				 });
+				  $.each($(this).find("a[class='choose_one_standard this']"),function(){								 
+					 gsp=$(this).attr("gsp")+","+gsp; 
+				 });
+		});
+		$.post(Global.webPath + "/load_goods_gsp.htm",{"id":"$!{cart.goods.id}","gsp":gsp},function(data){
+				   var inventory=data.count;
+				   if(inventory==0){
+					   confirm_btu.off().addClass("hui");
+					   $("#can_not_sub").show();
+					   }else{
+						 $("#confirm_btu").off().on("click", function(){
+						 	confirm_change_spec(this);
+						 }).removeClass("hui");
+						  $("#can_not_sub").hide();
+					}
+					},"json");	
+	}
+	function confirm_change_spec(obj){
+	var id = $(obj).attr("cart_id");
+	var gsp="";
+	$(".product_choose_standard").find("#pro_choose_li_standard_"+id).each(function(){
+			 $($(this).find("a[class='choose_notype_standard this']")).each(function(){								 
+				 gsp=$(this).attr("gsp")+","+gsp; 
+			 });
+			 $($(this).find("a[class='choose_one_standard this']")).each(function(){								 
+				 gsp=$(this).attr("gsp")+","+gsp; 
+			 });
+		});
+	$.post(Global.webPath + "/goods_cart1_spec_save.htm",{
+			"id":id,
+			"gsp":gsp
+			},function(data){
+				if(data.code==100){
+					 lazyload();
+					}else{
+						layer.alert("未知错误，请刷新页面重试", {
+							icon : "7",
+							time : 3000
+						});
+						}
+				},"json");
+	}	
+	function fun_clear() {
+		$("#shoppingcart").removeClass("empty_box");
+		$(".loading_div").removeClass("loading_div");
+	}
+function lazyload(){
+	var load_class=arguments[0];
+	  if(load_class==undefined||load_class==""){
+		$("#shoppingcart").load(Global.webPath + "/goods_cart1_load.htm",fun_clear);
+	  }else{
+		$("#"+load_class).load(Global.webPath + "/goods_cart1_load.htm",{load_class:load_class},fun_clear); 
+		  }
+	};
+	function cancle_change(){
+		$("div[id^=standard_]").hide();
+	}
+});
+</script>
+
+<ul class="product_choose_standard">
+  #foreach($spec in $goodsViewTools.generic_spec("$!{cart.goods.id}"))
+  <li class="pro_choose_li_standard"  id="pro_choose_li_standard_$!{cart.id}"> <span class="choose_left_standard">$!{spec.name}：</span>
+   <span class="choose_right_standard">
+   #foreach($gsp in $cart.goods.goods_specs)
+    #if($!{gsp.spec.id}==$!spec.id)
+        #if($!spec.type=="img") <a href="javascript:void(0);" sname="$!gsp.value" spec="$!gsp.spec.id" gsp="$!gsp.id" name="choose-standard" class="choose_one_standard"><img src="$!gsp.specImage.path/$!gsp.specImage.name" width="20" height="20" /><i></i></a> #end
+        #if($!spec.type=="text") <a href="javascript:void(0);" sname="$!gsp.value" spec="$!gsp.spec.id" gsp="$!gsp.id" name="choose-standard" class="choose_notype_standard">$!gsp.value<i></i></a> #end
+    #end
+    #end 
+    </span> 
+    </li>
+  #end
+  <li class="pro_choose_button"> <span><i id="can_not_sub" style="display:none">当前规格的库存为 0</i></span>
+  <a href="javascript:void(0);" id="confirm_btu" cart_id="$!{cart.id}" class="this">确定</a> <a href="javascript:void(0);" name="cancle-change">取消</a> </li>
+</ul>

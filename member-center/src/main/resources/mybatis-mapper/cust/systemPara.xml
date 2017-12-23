@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.SystemParaMapper">
+	<!-- 系统参数查询 -->
+	<select id="qryPara" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT * FROM SYSTEM_PARA t
+		where 1=1
+   		 <if test="PARA_TYPE != null and PARA_TYPE != ''">
+   			AND t.PARA_TYPE=#{PARA_TYPE}
+   		</if>
+   		<if test="PARA_CODE != null and PARA_CODE != ''">
+   			AND t.PARA_CODE = #{PARA_CODE} 
+   		</if>
+   		and t.STATUS_CD='1000'
+	</select>
+	<!-- code_list查询 -->
+	<select id="qryCodeList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT * FROM CODE_LIST t
+		where 1=1
+   		 <if test="TAB_NAME != null and TAB_NAME != ''">
+   			AND t.tab_name=#{TAB_NAME}
+   		</if>
+   		<if test="STATUS_CD != null and STATUS_CD != ''">
+   			AND t.status_cd = #{STATUS_CD} 
+   		</if>
+	</select>
+</mapper>

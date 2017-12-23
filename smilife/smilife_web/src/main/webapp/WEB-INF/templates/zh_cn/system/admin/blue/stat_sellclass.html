@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    #macro ( genericTree $somelist )
+    #foreach ( $some in $somelist )
+    <option value="$!some.id">
+        #if($!some.level>0)
+        #foreach($count in [-1..$!some.level])&nbsp;#end #end $!some.className
+    </option>
+    #genericTree($some.childs)
+    #end
+    #end
+    <link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css" rel="stylesheet" type="text/css" />
+    <link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet />
+    <link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+    <script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+    <script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+    <script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+    <script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+    <script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('#beginTime').datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                maxDate: new Date()
+            });
+            jQuery('#endTime').datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                maxDate: new Date()
+            });
+        });
+        function stat_sellclass() {
+            var beginTime = jQuery("#beginTime").val();
+            var endTime = jQuery("#endTime").val();
+            var goods_name = jQuery("#goods_name").val();
+            var class_id = jQuery("#class_id option:selected").val();
+            var brand_id = jQuery("#brand_id option:selected").val();
+            if (beginTime == "" || endTime == "") {
+                alert("开始时间与结束时间不能为空");
+            } else {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: '$!webPath/admin/stat_market_list.htm',
+                    data: {
+                        "beginTime": beginTime,
+                        "endTime": endTime,
+                        "goods_name": goods_name,
+                        "class_id": class_id,
+                        "brand_id": brand_id
+                    },
+                    success: function (data) {
+                        jQuery("#goodslog_list").empty();
+                        jQuery("#goods_list").show();
+                        jQuery("#goods_list").empty();
+                        jQuery("#goods_list").append(data);
+                        var ids = jQuery("#stat_ids").val();
+                        if (ids.length > 0) {
+                            jQuery("#selected_goods").show();
+                            var list = ids.split(",");
+                            for (var i in list) {
+                                jQuery("#selectlog_" + list[i]).attr("class", "pro_list_one this");
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        function ajaxPage(url, currentPage, obj) {
+            var beginTime = jQuery("#beginTime").val();
+            var endTime = jQuery("#endTime").val();
+            var goods_name = jQuery("#goods_name").val();
+            var class_id = jQuery("#class_id option:selected").val();
+            var brand_id = jQuery("#brand_id option:selected").val();
+            jQuery.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    "currentPage": currentPage,
+                    "beginTime": beginTime,
+                    "endTime": endTime,
+                    "goods_name": goods_name,
+                    "class_id": class_id,
+                    "brand_id": brand_id
+                },
+                beforeSend: function () { },
+                success: function (data) {
+                    var target_id = jQuery(obj).parent().attr("target_id");
+                    jQuery("#" + target_id).empty();
+                    jQuery("#" + target_id).append(data);
+                    var ids = jQuery("#stat_ids").val();
+                    if (ids.length > 0) {
+                        var list = ids.split(",");
+                        for (var i in list) {
+                            jQuery("#selectlog_" + list[i]).attr("class", "pro_list_one this");
+                        }
+                    }
+                }
+            })
+        }
+
+        function stat_select(id) {
+            var ids = jQuery("#stat_ids").val();
+            if (ids.length == 0) {
+                var list = new Array();
+            } else {
+                var list = ids.split(",");
+            }
+
+            var list2 = new Array();
+            var add = true;
+            for (var i in list) {
+                if (list[i] == id) {
+                    list[i] = "";
+                    add = false;
+                    jQuery("#selectlog_" + id).attr("class", "pro_list_one");
+                    jQuery("#class_choose_li_" + id).remove();
+                } else {
+                    list2.push(list[i]);
+                }
+            }
+            if (add) {
+                if (list.length < 10) {
+                    list2.push(id);
+                    jQuery("#selectlog_" + id).attr("class", "pro_list_one this");
+                    jQuery("#selected_goods").show();
+                    var name = jQuery("#goods_" + id).html();
+                    if (name.length > 15)
+                        name = name.substring(0, 14);
+                    jQuery("#selected_goods_ul").append("<div class='class_choose_li' id='class_choose_li_" + id + "'><a href='javascript:void(0)' class='choose_word'>" + name + "</a><a href='javascript:void(0)' onclick='stat_select(" + id + ")' class='close'></a></div>");
+                } else {
+                    alert("总多同时统计10件商品")
+                }
+            }
+            if (list2.length == 0) {
+                jQuery("#selected_goods").hide();
+            }
+            jQuery("#stat_ids").val(list2);
+
+        }
+
+
+        function typeChange() {
+            var str = jQuery("#selectType option:selected").val();
+            jQuery("[id^='click']").hide();
+            jQuery("[id^='collect']").hide();
+            jQuery("[id^='salenum']").hide();
+            jQuery("[id^='" + str + "']").show();
+        }
+    </script>
+</head>
+<body>
+    <div class="cont">
+        <h3 class="seth">商城统计</h3>
+        <div class="nav_list">
+            <ul>
+                <li><a href="javascript:void(0);" class="this"><b>商品统计</b></a></li>
+            </ul>
+        </div>
+        <div class="operation">
+            <h3>操作提示</h3>
+            <ul>
+                <li>请选取需要统计的时间段，系统默认统计时间段不能超过90天</li>
+            </ul>
+        </div>
+        <form action="" method="post" name="theForm" id="theForm">
+            <input type="hidden" id="stat_ids" name="stat_ids" />
+            <div class="search">
+                <ul>
+                    <li>
+                        <span>类型</span><span class="size100">
+                            <select>
+                                <option>商品类目</option>
+                                <option>店铺类目</option>
+                            </select>
+                        </span><span>分类</span><span class="size100">
+                            <select>
+                                <option>请选择</option>
+                                <option>合约机</option>
+                                <option>笔记本</option>
+                            </select>
+                        </span>
+                        <span class="size100">
+                            <select>
+                                <option>按照天统计</option>
+                                <option>按照周统计</option>
+                                <option>按照月统计</option>
+                            </select>
+                        </span>
+                        <span class="size100">
+                            <select>
+                                <option>2015</option>
+                            </select>
+                        </span>
+                        <span class="size100">
+                            <select>
+                                <option>01</option>
+                                <option>02</option>
+                                <option>03</option>
+                                <option>04</option>
+                                <option>05</option>
+                                <option>06</option>
+                                <option>07</option>
+                                <option>08</option>
+                                <option>09</option>
+                                <option>010</option>
+                                <option>11</option>
+                                <option>12</option>
+                            </select>
+                        </span>
+                        <span class="size100">
+                            <select>
+                                <option>2015-8-31~2015-09-06</option>
+                            </select>
+                        </span>
+                        <input name="stat" type="button" class="search_btn" style="cursor:pointer;" value="搜索" id="stat" onclick="stat_sellclass()" />
+                    </li>
+                    <li>
+                        <div class="seller_goods_show" id="selected_goods" style="display:none">
+                            <div class="class_choose_ul" id="selected_goods_ul"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <input type="button" value="下载分类数据" />
+                    </li>
+                    <li id="goods_list"></li>
+                    <li id="goodslog_list"></li>
+                </ul>
+            </div>
+        </form>
+        <div id="stat_result"> </div>
+    </div>
+</body>
+</html>

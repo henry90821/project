@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<body>
+<div class="cont">
+  <h3 class="seth">自营退货</h3>
+  <div class="nav_list">
+  		<ul>
+        	<li><a href="#" class="this"><b>订单退款</b></a></li>
+        </ul>
+  </div>
+	<form name="queryForm" id="queryForm" action="$!webPath/admin/self_refund_list.htm" method="post">
+    <div class="search">
+          <span>订单号</span> <span class="size150">
+          <input name="order_id" type="text" id="order_id" value="$!order_id" />
+          </span> <span>申请者</span> <span class="size150">
+          <input name="user_name" type="text" id="user_name" value="$!user_name" />
+          </span> <span>
+          <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn" />
+          </span> 
+ 
+    </div>
+  </form>
+  <form name="ListForm" id="ListForm" action="$!webPath/admin/self_refund_list.htm" method="post">
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+         <th width="12%"><span class="form_btna">订单号</span></th>
+          <th width="15%"><span class="form_btna">商品名称</span></th>
+          <th width="8%"><span class="form_btna">商品数量</span></th>
+          <th width="8%"><span class="form_btna">商品价格</span></th>
+          <th width="8%"><span class="form_btna">商品总价</span></th>
+          <th width="12%"><span class="form_btna">商品图片</span></th>
+           <th width="12%"><span class="form_btna">申请者</span></th>
+           <th width="12%"><span class="form_btna">退单状态</span></th>
+          <th  align="center"><b class="form_btnb">操作</b></th>
+        </tr>
+        #foreach($obj in $objs)
+                #set($goods_info=$!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+                #set($index = 0)
+        		#foreach($map in $!goods_info)
+        		#set($index = $!index + 1)
+        		#set($goods_id = "$!{map.get('goods_id')}")	
+        		#set($goods_name = "$!{map.get('goods_name')}")
+		        #set($goods_count = "$!{map.get('goods_count')}")
+		        #set($goods_price = "$!{map.get('goods_price')}")
+		        #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+		        #set($goods_all_price = "$!{map.get('goods_all_price')}")
+		        #set($goods_url="$!webPath/goods_$!{map.get('goods_id')}.htm")
+        <tr>
+        #if($!index == 1)
+		<td align="center" rowspan="$!goods_info.size()"><span class="size70">$!obj.order_id</span></td>
+		#end
+          <td align="center"><span class="size70"><a href="$!goods_url" target="_blank" style=" color:#00F">$!goods_name</a></span>
+          
+              <!-- 商品图标start -->
+                    #set($good=$!goodsViewTools.query_Goods("$!obj.goods_id"))
+                    #if($!{good.goodsConfig.iconUrl})
+                        <img src="$!webPath/$!{good.goodsConfig.iconUrl}" />
+                    #end
+              <!-- 商品图标end -->
+              
+          </td>
+          <td align="center"><span class="size70">$!goods_count</span></td>
+           <td align="center"><span class="size70">$!goods_price</span></td>         
+          <td align="center"><span class="size150">$!goods_all_price</span></td>
+          <td align="center">
+          <a href="$!goods_url" target="_blank"><img src="$!goods_mainphoto_path" width="70" height="70" /></a> 
+          </td>
+          #if($!index == 1)
+          <td align="center" rowspan="$!goods_info.size()"><span class="size150">$!obj.user_name</span></td>
+            #if($!obj.order_status==25)
+             #set($status="买家申请退款")
+            #end
+            #if($!obj.order_status==27)
+             #set($status="审核不通过")
+            #end
+            #if($!obj.order_status==80)
+             #set($status="退款中")
+            #end
+            #if($!obj.order_status==85)
+             #set($status="退款已提交")
+            #end
+            #if($!obj.order_status==87)
+             #set($status="退款失败")
+            #end
+            #if($!obj.order_status==90)
+             #set($status="退款完成")
+            #end
+            <td align="center" rowspan="$!goods_info.size()">$!{status}</td> 
+            <td align="center" class="hui oprate_con" rowspan="$!goods_info.size()"> #if($!obj.order_status==25) <a href="$!webPath/admin/self_refund_check.htm?id=$!obj.id&currentPage=$!currentPage" class="blue">审核</a> #end
+           #end     
+        </tr>
+        #end
+        #end
+    </table>
+    
+    <div class="operate_bar">
+        <div class="fenye" id="queryCondition">
+            <input name="mulitId" type="hidden" id="mulitId" />
+            <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+           $!gotoPageFormHTML
+        </div> 
+        <div class="oper_sp">
+        </div>         
+ 	</div>
+  </div>
+  </form>
+</div>
+</body>
+</html>

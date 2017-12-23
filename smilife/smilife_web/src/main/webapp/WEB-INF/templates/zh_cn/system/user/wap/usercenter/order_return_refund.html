@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>退款申请</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="javascript:void(0);"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">申请退货</span></div>
+<div class="phone_main">
+<div class="order_return_list">
+    <div class="apply_return">
+        #if($!obj && ($!obj.order_status == "20" || $!obj.order_status == "27"))
+        <form action="$!webPath/wap/buyer/order_return_refund_save.htm" method="post" id="theForm">
+        <table cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td>预退款金额：</td>
+                    <td>￥$!price</td>
+                </tr>
+                <tr>
+                    <td>退款原因:</td>
+                    <td><textarea name="refund_cause" id="refund_cause"></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+  		<input type="hidden" value="$!price" name="price" />
+  		<input type="hidden" value="$!obj.id" name="id" />
+        <div class="red_submit">
+        	<!-- <input id="save" type="button" value="申请退款" style="cursor:pointer;border: none;" onclick="saveForm('$obj.id', 1);"/> -->
+        	<input id="save" type="submit" value="申请退款" style="cursor:pointer;border: none;"/>
+        </div>
+        <span style="padding-left:10px;display:none;" class="showtext">申请已提交,请耐心等待</span>   
+        </form>
+        #elseif($!obj && $!obj.order_status == "25")
+        <form action="$!webPath/wap/buyer/order_return_refund_cancel.htm" method="post" id="theForm">
+        <table cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td>预退款金额：</td>
+                    <td>￥$!price</td>
+                </tr>
+                <tr>
+                	<td colspan="2">退款原因: $!obj.refund_cause</td>
+                </tr>
+            </tbody>
+        </table>
+   		<input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+  		<input type="hidden" value="$!price" name="price" />
+  		<input type="hidden" value="$!obj.id" name="id" />
+        <div class="red_submit">
+        	<!-- <input id="save" type="button" value="取消退款" style="cursor:pointer;border: none;" onclick="saveForm('$obj.id', 2);"/> -->
+        	<input id="save" type="submit" value="取消退款" style="cursor:pointer;border: none;"/>
+        </div>
+        <span style="padding-left:10px;display:none;" class="showtext">申请已提交,请耐心等待</span>   
+        </form>
+        #end
+        
+    </div>
+</div> 
+</div>
+</body>
+</html>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("#theForm").validate({
+		   rules:{
+			   refund_cause:{required:true,maxlength:200}
+			   },
+		   messages:{
+			   refund_cause:{required:"请填写退款说明",maxlength:"退款说明长度最大为{0}字符"}
+		   },
+		   submitHandler:function(form){
+			   var type,id;
+			   id = $!obj.id;
+			   if($!obj.order_status == 20 || $!obj.order_status == 27){
+				   type = 1;
+			   }else if($!obj.order_status == "25"){
+				   type = 2;
+			   }
+	        	jQuery.ajax({
+	        		url:"$!webPath/wap/buyer/canRefund.htm",
+	        		data:{id:id, type:type},
+	        		async:false,
+	        		dataType:"json",
+	        		success:function(data){
+	        			var prompt;
+	        			if(data){//可以退款
+	        				form.submit();
+	        			}else{
+	        				if(type == 1){
+	        					prompt = "目前的订单状态不能申请退款！";
+	        				}else if(type == 2){
+	        					prompt = "目前的订单状态不能取消退款！";
+	        				}
+	        				//jQuery("#order_refund_"+id).remove();
+	        				showDialog("msg_info", "", prompt, 2, "warning", 3, function(){
+	        					window.location.href=window.location.href;
+	        				});
+	        			}
+	        		}
+	        	});	
+	        	jQuery("#save").attr("disabled","disabled"); 
+	        	$(".showtext").show();
+				//form.submit();
+	       } 
+		}); 
+});
+/* function saveForm(id, type){
+	jQuery.ajax({
+		url:"$!webPath/wap/buyer/canRefund.htm",
+		data:{id:id, type:type},
+		async:false,
+		dataType:"json",
+		success:function(data){
+			if(data){//可以退款
+				jQuery("#theForm").submit();
+			}else{
+				if(type == 1){
+					var prompt = "对不起，您不能申请退款";
+				}else if(type == 2){
+					var prompt = "对不起，您不能取消退款";
+				}
+				jQuery("#order_refund_"+id).remove();
+				showDialog("msg_info", "", prompt, 2, "warning", 3, function(){
+					window.location.href=window.location.href;
+				});
+			}
+		}
+	});	
+} */
+</script>

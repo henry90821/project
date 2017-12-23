@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CustHeadInfoMapper">
+	<!-- 会员头像信息新增 -->
+	<insert id="insertCustHeadInfo" parameterType="java.util.Map">
+		insert into INFO_HEAD  
+		(
+		 HEAD_ID  ,   CUST_ID  ,
+		 FILE_PATH,   STATUS_CD,
+		 CRT_DATE ,   MOD_DATE
+		)
+		values
+		(
+		 #{HEAD_ID},   #{CUST_ID},
+		 #{FILE_PATH}, #{STATUS_CD},
+		 sysdate,      #{MOD_DATE}
+		)
+	
+	</insert>
+	<!-- 会员头像信息查询 -->
+	<select id="queryCustHeadInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select 
+		t.HEAD_ID,   
+		t.CUST_ID,
+		t.FILE_PATH, 
+		t.STATUS_CD,
+		TO_CHAR(t.CRT_DATE,  'yyyy-MM-dd hh24:mi:ss') CRT_DATE , 
+		TO_CHAR(t.MOD_DATE,  'yyyy-MM-dd hh24:mi:ss') MOD_DATE
+	  FROM  INFO_HEAD  t
+		<where>
+		 1=1
+		 <if test="CUST_ID !=null and CUST_ID !=''">
+			and t.CUST_ID=#{CUST_ID}
+		</if>
+		<if test="STATUS_CD !=null and STATUS_CD !=''">
+			and t.STATUS_CD=#{STATUS_CD}
+		</if>
+		</where>
+	</select>
+	<!-- 会员头像修改原子服务 -->
+	<update id="updateCustHeadInfo" parameterType="java.util.Map">
+		update INFO_HEAD t
+		<set>
+			 t.MOD_DATE =sysdate
+		     <if test="STATUS_CD !=null and STATUS_CD !=''">
+			   , t.STATUS_CD=#{STATUS_CD}
+		     </if>
+		     <if test="FILE_PATH !=null and FILE_PATH !=''">
+			   , t.FILE_PATH=#{FILE_PATH}
+		     </if>
+		</set>
+		<where>
+			  <if test="HEAD_ID !=null and HEAD_ID !=''">
+			   and t.HEAD_ID=#{HEAD_ID}
+		     </if>
+		      <if test="CUST_ID !=null and CUST_ID !=''">
+			   and t.CUST_ID=#{CUST_ID}
+		     </if>
+		</where>
+	</update>
+</mapper>

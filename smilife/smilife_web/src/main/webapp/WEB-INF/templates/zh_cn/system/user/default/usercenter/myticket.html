@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的评价 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}" />
+<meta name="copyright" content="$!{config.copyRight}" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery(".user_menu b").toggle(
+		 function(){
+			jQuery(this).siblings().hide();	
+			jQuery(this).find("i").removeClass("active");
+		  },
+		 function(){
+			jQuery(this).siblings().show();	
+			jQuery(this).find("i").addClass("active");
+		 });	
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+  $!httpInclude.include("/head.htm")
+  $!httpInclude.include("/nav1.htm")
+  <div class="main">
+  <div class="usercenter"> $!httpInclude.include("/buyer/nav.htm?op=evaluate")
+      <div class="usercenter_right">
+          <div class="account_right fr">
+              <ul class="account_list member_order_list clearfix">
+                  <li class="account_current"><a class="black" href="/member/order?s=0">全部</a></li>
+                  <li><a class="black" href="/member/order?s=1">等待支付</a></li>
+                  <li><a class="black" href="/member/order?s=5">已取消/过期</a></li>
+                  <li><a class="black" href="/member/order?s=4">已完成</a></li>
+              </ul>
+              <div class="movie_list ">
+                  <div class="movie_show clearfix">
+                      <span>显示</span>
+                      <select id="monthSelect">
+                          <option value="0">全部</option>
+                          <option value="3">3个月内</option>
+                          <option value="2">2个月内</option>
+                          <option value="1">1个月内</option>
+                      </select>
+                      <span>的订单记录</span>
+                  </div>
+                  <ul class="movie_title clearfix">
+                      <li class="movie_order">电影票订单信息</li>
+                      <li class="movie_time">购买时间</li>
+                      <li class="movie_status">订单状态</li>
+                      <li class="movie_money">金额</li>
+                      <li class="movie_operate">操作</li>
+                  </ul>
+                  <div style="height:80%;overflow-y:auto;overflow-x:hidden;" id="monthSelectData">
+                  </div>
+              </div>
+          </div>
+    </div>
+    </div>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoCustMapper">
+  <resultMap id="BaseResultMap" type="com.smi.mc.model.cust.InfoCust">
+    <id column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="CUST_NAME" jdbcType="VARCHAR" property="custName" />
+    <result column="CUST_VIP_LEVEL" jdbcType="VARCHAR" property="custVipLevel" />
+    <result column="CUST_TYPE" jdbcType="VARCHAR" property="custType" />
+    <result column="STATUS_CD" jdbcType="VARCHAR" property="statusCd" />
+    <result column="CARD_TYPE" jdbcType="VARCHAR" property="cardType" />
+    <result column="CUST_NBR" jdbcType="VARCHAR" property="custNbr" />
+    <result column="CONTACT_MOBILE" jdbcType="VARCHAR" property="contactMobile" />
+    <result column="CONTACT_ADDR" jdbcType="VARCHAR" property="contactAddr" />
+    <result column="SEX" jdbcType="VARCHAR" property="sex" />
+    <result column="BIRTHDATE" jdbcType="DATE" property="birthdate" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="NICK_NAME" jdbcType="VARCHAR" property="nickName" />
+    <result column="CRT_DATE" jdbcType="DATE" property="crtDate" />
+    <result column="ORG_ID" jdbcType="VARCHAR" property="orgId" />
+    <result column="MOD_DATE" jdbcType="DATE" property="modDate" />
+    <result column="LOGIN_PWD" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="PAY_PWD" jdbcType="VARCHAR" property="payPwd" />
+    <result column="BLACKLIST" jdbcType="VARCHAR" property="blacklist" />
+    <result column="SMI_SOURCE" jdbcType="VARCHAR" property="smiSource" />
+    <result column="RANDOM_NUMBER" jdbcType="VARCHAR" property="randomNumber" />
+    <result column="ISSYNC" jdbcType="DECIMAL" property="issync" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    CUST_ID, CUST_NAME, CUST_VIP_LEVEL, CUST_TYPE, STATUS_CD, CARD_TYPE, CUST_NBR, CONTACT_MOBILE, 
+    CONTACT_ADDR, SEX, BIRTHDATE, EMAIL, NICK_NAME, CRT_DATE, ORG_ID, MOD_DATE, LOGIN_PWD, 
+    PAY_PWD, BLACKLIST, SMI_SOURCE, RANDOM_NUMBER, ISSYNC
+  </sql>
+  <select id="selectByExample" parameterType="com.smi.mc.model.cust.InfoCustExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from INFO_CUST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from INFO_CUST
+    where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from INFO_CUST
+    where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.mc.model.cust.InfoCustExample">
+    delete from INFO_CUST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.mc.model.cust.InfoCust">
+    insert into INFO_CUST (CUST_ID, CUST_NAME, CUST_VIP_LEVEL, 
+      CUST_TYPE, STATUS_CD, CARD_TYPE, 
+      CUST_NBR, CONTACT_MOBILE, CONTACT_ADDR, 
+      SEX, BIRTHDATE, EMAIL, 
+      NICK_NAME, CRT_DATE, ORG_ID, 
+      MOD_DATE, LOGIN_PWD, PAY_PWD, 
+      BLACKLIST, SMI_SOURCE, RANDOM_NUMBER, 
+      ISSYNC)
+    values (#{custId,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, #{custVipLevel,jdbcType=VARCHAR}, 
+      #{custType,jdbcType=VARCHAR}, #{statusCd,jdbcType=VARCHAR}, #{cardType,jdbcType=VARCHAR}, 
+      #{custNbr,jdbcType=VARCHAR}, #{contactMobile,jdbcType=VARCHAR}, #{contactAddr,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=VARCHAR}, #{birthdate,jdbcType=DATE}, #{email,jdbcType=VARCHAR}, 
+      #{nickName,jdbcType=VARCHAR}, #{crtDate,jdbcType=DATE}, #{orgId,jdbcType=VARCHAR}, 
+      #{modDate,jdbcType=DATE}, #{loginPwd,jdbcType=VARCHAR}, #{payPwd,jdbcType=VARCHAR}, 
+      #{blacklist,jdbcType=VARCHAR}, #{smiSource,jdbcType=VARCHAR}, #{randomNumber,jdbcType=VARCHAR}, 
+      #{issync,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.mc.model.cust.InfoCust">
+    insert into INFO_CUST
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="custId != null">
+        CUST_ID,
+      </if>
+      <if test="custName != null">
+        CUST_NAME,
+      </if>
+      <if test="custVipLevel != null">
+        CUST_VIP_LEVEL,
+      </if>
+      <if test="custType != null">
+        CUST_TYPE,
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD,
+      </if>
+      <if test="cardType != null">
+        CARD_TYPE,
+      </if>
+      <if test="custNbr != null">
+        CUST_NBR,
+      </if>
+      <if test="contactMobile != null">
+        CONTACT_MOBILE,
+      </if>
+      <if test="contactAddr != null">
+        CONTACT_ADDR,
+      </if>
+      <if test="sex != null">
+        SEX,
+      </if>
+      <if test="birthdate != null">
+        BIRTHDATE,
+      </if>
+      <if test="email != null">
+        EMAIL,
+      </if>
+      <if test="nickName != null">
+        NICK_NAME,
+      </if>
+      <if test="crtDate != null">
+        CRT_DATE,
+      </if>
+      <if test="orgId != null">
+        ORG_ID,
+      </if>
+      <if test="modDate != null">
+        MOD_DATE,
+      </if>
+      <if test="loginPwd != null">
+        LOGIN_PWD,
+      </if>
+      <if test="payPwd != null">
+        PAY_PWD,
+      </if>
+      <if test="blacklist != null">
+        BLACKLIST,
+      </if>
+      <if test="smiSource != null">
+        SMI_SOURCE,
+      </if>
+      <if test="randomNumber != null">
+        RANDOM_NUMBER,
+      </if>
+      <if test="issync != null">
+        ISSYNC,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="custId != null">
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="custName != null">
+        #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="custVipLevel != null">
+        #{custVipLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="custType != null">
+        #{custType,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null">
+        #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="custNbr != null">
+        #{custNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="contactMobile != null">
+        #{contactMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="contactAddr != null">
+        #{contactAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthdate != null">
+        #{birthdate,jdbcType=DATE},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDate != null">
+        #{crtDate,jdbcType=DATE},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="modDate != null">
+        #{modDate,jdbcType=DATE},
+      </if>
+      <if test="loginPwd != null">
+        #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="payPwd != null">
+        #{payPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="blacklist != null">
+        #{blacklist,jdbcType=VARCHAR},
+      </if>
+      <if test="smiSource != null">
+        #{smiSource,jdbcType=VARCHAR},
+      </if>
+      <if test="randomNumber != null">
+        #{randomNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="issync != null">
+        #{issync,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.mc.model.cust.InfoCustExample" resultType="java.lang.Integer">
+    select count(*) from INFO_CUST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update INFO_CUST
+    <set>
+      <if test="record.custId != null">
+        CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.custName != null">
+        CUST_NAME = #{record.custName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.custVipLevel != null">
+        CUST_VIP_LEVEL = #{record.custVipLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.custType != null">
+        CUST_TYPE = #{record.custType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusCd != null">
+        STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cardType != null">
+        CARD_TYPE = #{record.cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.custNbr != null">
+        CUST_NBR = #{record.custNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contactMobile != null">
+        CONTACT_MOBILE = #{record.contactMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contactAddr != null">
+        CONTACT_ADDR = #{record.contactAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null">
+        SEX = #{record.sex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.birthdate != null">
+        BIRTHDATE = #{record.birthdate,jdbcType=DATE},
+      </if>
+      <if test="record.email != null">
+        EMAIL = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nickName != null">
+        NICK_NAME = #{record.nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crtDate != null">
+        CRT_DATE = #{record.crtDate,jdbcType=DATE},
+      </if>
+      <if test="record.orgId != null">
+        ORG_ID = #{record.orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modDate != null">
+        MOD_DATE = #{record.modDate,jdbcType=DATE},
+      </if>
+      <if test="record.loginPwd != null">
+        LOGIN_PWD = #{record.loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.payPwd != null">
+        PAY_PWD = #{record.payPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.blacklist != null">
+        BLACKLIST = #{record.blacklist,jdbcType=VARCHAR},
+      </if>
+      <if test="record.smiSource != null">
+        SMI_SOURCE = #{record.smiSource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.randomNumber != null">
+        RANDOM_NUMBER = #{record.randomNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issync != null">
+        ISSYNC = #{record.issync,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update INFO_CUST
+    set CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      CUST_NAME = #{record.custName,jdbcType=VARCHAR},
+      CUST_VIP_LEVEL = #{record.custVipLevel,jdbcType=VARCHAR},
+      CUST_TYPE = #{record.custType,jdbcType=VARCHAR},
+      STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      CARD_TYPE = #{record.cardType,jdbcType=VARCHAR},
+      CUST_NBR = #{record.custNbr,jdbcType=VARCHAR},
+      CONTACT_MOBILE = #{record.contactMobile,jdbcType=VARCHAR},
+      CONTACT_ADDR = #{record.contactAddr,jdbcType=VARCHAR},
+      SEX = #{record.sex,jdbcType=VARCHAR},
+      BIRTHDATE = #{record.birthdate,jdbcType=DATE},
+      EMAIL = #{record.email,jdbcType=VARCHAR},
+      NICK_NAME = #{record.nickName,jdbcType=VARCHAR},
+      CRT_DATE = #{record.crtDate,jdbcType=DATE},
+      ORG_ID = #{record.orgId,jdbcType=VARCHAR},
+      MOD_DATE = #{record.modDate,jdbcType=DATE},
+      LOGIN_PWD = #{record.loginPwd,jdbcType=VARCHAR},
+      PAY_PWD = #{record.payPwd,jdbcType=VARCHAR},
+      BLACKLIST = #{record.blacklist,jdbcType=VARCHAR},
+      SMI_SOURCE = #{record.smiSource,jdbcType=VARCHAR},
+      RANDOM_NUMBER = #{record.randomNumber,jdbcType=VARCHAR},
+      ISSYNC = #{record.issync,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.mc.model.cust.InfoCust">
+    update INFO_CUST
+    <set>
+      <if test="custName != null and custName != ''">
+        CUST_NAME = #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="custVipLevel != null and custVipLevel != ''">
+        CUST_VIP_LEVEL = #{custVipLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="custType != null and custType != ''">
+        CUST_TYPE = #{custType,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null and statusCd != ''">
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null and cardType != ''">
+        CARD_TYPE = #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="custNbr != null and custNbr != ''">
+        CUST_NBR = #{custNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="contactMobile != null and contactMobile != ''">
+        CONTACT_MOBILE = #{contactMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="contactAddr != null and contactAddr != ''">
+        CONTACT_ADDR = #{contactAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null and sex != ''">
+        SEX = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthdate != null ">
+        BIRTHDATE = #{birthdate,jdbcType=DATE},
+      </if>
+      <if test="email != null and email != ''">
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null and nickName != ''">
+        NICK_NAME = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDate != null">
+        CRT_DATE = #{crtDate,jdbcType=DATE},
+      </if>
+      <if test="orgId != null and orgId != ''">
+        ORG_ID = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="modDate != null">
+        MOD_DATE = #{modDate,jdbcType=DATE},
+      </if>
+      <if test="loginPwd != null and loginPwd != ''">
+        LOGIN_PWD = #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="payPwd != null and payPwd != ''">
+        PAY_PWD = #{payPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="blacklist != null and blacklist != ''">
+        BLACKLIST = #{blacklist,jdbcType=VARCHAR},
+      </if>
+      <if test="smiSource != null and smiSource != ''">
+        SMI_SOURCE = #{smiSource,jdbcType=VARCHAR},
+      </if>
+      <if test="randomNumber != null and randomNumber != ''">
+        RANDOM_NUMBER = #{randomNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="issync != null and issync != ''">
+        ISSYNC = #{issync,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.mc.model.cust.InfoCust">
+    update INFO_CUST
+    set CUST_NAME = #{custName,jdbcType=VARCHAR},
+      CUST_VIP_LEVEL = #{custVipLevel,jdbcType=VARCHAR},
+      CUST_TYPE = #{custType,jdbcType=VARCHAR},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      CARD_TYPE = #{cardType,jdbcType=VARCHAR},
+      CUST_NBR = #{custNbr,jdbcType=VARCHAR},
+      CONTACT_MOBILE = #{contactMobile,jdbcType=VARCHAR},
+      CONTACT_ADDR = #{contactAddr,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=VARCHAR},
+      BIRTHDATE = #{birthdate,jdbcType=DATE},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      NICK_NAME = #{nickName,jdbcType=VARCHAR},
+      CRT_DATE = #{crtDate,jdbcType=DATE},
+      ORG_ID = #{orgId,jdbcType=VARCHAR},
+      MOD_DATE = #{modDate,jdbcType=DATE},
+      LOGIN_PWD = #{loginPwd,jdbcType=VARCHAR},
+      PAY_PWD = #{payPwd,jdbcType=VARCHAR},
+      BLACKLIST = #{blacklist,jdbcType=VARCHAR},
+      SMI_SOURCE = #{smiSource,jdbcType=VARCHAR},
+      RANDOM_NUMBER = #{randomNumber,jdbcType=VARCHAR},
+      ISSYNC = #{issync,jdbcType=DECIMAL}
+    where CUST_ID = #{custId,jdbcType=VARCHAR}
+  </update>
+  
+  <!--根据custId获取随机数  -->
+  <select id="getRndNumByCustId" parameterType="java.lang.String" resultType="java.lang.String">
+  	SELECT RANDOM_NUMBER FROM INFO_CUST WHERE CUST_ID = #{custId} AND STATUS_CD = '1000'
+  </select>
+  
+  
+  
+</mapper>

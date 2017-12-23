@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoOrderMapper">
+
+	<!-- 订单事件新增 -->
+	<insert id="addInfoOrder" parameterType="java.util.Map">
+		insert into info_order
+		(
+		ORDER_ID 	   ,
+		CUST_ID 	   ,
+		CRT_DATE       ,
+		ORDER_TYPE     ,
+		SYSTEM_USER_ID ,
+		ORG_ID         ,
+		SYSTEM_ID      ,
+		EXT_ORDER_ID   ,
+		BUSINESS_TYPE  ,
+		SERV_CODE      ,
+		DEVICE_NUMBER  ,
+		STATUS_CD      ,
+		REGION_ID      ,
+		ORDER_DESC     ,
+		PAY_STATUS      ,
+		MOD_DATE
+		)values(
+		#{ORDER_ID,jdbcType=NUMERIC}          ,
+		#{CUST_ID,jdbcType=VARCHAR}           ,
+		sysdate	             ,
+		#{ORDER_TYPE,jdbcType=VARCHAR}        ,
+		#{SYSTEM_USER_ID,jdbcType=NUMERIC}    ,
+		#{ORG_ID,jdbcType=VARCHAR}            ,
+		#{SYSTEM_ID,jdbcType=VARCHAR}         ,
+		#{EXT_ORDER_ID,jdbcType=VARCHAR}      ,
+		#{BUSINESS_TYPE,jdbcType=VARCHAR}     ,
+		#{SERV_CODE,jdbcType=VARCHAR}         ,
+		#{DEVICE_NUMBER,jdbcType=VARCHAR}     ,
+		#{STATUS_CD,jdbcType=VARCHAR}         ,
+		#{REGION_ID,jdbcType=VARCHAR}         ,
+		#{ORDER_DESC,jdbcType=VARCHAR}     	 ,
+		#{PAY_STATUS,jdbcType=VARCHAR}        ,
+		sysdate   
+		)
+
+	</insert>
+
+	<!-- 订单事件查询 -->
+	<select id="qryInfoOrder" parameterType="java.util.Map"
+	       resultType="java.util.Map">
+		SELECT
+			T.ORDER_ID ,
+			T.CUST_ID ,
+			C.CUST_NAME ,
+			TO_CHAR(T.CRT_DATE,'yyyy-MM-dd hh24:mi:ss') CRT_DATE,
+			TO_CHAR(T.CRT_DATE,'yyyy-MM-dd hh24:mi:ss') CREATE_DATE,
+			T.ORDER_TYPE ,
+			T.SYSTEM_USER_ID ,
+			T.ORG_ID ,
+			T.SYSTEM_ID ,
+			T.SYSTEM_ID EXT_SYSTEM,
+			D.CODE_NAME EXT_SYSTEM_NAME,
+			T.ORG_ID CREATE_CHANNEL_ID,
+			F.CODE_NAME ORG_NAME,
+			T.EXT_ORDER_ID ,
+			T.BUSINESS_TYPE ,
+			T.SERV_CODE ,
+			E.CODE_NAME SERV_CODE_NAME,
+			T.DEVICE_NUMBER ,
+			T.STATUS_CD ,
+			DECODE(T.STATUS_CD,'1000','订单竣工','1100','订单异常','1098','订单提交')
+			STATUS_CD_NAME,
+			T.REGION_ID ,
+			T.SYSTEM_USER_ID CREATE_OPERATOR_ID,
+			T.ORDER_DESC ,
+			T.PAY_STATUS ,
+			TO_CHAR(T.MOD_DATE,'yyyy-MM-dd hh24:mi:ss') MOD_DATE
+		FROM INFO_ORDER T 
+    	LEFT JOIN INFO_CUST C ON T.CUST_ID = C.CUST_ID AND C.STATUS_CD != '1100' 
+    	LEFT JOIN CODE_LIST D ON T.SYSTEM_ID = D.CODE_ID AND D.COL_NAME = 'SYSTEM_ID' AND D.STATUS_CD = '1000'
+    	LEFT JOIN CODE_LIST E ON T.SERV_CODE = E.CODE_ID AND E.TAB_NAME = 'INFO_ORDER' AND E.COL_NAME = 'SERV_CODE' AND E.STATUS_CD = '1000'
+    	LEFT JOIN CODE_LIST F ON F.CODE_ID IS NOT NULL AND T.ORG_ID = F.CODE_ID AND F.COL_NAME = 'ORG_ID' AND F.STATUS_CD = '1000'
+		WHERE 1 = 1
+			<if test="ORDER_ID !=null and ORDER_ID !=''">
+			     and T.ORDER_ID=#{ORDER_ID}
+			</if>
+			<if test="CUST_ID !=null and CUST_ID !=''">
+			     and T.CUST_ID=#{CUST_ID}
+			</if>
+			<if test="BUSINESS_TYPE !=null and BUSINESS_TYPE !=''">
+			     and T.BUSINESS_TYPE=#{BUSINESS_TYPE}
+			</if>
+			<if test="CREATE_CHANNEL_ID !=null and CREATE_CHANNEL_ID !=''">
+			     and T.ORG_ID=#{CREATE_CHANNEL_ID}       <!-- 需要注意！！！ -->
+			</if>
+			<if test="CREATE_TIME_START !=null and CREATE_TIME_START !=''">
+			    <![CDATA[ and to_char(T.CRT_DATE , 'yyyy-MM-dd')  >= #{CREATE_TIME_START}]]>
+			</if>
+			<if test="CREATE_TIME_END !=null and CREATE_TIME_END !=''">
+			    <![CDATA[ and  #{CREATE_TIME_END} >= to_char(T.CRT_DATE , 'yyyy-MM-dd')]]>
+			</if>
+			<if test="MODIFY_TIME_START !=null and MODIFY_TIME_START !=''">
+			    <![CDATA[ and to_char(T.MOD_DATE , 'yyyy-MM-dd')  >= #{MODIFY_TIME_START}]]>
+			</if>
+			<if test="MODIFY_TIME_END !=null and MODIFY_TIME_END !=''">
+			    <![CDATA[ and  #{MODIFY_TIME_END} >= to_char(T.MOD_DATE , 'yyyy-MM-dd')]]>
+			</if>
+			<if test="EXT_ORDER_ID !=null and EXT_ORDER_ID !=''">
+			     and T.EXT_ORDER_ID=#{EXT_ORDER_ID}
+			</if>
+			<if test="EXT_SYSTEM !=null and EXT_SYSTEM !=''">
+			     and T.SYSTEM_ID=#{EXT_SYSTEM}                <!-- 需要注意  ！！！ -->
+			</if>
+			<if test="STATUS_CD !=null and STATUS_CD !=''">
+			     and T.STATUS_CD=#{STATUS_CD}                <!-- 需要注意  ！！！ -->
+			</if>
+			<if test="PAY_STATUS !=null and PAY_STATUS !=''">
+			     and T.PAY_STATUS=#{PAY_STATUS}               
+			</if>
+		ORDER BY T.CRT_DATE DESC
+	</select>
+	
+	<!-- 订单事件修改 -->          			<!-- sql语句不确定！！！ -->
+	<update id="updateInfoOrder" parameterType="java.util.Map">
+	       update INFO_ORDER
+	       <set>
+	       			MOD_DATE=sysdate
+	       		<if test="STATUS_CD !=null and STATUS_CD !=''">
+	       			 ,STATUS_CD=#{STATUS_CD}
+	       		</if>
+	       		<if test="PAY_STATUS !=null and PAY_STATUS !=''">
+	       			 ,PAY_STATUS=#{PAY_STATUS}
+	       		</if>
+	       </set>
+	       <where>	
+	       		1=1	
+	       		<if test="ORDER_ID !=null and ORDER_ID!=''">
+	       		and ORDER_ID=#{ORDER_ID}
+	       		</if>
+	       		<if test="ORDER_TYPE !=null and ORDER_TYPE!=''">
+	       		   and ORDER_TYPE=#{ORDER_TYPE}
+	       		</if>
+	       		<if test="EXT_ORDER_ID !=null and EXT_ORDER_ID!=''">
+	       		   and EXT_ORDER_ID=#{EXT_ORDER_ID}
+	       		</if>
+	       		<if test="DEVICE_NUMBER !=null and DEVICE_NUMBER!=''">
+	       		   and DEVICE_NUMBER=#{DEVICE_NUMBER}
+	       		</if>
+	       </where>
+	       		
+	
+	</update>
+</mapper>

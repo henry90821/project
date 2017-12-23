@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script type="text/javascript">
+	function query_form(){
+		jQuery("#ListForm").submit();
+	}
+</script>
+</head>
+<body>
+
+<div class="cont">
+  <h1 class="seth">秒杀管理</h1>
+  <div class="nav_list">
+ 		<ul>
+ 		    <li><a  class="this" href="$!webPath/admin/self_seckill.htm"><b>秒杀管理</b></a> </li>
+ 			<li><a href="$!webPath/admin/self_seckill_add.htm"><b>新增</b></a> </li>
+ 		 </ul>
+  </div>
+  
+  <form name="ListForm" id="ListForm" action="" method="post">
+	  <div class="search">
+	  	   <span style="padding-left:55px;">秒杀名称</span>
+	  	   <span class="size200">
+	  	  	 <input name="gg_name" type="text" id="gg_name" value="$!gg_name" />
+	  	   </span>
+	  	   <span style="padding-left:55px;">app推荐</span>
+	  	   <span class="size200">
+	  	  	 <select name="gg_recommend" id="gg_recommend">
+	  	  	 	<option value=-1 >请选择</option>
+	  	  	 	<option value=0 #if($!gg_recommend==0) selected #end>不推荐</option>
+	  	  	 	<option value=1 #if($!gg_recommend==1) selected #end>推荐</option>
+	  	  	 </select>
+	  	   </span>
+	  	   <span style="padding-left:55px;">秒杀状态</span>
+	  	   <span class="size200">
+	  	   	 <select name="gg_status" id="gg_status">
+	  	   	 	<option value=-1>请选择</option>
+	  	   	 	<option value=0 #if($!gg_status==0) selected #end>未开始</option>
+	  	   	 	<option value=1 #if($!gg_status==1) selected #end>即将秒杀</option>
+	  	   	 	<option value=2 #if($!gg_status==2) selected #end>正常进行中</option>
+	  	   	 	<option value=3 #if($!gg_status==3) selected #end>秒杀结束</option>
+	  	   	 </select>
+	  	   </span>
+	  	   <span>
+	          <input name="" type="button" value="搜索" style="cursor:pointer;" onclick="query_form()" class="search_btn">
+	        </span>
+	  </div>
+	  
+	  <div class="fshoptb">
+	  	   <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+	  	   		<tbody>
+	  	   			<tr>
+	  	   				<th width="15%">秒杀名称</th>
+	  	   				<th width="6%">秒杀价格</th>
+	  	   				<th width="6%">商品原价</th>
+	  	   				<th width="12%">开始时间</th>
+	  	   				<th width="12%">结束时间</th>
+	  	   				<th width="6%">剩余数量</th>
+	  	   				<th width="6%">出售数量</th>
+	  	   				<th width="8%">秒杀状态</th>
+	  	   				<th width="8%">app推荐</th>
+	  	   				<th width="14%">操作</th>
+	  	   			</tr>
+	  	   			#foreach($obj in $objs)
+	  	   			<tr>
+	  	   				<td align="center">$!obj.gg_name</td>
+	  	   				<td	align="center">$!obj.gg_price</td>
+	  	   				<td	align="center">$!obj.gg_goods.store_price</td>
+	  	   				<td	align="center">$!CommUtil.formatLongDate($!obj.beginTime)</td>
+	  	   				<td	align="center">$!CommUtil.formatLongDate($!obj.endTime)</td>
+	  	   				<td	align="center">$!obj.gg_count</td>
+	  	   				<td	align="center">$!obj.gg_selled_count</td>
+	  	   				<td	align="center">
+	  	   					#if($!obj.gg_status==0)
+	  	   					未开始
+	  	   					#elseif($!obj.gg_status==1)
+	  	   					 即将秒杀
+	  	   					#elseif($!obj.gg_status==2)
+	  	   					正常进行中
+	  	   					#elseif($!obj.gg_status==3 && $!obj.cancel_time)
+	  	   					手动结束
+	  	   					#elseif($!obj.gg_status==3 && !$!obj.cancel_time)
+	  	   					秒杀结束
+	  	   					#end
+	  	   				</td>
+	  	   				<td	align="center">
+	  	   					#if($!obj.weixin_shop_recommend)
+	  	   					是
+	  	   					#else
+	  	   					否
+	  	   					#end
+	  	   				</td>
+	  	   				<td	align="center">
+	  	   					<a href="$!webPath/goods_$!{obj.gg_goods.id}.htm" class="blue" target="_blank">查看</a>
+	  	   					#if($!obj.gg_status !=3)
+	  	   					<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+	  	   					<a href="$!webPath/admin/self_seckill_edit.htm?id=$!obj.id&currentPage=$!currentPage" class="blue">编辑</a>
+	  	   					#end
+	  	   					#if($!obj.gg_status==0)
+	  	   					<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+	  	   					<a href="$!webPath/admin/self_seckill_publish.htm?id=$!obj.id&currentPage=$!currentPage" class="blue">发布</a>
+	  	   					#end
+	  	   					#if($!obj.gg_status==1 || $!obj.gg_status==2)
+	  	   					<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+	  	   					<a href="javascript:void(0);" class="blue" onclick="cancel($!obj.id)">取消</a>
+	  	   					#end
+	  	   				</td>
+	  	   			</tr>
+	  	   			#end
+	  	   			
+	  	   		</tbody>
+	  	   </table>
+	  </div>
+	  
+	  <div class="operate_bar">
+        <div class="fenye">
+        	$!gotoPageHTML
+            <span id="queryCondition" style="display:none">
+            </span>
+            <input name="mulitId" type="hidden" id="mulitId">
+        	<input name="currentPage" type="hidden" id="currentPage" value="1">
+       		<a href="javascript:void(0);" onclick="return gotoPage(1)">首页</a> 第　<a class="this" href="javascript:void(0);" onclick="return gotoPage(1)">1</a> 页　<a href="javascript:void(0);" onclick="return gotoPage(1)">末页</a>       
+        </div>          
+ 	</div>
+  </form> 
+  
+  
+  
+   
+</div>
+<script type="text/javascript">
+function cancel(id){
+	if(window.confirm("您确定执行取消操作吗？")){
+		window.location.href="$!webPath/admin/self_seckill_cancel.htm?id="+id+"&currentPage=$!currentPage";
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CodeOfferMapper">
+
+	<!-- 业务定义查询 -->
+	<select id="qryCodeOffer" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		Select
+		t.OFFER_ID,
+		t.OFFER_NAME,
+		t.OFFER_DESC,
+		t.STATUS_CD,
+		TO_CHAR(t.CRT_DATE,'yyyy-MM-dd') CRT_DATE,
+		t.OFFER_TYPE,
+		t.OFFER_PRICE,
+		TO_CHAR(t.EFF_DATE,'yyyy-MM-dd') EFF_DATE,
+		TO_CHAR(t.EXP_DATE,'yyyy-MM-dd') EXP_DATE,
+		t.EFF_MONTH_COUNT
+		from CODE_OFFER t
+		<where>
+		    1=1
+			<if test="OFFER_ID != null and OFFER_ID != ''">
+				and t.OFFER_ID = #{OFFER_ID}
+			</if>
+			<if test="REGION_ID != null and REGION_ID != ''">
+				and t.OFFER_ID in (select a.OFFER_ID from code_offer_region a  where a.REGION_ID=#{REGION_ID} and a.STATUS_CD = '1000')
+			</if>
+			and STATUS_CD = '1000'
+		</where>
+	</select>
+	<select id="qryCodeOfferByOffername" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select
+		t.OFFER_ID,
+		t.OFFER_NAME,
+		t.OFFER_DESC,
+		t.STATUS_CD,
+		TO_CHAR(t.CRT_DATE,'yyyy-MM-dd') CRT_DATE,
+		t.OFFER_TYPE,
+		t.OFFER_PRICE,
+		TO_CHAR(t.EFF_DATE,'yyyy-MM-dd') EFF_DATE,
+		TO_CHAR(t.EXP_DATE,'yyyy-MM-dd') EXP_DATE,
+		t.EFF_MONTH_COUNT
+		from CODE_OFFER t
+		<where>
+			1 = 1
+			<if test="OFFER_NAME != null and OFFER_NAME != ''">
+				and t.OFFER_NAME = #{OFFER_NAME}
+			</if>
+			and STATUS_CD='1000'
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.form.js"></script>
+<script>
+jQuery(document).ready(function(){								
+  jQuery("#theForm").validate({
+	ignore: "",						  
+    rules:{
+	  ftp_name:{required :true},
+	  ftp_addr:{required:true},
+	  ftp_ip:{required:true},
+	  ftp_amount:{min :1},
+	  ftp_username:{required :true},
+	  ftp_password:{required :true}
+	 },
+	messages:{
+	  ftp_name:{required:"服务器名称不能为空"},
+	  ftp_addr:{required:"服务器地址不能为空"},
+	  ftp_ip:{required:"服务器ip不能为空"},
+	  ftp_amount:{min :"请正确输入用户上限"},
+	  ftp_username:{required:"FTP用户名不能为空"},
+	  ftp_password:{required :"FTP密码不能为空"}
+	}
+  });
+  jQuery("input[name='ftp_type']").change(function(){
+	if(jQuery(this).val()==1){
+		jQuery("#ul_ftp_amount").hide();
+		jQuery("#ul_ftp_system").show();
+		}else{
+		jQuery("#ul_ftp_amount").show();
+		jQuery("#ul_ftp_system").hide();
+			}
+	});
+  #if($!obj.ftp_type==1)
+  jQuery("#ul_ftp_amount").hide();
+  jQuery("#ul_ftp_system").show();
+  #else
+  jQuery("#ul_ftp_amount").show();
+  jQuery("#ul_ftp_system").hide();
+  #end
+  	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+  
+    jQuery("#ftp_system_img").css("cursor","pointer").click(function(){																
+     var state = jQuery("#ftp_system").val();
+	 if(state=="1"){
+		jQuery("#ftp_system").val("0");
+		jQuery("#ftp_system_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/no.jpg");
+	}else{
+		jQuery("#ftp_system").val("1");
+		jQuery("#ftp_system_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		}
+  });
+	//加载默认数据
+	  var state = jQuery("#ftp_system").val();
+	 if(state=="1"){
+		jQuery("#ftp_system").val("1");
+		jQuery("#ftp_system_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	}else{
+		jQuery("#ftp_system").val("0");
+		jQuery("#ftp_system_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/no.jpg");
+		}
+	jQuery("#acc_test").change(function(){
+	var val =	jQuery(this).val();
+	jQuery("#textfield1").val(val);
+	});	
+		
+});
+
+ function test_ftp(){
+	var val = jQuery("#textfield1").val();
+	if(val==""){
+	alert("请上传FTP调试文件");
+	}else{
+		jQuery(".ftp_test").show();
+		 jQuery("#theForm").attr("action","$!webPath/admin/ftpserver_test.htm");
+		   var options = { 
+			success: success_ajax,  
+			 dataType: "text", 
+			 resetForm: true       
+			};	
+		  jQuery("#theForm").ajaxSubmit(options);
+			} 
+	 };	 
+ function success_ajax(data){
+	 jQuery(".ftp_test").hide();
+	 jQuery("#theForm").attr("action","$!webPath/admin/ftpserver_save.htm");
+	 if(data==100){
+		 alert("FTP调试成功！");
+		 }
+	 if(data==-100){
+		 alert("FTP调试失败，请检查FTP服务端设置以及账户信息！");
+		 }	 
+ }
+
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">FTP服务器</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/ftpserver_list.htm"><b>用户服务器</b></a></li>
+      <li><a href="$!webPath/admin/ftpserver_list.htm?type=1"><b>系统服务器</b></a></li>
+      <li><a href="$!webPath/admin/ftpserver_add.htm"  #if(!$!edit)class="this"#end><b>新增</b></a></li>
+      #if($!edit)
+      <li><a href="javascript:void(0);" class="this"><b>编辑</b></a></li>
+      #end
+    </ul>
+  </div>
+  <form name="theForm" id="theForm" action="$!webPath/admin/ftpserver_save.htm" method="post" enctype="multipart/form-data">
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+    <div class="edit">
+      <div class="setcont editul">
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>服务器名称</li>
+          <li><span class="webname">
+            <input name="ftp_name" type="text" id="ftp_name" value="$!obj.ftp_name" size="40" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>服务器地址</li>
+          <li><span class="webname">
+            <input name="ftp_addr" type="text" id="ftp_addr" value="$!obj.ftp_addr" size="40" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">服务器地址，用于图片资源的显示，填写格式例如：http://www.iskyshop.com</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>服务器IP</li>
+          <li><span class="webname">
+            <input name="ftp_ip" type="text" id="ftp_ip" value="$!obj.ftp_ip" size="40" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">服务器IP，用于图片资源的上传</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred"></strong>服务器类型</li>
+          <li><span>
+            <label>
+              <input type="radio" name="ftp_type" id="ftp_type" value="0"  #if($!obj.ftp_type==0||!$!obj.ftp_type) checked="checked" #end/>
+              用户服务器 </label>
+            <label>
+              <input type="radio" name="ftp_type" id="ftp_type2"  value="1"   #if($!obj.ftp_type==1) checked="checked" #end />
+              系统服务器 </label>
+            </span></li>
+        </ul>
+        <ul class="set1" id="ul_ftp_system" style="display:none">
+          <li  class="setcont_bg">当前使用</li>
+          <li><span class="webSwitch"><img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/no.jpg" width="61" height="23" id="ftp_system_img" />
+            <input name="ftp_system" type="hidden" id="ftp_system" value="$!obj.ftp_system" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">可以配置多个系统服务器，但同时只可使用一个系统FTP服务器</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1" id="ul_ftp_amount">
+          <li class="setcont_bg"><strong class="sred"></strong>用户上限</li>
+          <li><span class="webname">
+            <input name="ftp_amount" type="text" id="ftp_amount" value="$!obj.ftp_amount" size="40" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">该服务器可以拥有的用户数量上限，默认为100</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>FTP账户</li>
+          <li><span class="webname">
+            <input name="ftp_username" type="text" id="ftp_username" value="$!obj.ftp_username" size="40" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">使用该FTP时所需要的账号</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>FTP密码</li>
+          <li><span class="webname">
+            <input name="ftp_password" type="password" id="ftp_password" value="$!obj.ftp_password" size="40" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">使用该FTP时所需要的密码</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">FTP调试</li>
+          <li> <span class="size13" >
+            <input name="textfield" type="text" id="textfield1" />
+            </span> <span class="filebtn">
+            <input name="button" type="button" id="button1" value=""/>
+            </span> <span style="float:left;" class="file">
+            <input name="acc_test" type="file" id="acc_test" class="file-text" size="30"/>
+            </span> <span class="emailtest">
+            <input name="" type="button"  value="调试" style="cursor:pointer" onclick="test_ftp();" />
+            </span> <span class="ftp_test" style="margin-top:5px; margin-left:5px; display:none;"> <img src="$!webPath/resources/style/common/images/zoomloader.gif"/><i>调试中...</i> </span> </li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="save" type="submit" value="提交" />
+      </span> </div>
+  </form>
+</div>
+</body>
+</html>

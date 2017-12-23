@@ -1,0 +1,617 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+#macro ( genericTree $somelist ) 
+#foreach ( $some in $somelist )
+<option value="$!some.id">#if($!some.level>0)
+#foreach($count in [0..$!some.level])&nbsp;#end #end $!some.className</option>
+#genericTree($some.childs) 
+#end 
+#end
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){	
+	#if($!obj && $!obj.grade)
+		  jQuery("#grade_id").val($!obj.grade.id);//不会触发grade_id的change事件
+		  jQuery("#store_gc_details_show").html("无");
+		  jQuery("#gc_main_id").parent().parent().parent().show();
+		  jQuery("#gc_main_id").removeAttr("disabled");
+		  jQuery("#gc_detail").show();
+		  jQuery("#store_gc_details_show").parent().show();
+		  #if($!obj.gc_main_id)
+			  jQuery("#gc_main_id").val($!obj.gc_main_id);
+		  	  limitCheck();
+		  	  #if($!obj.gc_detail_info && $!obj.gc_detail_info != "[]")
+		  		addGCs("$!gcDetailsIds");
+			  #end
+		  #end		  
+	#end
+		
+	#if($!storeGoodsConfigIds)
+		  var sgcIds = "$!storeGoodsConfigIds".split(",");
+		  jQuery.each(sgcIds, function(index, item){
+			  jQuery("input[name='store_type'][value='" + item + "']").attr("checked",true);		  
+		  });
+	#end
+	
+	
+	
+	jQuery("#grade_id").change(function(){		
+		jQuery("#gc_main_id").val("");		
+		jQuery("#goods_details1").val("");
+		jQuery("#goods_details1").hide();
+		jQuery("#goods_details2").hide();
+		jQuery("select[id^='goods_details_']").each(function(index, element) {
+	        jQuery(element).val("");
+			jQuery(element).hide();
+	    });
+		jQuery("#store_gc_details_show").html("无");
+		jQuery("#limitChecked").val("");
+	 	if(jQuery(this).val()!=""){
+			jQuery("#gc_main_id").parent().parent().parent().show();
+			jQuery("#gc_main_id").removeAttr("disabled");
+			jQuery("#gc_detail").show();
+			jQuery("#store_gc_details_show").parent().show();
+		}else{
+			jQuery("#gc_main_id").parent().parent().parent().hide();
+			jQuery("#gc_detail").hide();
+			jQuery("#store_gc_details_show").parent().hide();
+		} 
+	 });
+	
+	jQuery("#gc_main_id").change(function(){		
+	 	if(jQuery(this).val()!=""){
+	 		if(jQuery("#limitChecked").val()=="") {
+				limitCheck();
+			}
+		} 
+	 });
+	
+	function limitCheck(){
+		var storeGrade_id = jQuery("#grade_id").val();
+		var goodsClass_id = jQuery("#gc_main_id").val();
+		jQuery.post("$!webPath/admin/sg_limit_gc.htm",{"storeGrade_id":storeGrade_id,"goodsClass_id":goodsClass_id},function(data){
+			if(data!=null){
+				jQuery("#gc_main_id").attr("disabled","disabled");
+				jQuery("#goods_details2").empty();
+				jQuery("#goods_details2").append("<option value=''>请选择详细类目</option>");
+				jQuery.each(data, function(index,item){
+				   jQuery("#goods_details2").append("<option value='"+item.gc_id+"'>"+item.gc_name+"</option>");			   
+				});
+				jQuery("#goods_details2").show();
+			}else{
+				jQuery("#goods_details1").show();
+			}
+			jQuery("#limitChecked").val("1");
+		  },"json");
+	}
+ 
+  //
+  jQuery("#goods_details1").change(function(){
+	 var temp = jQuery(this).val();
+	 if(temp == "") {
+		 jQuery("select[id^='goods_details_']").hide();	 
+	 } else {
+		 jQuery("select[id^='goods_details_']").hide();	 
+		 jQuery("#goods_details_"+temp).val("");
+		 jQuery("#goods_details_"+temp).show(); 
+	 }	 
+  });
+  
+	jQuery("#goods_details2").live("change",function(){
+		var did = jQuery(this).val();
+		addGCs(did);
+	});
+  
+	jQuery("select[id^='goods_details_']").change(function(){
+		var did = jQuery(this).val();
+		addGCs(did);	
+	});
+	
+	function addGCs(dids) {
+		if(dids != "") {
+			var gc_detail_info = jQuery("#gc_detail_info").val();
+			jQuery.ajax({type:'POST',
+		              	url:'$!webPath/admin/add_gc_detail.htm',
+					  	data:{"did":dids,"gc_detail_info":gc_detail_info},
+				   	success:function(data){
+						jQuery("#store_gc_details_show").html(data);  
+	              }
+			});	
+		}
+	}
+
+////
+
+jQuery("#theForm").validate({
+	onkeyup:false,//禁止实时去验证，而是在失去焦点后去验证
+	ignore: "",
+    rules:{
+	  store_ower:{
+	    required :true
+	  },
+	  store_name:{
+	    required :true,
+		maxlength:20,
+		remote:{
+		  url:"$!webPath/verify_storename.htm",
+		  type : "get",
+		  dataType:"json",
+          data : {
+              "store_name" : function(){return jQuery("#store_name").val();},"id":"$!obj.id"
+		  }
+		 }
+	  },
+	  store_ower_card:{
+	    number:true,
+		minlength:18,
+		maxlength:18
+	  },
+	  grade_id:{
+	    required :true
+	  },
+	  area_id:{
+	    required:true
+	  },
+	  zip:{
+	     number: true,
+         minlength: 6,
+         maxlength: 6
+	  },
+	  telphone:{
+	   required :true
+	  },
+	   gc_main_id:{
+	   required :true
+	  },
+	  store_status:{
+	    required:true
+	  },
+	  sellerLoginAccount:{
+		  required:true,
+		  maxlength:30,
+          remote:{
+        	  url:"$!webPath/admin/seller_account_check.htm",
+			  type : "get",
+			  dataType:"json",
+			  data : {
+				  "account" : function(){return jQuery("#sellerLoginAccount").val();},
+				  "id":$!user.id
+			  }
+			}
+	   }
+	 },
+	messages:{
+	  store_ower:{required:"店主名不能为空"},
+	  store_name:{required:"店铺名称不能为空",maxlength:"店铺名最大不能超过20字符",remote:"店铺名已经存在"},
+	  store_ower_card:{number:"身份证号只能为数字",minlength:"身份证只接受18位号",maxlength:"身份证只接受18位号"},
+	  grade_id:{required :"店铺等级不能为空"},
+	  area_id:{required:"店铺区域不能为空"},
+	  zip:{number:"邮编只能为数字",minlength:"只能为6位",maxlength:"只能为6位"},
+	  store_status:{required:"店铺状态不能为空"},
+	  gc_main_id:{required:"主营类目不能为空"},
+	  telphone:{required :"联系电话不能为空"},
+	  sellerLoginAccount:{required:"商家登录账号不能为空", maxlength:"卖家账号名最大不能超过30个字符", remote:"已存在对应的商家账号"}
+	}
+  });
+
+
+jQuery("select[name^=area]").change(function(){
+    var level=jQuery(this).attr("level");
+    if(level == "3") {
+   	 return;
+    }
+	 
+	 for(var i=3; i > level; i--){
+	  jQuery("#area"+i).empty();
+	  jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 }
+	 
+	 var id=jQuery(this).val();
+	 if(id!=""){
+		 var next = parseInt(level) + 1;
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	      jQuery("#area"+next).empty();
+		  jQuery("#area"+next).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+next).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }
+ });
+//
+jQuery("#area3").change(function(){
+  var id=jQuery(this).val();
+  if(id != "") {
+	  jQuery("#area_id").val(id);
+  }
+});
+#if($!obj.area)
+ jQuery("#area_id").val("$!obj.area.id"); 
+ jQuery("#area1").val("$!obj.area.parent.parent.id")
+ jQuery("#area2").html("<option>$!obj.area.parent.areaName</option>");
+ jQuery("#area3").html("<option>$!obj.area.areaName</option>");
+#end
+
+
+jQuery("#store_status").val("$!obj.store_status");
+
+jQuery('#validity').datepicker({
+		    dateFormat:"yy-mm-dd",
+			changeMonth: true,
+			changeYear: true
+ });
+ 
+ 
+/**
+ *分类更换
+ */
+jQuery("select[name^=classify]").change(function(){
+	var id=jQuery(this).val();
+	var level=jQuery(this).attr("level");
+	var storeId = jQuery("#id").val();
+	var mainClassName = jQuery("#mainClassName").html();
+	for(var i=3;i>level;i--){
+		jQuery("#classify"+i).empty();
+		jQuery("#classify"+i).append("<option value=''>请选择...</option>");
+	}
+	if(id!=""){
+		  jQuery.post("$!webPath/admin/load_goods_class.htm",{"pid":id,"level":level,"storeId":storeId,"session":true},function(data){
+		      jQuery.each(data, function(index,item){
+			    jQuery("#classify"+(parseInt(level)+1)).append("<option value='"+item.id+"'>"+item.className+"</option>");
+			  });
+			},"json");
+	}	  
+});
+
+jQuery("#confirm").click(function(){
+	  var storeId = jQuery("#id").val();
+	  var classify1 = jQuery("#classify1").val();
+	  var classify2 = jQuery("#classify2").val();
+	  var classify3 = jQuery("#classify3").val();
+	  var commission = jQuery("#commission").val();
+	  if(!classify1){
+		  alert("请选择分类！");
+		  return;
+	  }
+	  if(commission){
+		  if(!/^0{1}(\.{1}\d{1,2})?$/.test(commission)){
+			  alert("请输入大于等于0小于1的小数，最多允许输入两位小数！");
+			  jQuery("#commission").val('');
+			  return;
+		  }
+	  }
+	  jQuery.ajax({type:'POST',url:'$!webPath/admin/store_classify_list.htm',data:{"storeId":storeId,"classify1":classify1,"classify2":classify2,"classify3":classify3,"commission":commission},
+		 	success:function(data){
+			  	jQuery("#center_content").empty().append(data);
+		    }
+		});	
+   });
+  
+});
+
+
+function saveForm(){
+	jQuery("#gc_main_id_clone").val(jQuery("#gc_main_id").val());
+	jQuery("#theForm").submit();
+}
+
+function delGC_details(gc_id){
+	var gc_detail_info = jQuery("#gc_detail_info").val();
+	jQuery.ajax({type:'POST',
+	              	url:'$!webPath/admin/del_gc_detail.htm',
+				  	data:{"did":gc_id,"gc_detail_info":gc_detail_info},
+			   	success:function(data){
+					jQuery("#store_gc_details_show").html(data);  
+              }
+	});		
+}
+
+</script>
+</head><body>
+<div class="cont">
+  <h1 class="seth">店铺管理</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/store_list.htm" ><b>管理</b></a> </li>
+      <li><a href="$!webPath/admin/store_add.htm" ><b>新增</b></a></li>
+      #if($!edit)
+        <li><a href="$!webPath/admin/store_add.htm" class="this"><b>编辑</b></a></li>
+      #else
+        <li><a href="$!webPath/admin/store_add.htm" class="this"><b>新增店铺</b></a></li>
+      #end
+    </ul>
+  </div>
+  <form name="theForm" id="theForm" action="$!webPath/admin/store_save.htm" method="post">
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input type="hidden" id="limitChecked" value="" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+    <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/store_list.htm" />
+    <input name="add_url" type="hidden" id="add_url" value="$!webPath/admin/store_add.htm" />
+    <div class="edit">
+      <div class="editul setcont"> 
+        <!--鼠标经过样式-->
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>会员名</li>
+          <li><span class="webname"> $!user.userName
+            <input name="user_id" type="hidden" id="user_id" value="$!user.id" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>店主姓名</li>
+          <li><span class="webname">
+            <input name="store_ower" type="text" id="store_ower" value="$!obj.store_ower" size="40" autocomplete="off" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>店铺登录账号</li>
+          <li><span class="webname">
+            <input name="sellerLoginAccount" type="text" id="sellerLoginAccount" value="$!user.sellerLoginAccount" size="40" autocomplete="off" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">店主身份证号</li>
+          <li><span class="webname">
+            <input name="store_ower_card" type="text" id="store_ower_card" value="$!obj.store_ower_card" size="40" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>店铺名称</li>
+          <li><span class="webname">
+            <input name="store_name" type="text" id="store_name" value="$!obj.store_name" size="40" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>店铺等级</li>
+          <li><span>
+            <select name="grade_id" id="grade_id"> 
+            <option  value="">请选择店铺等级</option>        
+                    #foreach($grade in $grades)            
+              <option  value="$!grade.id">$!grade.gradeName</option>              
+					#end       
+            </select>
+            </span></li>
+        </ul>
+        <ul class="set1" style="display:none">
+          <li  class="setcont_bg"><strong class="sred">*</strong>主营类目</li>
+          <li><span class="webname">
+          	<input name="gc_main_id_clone" id="gc_main_id_clone" value="" type="hidden" />
+            <select id="gc_main_id"> 
+            <option value="">请选择主营类目</option>              
+                	#foreach($gc in $goodsClass)	
+              <option value="$!gc.id">$!gc.className</option>                                  
+                	#end                             
+            </select>
+            </span></li>
+        </ul>
+        <ul class="set1" id="gc_detail" style="display:none">
+          <li class="setcont_bg">详细类目</li>
+          <!-- <li><a href="javascript:void(0)" onclick="addGC_details()">新增</a></li> -->
+          <li>
+          	<select id="goods_details1" style="margin-right:10px;display:none;" >
+              <option value="">详细经营类目</option>
+              #foreach($gc in $goodsClass)	
+              <option value="$!gc.id">$!gc.className</option>                                  
+              #end
+            </select>
+            <select id="goods_details2" style="display:none" >
+              
+            </select>
+            #foreach($gc in $goodsClass)
+            <select id="goods_details_$!{gc.id}" style="display:none">
+            	<option value="">请选择</option>
+            	#foreach($child in $gc.childs)
+          		<option value="$!child.id">$!child.className</option>     
+            	#end
+            </select>
+            #end
+          </li>
+        </ul>
+        <ul class="set1" style="display:none">
+          <li class="setcont_bg">已选类目</li>
+          <li id="store_gc_details_show"></li>
+        </ul>
+        
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>所在地区</li>
+          <li><span>
+          <select id="area1" name="area1" level="1">
+                       <option>请选择...</option>
+                       #foreach($area in $areas)
+                       <option value="$!area.id">$!area.areaName</option>
+                       #end
+           </select>
+           <select id="area2" name="area2" level="2">
+                       <option value="">请选择...</option>
+           </select>
+                       
+           <select id="area3" name="area3" level="3"> 
+                       <option value="">请选择...</option>
+           </select>
+           <input id="area_id" name="area_id" type="hidden"/>
+           </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">详细地址</li>
+          <li><span class="webname">
+            <input name="store_address" type="text" id="store_address" value="$!obj.store_address" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">邮政编码</li>
+          <li> <span class="webname">
+            <input name="store_zip" type="text" id="store_zip" value="$!obj.store_zip" />
+            </span> </li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">联系电话</li>
+          <li><span class="webname">
+            <input name="store_telephone" type="text" id="store_telephone" value="$!obj.store_telephone" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+        <li  class="setcont_bg">店铺联系QQ</li>
+        <li><span class="webname">
+          <input name="store_qq" type="text" id="store_qq" value="$!obj.store_qq" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="setcont_bg">店铺联系MSN</li>
+        <li><span class="webname">
+          <input name="store_msn" type="text" id="store_msn" value="$!obj.store_msn"  />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="setcont_bg">店铺阿里旺旺</li>
+        <li><span class="webname">
+          <input name="store_ww" type="text" id="store_ww" value="$!obj.store_ww" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+          <li  class="setcont_bg">有效期至</li>
+          <li><span class="webname">
+            <input name="validity" type="text" id="validity" value="$!CommUtil.formatShortDate($!obj.validity)" readonly="true" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">为空表示无限期</strong><strong class="c"></strong></span></li>
+      </ul>
+      
+      <!-- 选择商品分类 -->
+      <ul class="set1">
+      	<li  class="setcont_bg">选择商品分类：</li>
+      	<li>
+      		<select name="classify1" id="classify1" class="classify" level="1">
+      			<option value="">请选择...</option>
+      			#if($!obj.gc_detail_info)
+	      			#foreach($m_id in $!m_ids)           
+	          			<option value="$!m_id.id">$!m_id.className</option>
+	           		#end  
+	           	#else
+	           		<option value="$!obj.gc_main_id">$!goodsClass_main.className</option>	 
+	           	#end	
+      		</select>
+      		<select name="classify2" id="classify2" class="classify" level="2">
+      			<option value="">请选择...</option>
+      		</select>
+      		<select name="classify3" id="classify3" class="classify" level="3">
+      			<option value="">请选择...</option>
+      		</select>
+      		<d>佣金比例：</d>
+      		<input type="text" id="commission" name="commission" class="commission" />
+      		<input class="com_sure" type="button" id="confirm" value="确定"/>
+      		<div id="center_content"></div>
+      	</li>
+      </ul>
+      <br />
+      <table width="70%" id="treeTable" cellspacing="0" cellpadding="0">
+      <tr data-tt-id="001">
+        <th width="200px" align="center" style="border: 1px solid #ccc;">一级分类</th>
+      </tr>
+       <tr data-tt-id="002" data-tt-parent-id="001">
+        <th width="200px" align="center" style="border: 1px solid #ccc; border-left: none; padding: 0;">二级分类</th>
+      </tr>
+       <tr data-tt-id="003" data-tt-parent-id="002">
+        <th width="200px" align="center" style="border: 1px solid #ccc; border-left: none; padding: 0;">三级分类</th>
+      </tr>
+      #foreach($obj in $Gc_commission_info)
+      <tr data-tt-id="$!obj.id" data-tt-parent-id="$!obj.parentId">
+        <td width="200px" align="center" style="border: 1px solid #ccc;">$!obj.className  &nbsp;&nbsp; $!obj.commission</td>
+      </tr>
+      #end  
+      </table>           
+      
+      <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>店铺状态</li>
+          <li><span>
+            <select name="store_status" id="store_status" onchange="switch_store_status();">
+				  <option value="" selected="selected">请选择店铺状态</option>
+                  <option value="5">正在审核公司信息</option>
+                  <option value="6">公司审核拒绝</option>
+                  <option value="10">正在进行店铺审核</option>
+                  <option value="11">店铺审核拒绝</option>
+				  <option value="15">正常营业</option>
+				  <option value="20">违规关闭</option>
+                  <option value="25">到期关闭</option>
+                  <option value="26">到期已申请续费</option>
+         </select>
+            </span></li>
+       </ul>
+       <ul class="set1" id="violation_reseaon_ul" #if($!obj.store_status!=6&&$!obj.store_status!=11&&$!obj.store_status!=20) style="display:none" #end>
+        <li  class="setcont_bg">审核原因</li>
+        <li><span class="webname">
+          <textarea name="violation_reseaon" cols="40" rows="4" id="violation_reseaon">$!obj.violation_reseaon</textarea>
+        </span></li>
+      </ul>
+        <script>
+        function switch_store_status(){
+ 		   var status=jQuery("#store_status").val();
+ 		   if(status=="6"||status=="11"||status=="20"){
+ 		      jQuery("#violation_reseaon_ul").show();
+ 		   }else jQuery("#violation_reseaon_ul").hide();
+ 		}
+	    function change_store_recommend(){
+		   var recommend=jQuery("#store_recommend").val();
+		   if(recommend=="true"){
+		     jQuery("#store_recommend_img").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+			 jQuery("#store_recommend").val("false");
+		   }else{
+		     jQuery("#store_recommend_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+			 jQuery("#store_recommend").val("true");			   
+		   }
+		}
+	  </script>
+        <ul class="set1">
+          <li  class="setcont_bg">是否推荐</li>
+          <li> <span class="webSwitch">
+            <input name="store_recommend" id="store_recommend" type="hidden" value="$!obj.store_recommend" />
+            <img #if($!obj.store_recommend)src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg"#else src="$!webPath/resources/style/system/manage/blue/images/no.jpg" #end name="store_recommend_img" width="61" height="23" id="store_recommend_img" style="cursor:pointer" onclick="change_store_recommend();"/> </span> </li>
+        </ul>
+        
+        <ul class="set1">
+        <li  class="setcont_bg">店铺类型</li>
+        <li>        
+        #foreach($gcon in $goodsConfigs)
+          <label class="goodsconfigLabel"><input name="store_type" type="checkbox" id="store_type" value="$!gcon.id"/>$!gcon.synName</label>
+        #end    
+        </li>
+      </ul>
+        
+      </div>
+    </div>
+  </form>
+  <div class="submit"> <span class="pad120">
+    <input name="save" type="button" value="提交" onclick="saveForm()" />
+    </span> </div>
+</div>
+<script type="text/javascript">
+
+ //分类佣金比例排序
+ $(function(){
+   var tr;
+   $('#treeTable tr[data-tt-id]').each(function(){
+	   tr = $(this);
+	   var pid = tr.attr("data-tt-parent-id");
+	   if(pid){
+		   var pTr = $("tr[data-tt-id=" + pid + "]");
+		   if(pTr.find("td").length < 2){
+			   pTr.append($("<td><table class='childTable' width='100%' height='100%' cellspacing=\"0\" cellpadding=\"0\"></table></td>"));
+		   }
+		   pTr.find("table:eq(0)").append(tr);
+	   }
+   });
+   $('#treeTable td').css("padding","0");
+   $('.childTable td').css({"border-left":"none"});
+   $('.childTable').each(function(){
+	   $(this).find('td:eq(0)').css({"border-top":"none"});
+   }); 
+});  
+</script>
+</body>
+</html>

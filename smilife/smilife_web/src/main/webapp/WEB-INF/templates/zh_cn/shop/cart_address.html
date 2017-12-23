@@ -1,0 +1,184 @@
+#if(!$!error)
+<script>
+
+jQuery(document).ready(function(){
+  //								
+ jQuery("#theForm").validate({
+	errorElement : "em",
+	ignore : "",
+    rules:{
+	  trueName:{required :true},
+	  area_id:{required :true},
+	  area_info:{required :true},
+	  mobile:{required :function(){
+			  return $("#telephone").val() == "";
+		  
+	  }},
+	  telephone:{required :function(){
+			  return $("#mobile").val() == "";
+		  
+	  }}
+	  #if($!needId == 1),card:{required:true,isIdCardNo:true}#end
+	 },
+	messages:{
+	  trueName:{required :"收货人不能为空"},
+	  area_id:{required :"请选择详细区域"},
+	  area_info:{required :"详细地址不能为空"},	 
+	  mobile:{required :"联系电话、手机至少填写一项",isMobile:"请正确填写手机号码"},
+	  telephone:{required:"联系电话、手机至少填写一项", isTel:"请正确填写电话号码"}
+	  #if($!needId == 1),card:"请正确填写身份证"#end
+	},
+	/*
+	errorPlacement: function(error, element){ 
+	  if(jQuery(error[0]).html()!=""){
+		 element.parent().remove(".error_ts");
+		 element.parent().append("<div class='error_ts'></div>");
+         error.appendTo(element.parent().find(".error_ts"));
+	  }
+    },
+    
+	success:function(label){
+	    jQuery(label).parent().remove(".error_ts");
+	},
+	*/
+	submitHandler:function(form){
+	     var params = jQuery("#theForm").serialize();
+		 jQuery.ajax({type:'POST',url:'$!webPath/cart_address_save.htm?needId=$!needId',data:params,
+			  success:function(ret){
+				jQuery(".shopping_address_one_top_add").parent().find("ul").remove();   
+				jQuery(".shopping_address_one_top_add").parent().append(ret);
+				jQuery(".shopping_address_one_top_add").slideUp(2000);
+			    jQuery(".shopping_address_one_top_add").remove();
+			    
+			    //编辑当前选择的地址时，重新计算运费
+			    if(jQuery("#addr_id").val() == $!obj.id){
+			    	var storeIds = jQuery("#storeIds").val().replace(/\[|\]/g,'').split(",");
+				    for(var i in storeIds){
+				    	var storeId = jQuery.trim(storeIds[i]);
+				    	jQuery.post('$!webPath/order_address.htm',{'addr_id':$!obj.id,"store_id":storeId},function(data){
+			                	jQuery("#ship_price_"+storeId).empty();
+			                	var partFreeShipFeeGoodsCartIds = "";
+			                	var fullFreeShipFeeGoodsCartIds = "";
+							    jQuery(data).each(function(index,item){	
+							    	var val = parseInt(item.value);
+							    	if( val== -1) {
+							    		partFreeShipFeeGoodsCartIds = item.key;
+							    	} else if(val == -2) {
+							    		fullFreeShipFeeGoodsCartIds = item.key;
+							    	}  	else {
+							    		 jQuery("#ship_price_"+storeId).append("<option value='"+item.value+"'>"+item.key+"</option>");
+							    	}					        
+								});
+							    updateFreeShipGoodsTips(partFreeShipFeeGoodsCartIds, fullFreeShipFeeGoodsCartIds);
+							    
+							    var text=jQuery("#ship_price_"+storeId).find("option:selected").text();
+							    var transport=text.substring(0,text.indexOf("["));
+							    jQuery("#transport_"+storeId).val(transport);  //设置物流
+							  
+							    jQuery("#ship_price_"+storeId).parent().find("strong").html(jQuery("#ship_price_"+storeId).val());
+
+							    calculationPrice(storeId);
+							},"json");
+				    }
+			    }    
+		 }});
+	}
+  });
+    //
+ jQuery("select").change(function(){
+     var level=jQuery(this).attr("level");
+	 var id=jQuery(this).val();
+	 jQuery("#area_id").val("");
+	 for(var i=4;i>level;i--){
+	  jQuery("#area"+i).empty();
+	  jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 }
+	 if(id!=""){
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	     jQuery("#area"+level).empty();
+		  jQuery("#area"+level).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+level).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }else{
+	   for(var i=level;i<=4;i++){
+	    jQuery("#area"+i).empty();
+	   }
+	 }
+  });
+ //
+ jQuery("#area3").change(function(){
+   var id=jQuery(this).val();
+   jQuery("#area_id").val(id);
+ });
+    //
+   jQuery(".shopping_address_one_left").click(function(){
+	  jQuery(".shopping_address_one_top_add").remove();												   
+   });
+   //保存数据
+   jQuery(".shopping_address_one_right a").click(function(){
+       jQuery("#theForm").submit();	 
+   });
+});
+</script>
+<div class="shopping_address_one_top_add" style="display:;">
+<form action="$!webPath/cart_address_save.htm?needId=$!needId" method="post" name="theForm" id="theForm">
+  <div class="shopping_address_one_top_input">
+    <ul>
+      <li class="shopping_address_one_top_i"><input name="id" type="hidden" id="id" value="$!obj.id" />
+        <label class="lab_sh"><span class="add_span">*</span> 收货人姓名：</label>
+		<input name="trueName" type="text" id="trueName" value="$!obj.trueName" placeholder="请输入收货人姓名"  />
+      </li>
+      #if($!needId == 1)
+      	<li class="shopping_address_one_top_i">
+        <label class="lab_sh"><span class="add_span">*</span> 身份证号码：</label>
+		<input name="card" type="text" id="card" value="$!obj.card"  placeholder="请输入身份证号码"  />
+      </li>
+	  <li><span class="jkts">（因进口商品涉及入境清关，根据海关规定，需要您完善收货人身份证信息，且身份证号和收货人姓名需要一致！）</span></li>
+      #end	  
+      <li class="shopping_address_one_tel_i">
+        <label class="lab_sh"><span class="add_span">*</span> 收货人电话：</label>
+		<input name="telephone" type="text" id="telephone" value="$!obj.telephone" placeholder="请输入收货人电话"  />
+      </li>
+      <li class="shopping_address_one_tel_i">
+        <label class="lab_sh"><span class="add_span">*</span> 收货人手机：</label>
+		<input name="mobile" type="text" id="mobile" value="$!obj.mobile" placeholder="请输入收货人手机号码"  />  
+      </li>
+      <li class="shopping_address_one_address_i">
+        <label class="lab_sh"><span class="add_span">*</span> 收货人地址：</label>
+		<select name="area1" id="area1" level="2">
+          <option value="">省份/自治区</option>
+          #foreach($area in $areas)           
+          <option value="$!area.id" #if($!area.id==$!obj.area.parent.parent.id) selected="true" #end>$!area.areaName</option>
+           #end          
+        </select>
+        <select name="area2" id="area2" level="3">
+         #foreach($area in $obj.area.parent.parent.childs)                     
+          <option value="$!area.id" #if($!area.id==$!obj.area.parent.id) selected="true"#end>$!area.areaName</option>
+         #end                    
+        </select>
+        <select name="area3" id="area3" level="4">
+         #foreach($area in $$obj.area.parent.childs)                     
+          <option value="$!area.id" #if($!area.id==$!obj.area.id) selected="true"#end>$!area.areaName</option>
+         #end                    
+        </select>
+        <input id="area_id" name="area_id" type="hidden" value="$!obj.area.id" />
+      </li>
+      <li class="shopping_address_one_address_a_i">
+        <label class="lab_sh"><span class="add_span">*</span> 街道地址：</label>
+		<textarea name="area_info" cols="2" rows="" id="area_info" placeholder="路名或街道地址，门牌号">$!obj.area_info</textarea>
+        </textarea>
+      </li>
+      <li class="shopping_address_one_coding_i">
+        <label class="lab_sh">邮政编码：</label>
+		<input name="zip" type="text" id="zip" value="$!obj.zip" placeholder="邮政编码"  />       
+      </li>
+      
+      <li class="shopping_address_one_left"><a href="javascript:void(0);">取消编辑地址</a></li>
+      <li class="shopping_address_one_right"><a href="javascript:void(0);">确认收货地址</a></li>
+    </ul>
+  </div>
+</form>
+</div>
+#end

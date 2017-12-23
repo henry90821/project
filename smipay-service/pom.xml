@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smipay-service</artifactId>
+    <packaging>war</packaging>
+    <version>2.0.0</version>
+
+    <name>smipay-service</name>
+    <description>星美支付中心系统</description>
+
+    <parent>
+        <groupId>com.smi</groupId>
+        <artifactId>smi-boot-parent</artifactId>
+        <version>RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <httpclient.version>4.2.5</httpclient.version>
+        <httpcore.version>4.2.4</httpcore.version>
+        <bcprov.version>1.45</bcprov.version>
+        <jdom.version>1.0</jdom.version>
+        <qrcode.version>Native</qrcode.version>
+        <passport-client.version>RELEASE</passport-client.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-juli</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${httpcore.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>${bcprov.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>${jdom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.swetake.util.Qrcode</groupId>
+            <artifactId>QRCode</artifactId>
+            <version>${qrcode.version}</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>com.smi</groupId>-->
+            <!--<artifactId>passport-client</artifactId>-->
+            <!--<version>${passport-client.version}</version>-->
+        <!--</dependency>-->
+    </dependencies>
+
+    <build>
+        <finalName>smipay-service</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.smi.pay.SmiPayServiceApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

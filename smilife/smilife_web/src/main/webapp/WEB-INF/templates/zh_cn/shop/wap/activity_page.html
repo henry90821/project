@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>#if($!obj.sub_title && $!obj.sub_title != "") $!obj.sub_title #else 商城专题  #end- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!obj.seo_keywords" />
+<meta name="description" content="$!obj.seo_description" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script>
+jQuery(document).ready(function(){
+	var width =jQuery(window).width();	
+		jQuery("map[name^=Map_]").each(function(){
+				var id =jQuery(this).attr("j_id");
+				var j_info =jQuery(this).attr("j_info");
+				jQuery.post("$!webPath/subject/getAreaInfo.htm",
+							{"areaInfo":j_info,"img_id":id,"width":width},
+							function(data){
+							  jQuery.each(data, function(index,item){
+										var area ='<area target="_blank" href="'+item.url+'" coords="'+item.coords+'" shape="rect"></area>';		 
+										jQuery("#Map_"+id).append(area);
+								 	});																						   																				   
+							 },"json");
+				
+				
+			   });
+	});
+</script>
+</head>
+
+<body  class="index_bg">
+ <div class="phone_main">
+    <form name="theForm" id="theForm" action="$!webPath/wap/search.htm" method="post">
+    <div class="search_line">
+      <div class="sp0_logo">
+         <a href="$!webPath/wap/index.htm"></a>
+      </div> 
+	  <span class="sp1">
+		<label class="hotwords" id="hotwords"></label>
+		<input type="text" name="keyword" id="keyword" />
+		 <b class="sp3">
+			<img src="$!webPath/resources/style/system/front/wap/images/search_icon.png" width="25" height="25" onclick="search_form();"/>
+		  </b>
+      </span>
+	  <span class="sp2">
+		 	#if(!$!user)
+ 	          <a href="$!webPath/wap/buyer/center.htm" rel="nofollow">登录</a>
+ 	        #else 
+ 	          <a href="$!webPath/xmh_logout.htm">退出</a>  
+ 	        #end
+      </span>
+	 
+	</div>
+  </form>
+  #foreach($obj in $!objs)		
+   <div class="activity_goods_list">
+		<span> 
+		#if($!obj.img_href && $!obj.img_href!="") 
+		<a href="$!obj.img_href" target="_blank"> <img src="$!{obj.img_url}" usemap="#Map_$!{obj.id}" border="0"/> </a> 
+		#else <img src="$!{obj.img_url}" usemap="#Map_$!{obj.id}" border="0"/> #end
+		  #if($!obj.areaInfo)
+			  <map name="Map_$!{obj.id}" id="Map_$!{obj.id}" j_id="$!{obj.id}" j_info="$!{obj.areaInfo}">
+				  #foreach($area in $!SubjectTools.getAreaInfo("$!{obj.areaInfo}"))
+					<area target="_blank" href="$!{area.url}" coords="$!{area.coords}" shape="rect">
+					</area>
+				   #end
+			  </map>
+		  #end
+	  </span>
+        <ul class="activitys_list_li">
+         #if($!obj.type=="goods")	
+		#foreach($goods in $!SubjectTools.getGoodsInfos("$!obj.goods_ids"))
+			#set($goods_url="$!webPath/wap/goods_$!{goods.id}.htm")
+			#if($!SubjectTools.getGoodsUrl("$!goods.id")=="true")
+				#set($goods_url="http://$!{store.store_second_domain}.$!{domainPath}/goods_$!{goods.id}.htm")
+			#end
+           <li>
+              <a href="$!{goods_url}" class="activitys_list_link">
+                  <div class="activitys_list_img">
+                      <img src="$!{goods.img}"  />
+                  </div>
+                  <div class="activitys_list_text">
+                      <p class="activitys_list_text1">$!{goods.name}</p>
+                      <p class="activitys_list_text2">¥$!{goods.price}</p>
+                  </div>
+              </a>
+           </li>
+           	  	#end
+    		#end
+        </ul>
+   </div> 
+   #end
+  </div>
+ $!httpInclude.include("/wap/footer.htm")
+ <script>
+function search_form(){
+	jQuery("#theForm").submit();
+}
+</script>
+</body>
+</html>

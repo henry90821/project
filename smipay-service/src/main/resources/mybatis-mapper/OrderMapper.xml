@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.pay.dao.OrderDao">
+    <resultMap id="BaseResultMap" type="com.smi.pay.model.Order">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="appcode" property="appcode" jdbcType="VARCHAR"/>
+        <result column="reqno" property="reqno" jdbcType="VARCHAR"/>
+        <result column="sign" property="sign" jdbcType="VARCHAR"/>
+        <result column="channel" property="channel" jdbcType="VARCHAR"/>
+        <result column="paytype" property="payType" jdbcType="VARCHAR"/>
+        <result column="paypwd" property="payPwd" jdbcType="VARCHAR"/>
+        <result column="custid" property="custId" jdbcType="VARCHAR"/>
+        <result column="total_fee" property="totalFee" jdbcType="INTEGER"/>
+        <result column="bill_no" property="billNo" jdbcType="VARCHAR"/>
+        <result column="billtype" property="billType" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="commodity" property="commodity" jdbcType="VARCHAR"/>
+        <result column="return_url" property="returnUrl" jdbcType="VARCHAR"/>
+        <result column="openid" property="openId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime"/>
+
+        <result column="callback_status" property="callBackStatus" jdbcType="VARCHAR"/>
+        <result column="paysn" property="paySn" jdbcType="VARCHAR"/>
+        <result column="callback_memo" property="callBackMemo" jdbcType="VARCHAR"/>
+        <result column="callback_time" property="callBackTime"/>
+        <result column="notice_status" property="noticeStatus" jdbcType="VARCHAR"/>
+        <result column="notice_return" property="noticeReturn" jdbcType="VARCHAR"/>
+        <result column="last_notice_time" property="lastNoticeTime"/>
+        <result column="notice_times" property="noticeTimes" jdbcType="INTEGER"/>
+
+        <result column="expdate" property="expDate" jdbcType="VARCHAR"/>
+
+        <result column="inst_number" property="instNumber" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from orders
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.smi.pay.model.Order">
+        insert into orders
+        (appcode,reqno,sign,channel,paytype,paypwd,custid,total_fee,bill_no,billtype,title,commodity,return_url,openid,create_time,expdate)
+        values (#{appcode},
+        #{reqno},#{sign},#{channel},#{payType},#{payPwd},#{custId},#{totalFee},#{billNo},#{billType},#{title},#{commodity},#{returnUrl},#{openId},#{createTime},#{expDate})
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+    </insert>
+
+    <update id="update" parameterType="com.smi.pay.model.Order">
+    update orders
+    set paytype = #{payType},status = #{status}, callback_status = #{callBackStatus}, paysn = #{paySn}, callback_memo = #{callBackMemo},  
+    callback_time = #{callBackTime}, notice_status = #{noticeStatus}, notice_return = #{noticeReturn},  
+   last_notice_time = #{lastNoticeTime},notice_times = #{noticeTimes}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="load" resultMap="BaseResultMap">
+     select  * from orders where id= #{id,jdbcType=INTEGER}
+  </select>
+
+    <select id="getByNO" resultMap="BaseResultMap">
+     select  * from orders where bill_no= #{billNo} LIMIT 1;
+  </select>
+
+    <select id="getLikeNO" resultMap="BaseResultMap" parameterType="string">
+     select  * from orders where bill_no  like #{billNo}  LIMIT 1;
+  </select>
+
+    <select id="getAll" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from orders where 1=1
+        <if test="appcode != null and appcode != ''">
+            and appcode = '${appcode}'
+        </if>
+        <if test="billNo != null and billNo != ''">
+            and bill_no like '%${billNo}%'
+        </if>
+
+        <if test="status != null and status != '' ">
+            and status = '${status}'
+        </if>
+
+        <if test="beginDate != null and beginDate != ''">
+            AND create_time &gt;= CONCAT(#{beginDate},' 00:00:00')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND create_time &lt;= CONCAT(#{endDate},' 23:59:59')
+        </if>
+
+    </select>
+
+    <!--根据序列号查询订单详情-->
+    <select id="getByReqNo" resultMap="BaseResultMap">
+        select  * from orders where reqno = #{reqNo};
+    </select>
+</mapper>

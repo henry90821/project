@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>会员充值 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/login.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.iskyshop.validate.js" type="text/javascript"></script>
+<script>
+$(document).ready(function () {
+	
+	var amounts = "$!config.amountAllowed".split(",");
+	$.each(amounts, function(i,val){
+		$("#other_recharge").append("<span class='phone_check'><label><input name='pd_amount' id='pd_amount' type='radio' value='" +  val + "' />" + val + "元</label></span>");
+	});
+});
+
+function recharge_modify(){
+   jQuery("#recharge_info").hide();
+   jQuery("#other_recharge").show();
+}
+jQuery(function(){	
+	jQuery("#theForm").validate({
+		   onkeyup:false,
+		   errorPlacement:function(error, element) {
+			   element.parent().find(".phone_b").html(error); 
+           },						
+           rules:{
+        	   mobile:{
+					  required:true,
+			          remote:{
+					    url: "$!webPath/verify_username2.htm",     //后台处理程序
+			            type: "post",               //数据发送方式
+			            dataType: "json",           //接受数据格式   
+			            data: {                     //要传递的数据
+			                  "mobile": function(){return jQuery("#mobile").val();}
+					     }
+						}
+				},
+			    pd_amount:{required :true}
+				#if($!mark != "1"),pd_payment:{required :true}#end
+	       },
+	       messages:{
+	          mobile:{
+	        	  required:"请仔细核对充值号码，充错号将无法退款",
+				  remote:"手机号对应的会员账号不存在"  
+	          },
+			  pd_amount:{required :"请选择充值金额"}
+	          #if($!mark != "1"),pd_payment:{required :"请选择支付方式"}#end
+	       }
+    });	
+   //初始化数据 				
+   jQuery(":radio[name=pd_amount][value='$!pd_amount']").attr("checked",true);
+   jQuery("#pd_payment").change(function(){
+		initSelect($(this));
+	});
+})
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+<div class="login_head"> #if($!config.websiteLogo)
+  #set($img="$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+  #else
+  #set($img="$!webPath/resources/style/system/front/default/images/logo.jpg")
+  #end
+  <h1><span><a href="$!webPath"><img src="$!img" width="209" height="70" alt="网上购物网站排名上星美汇商城,购青春,惠生活"/></a></span><strong>会员充值</strong></h1>
+</div>
+<div class="forget_page">
+  <h3><span>会员充值服务>确认信息</span></h3>
+  <div class="forget_page_box">
+    <div class="phone_payfor">
+      <!-- <ul class="phone_step">
+        <li class="phone_thised">1.填写充值信息</li>
+        <li class="this">2.确认订单信息</li>
+        <li>3.支付</li>
+        <li class="phone_last">4.充值完成</li>
+      </ul> -->
+      <div class="phone_common">
+        <form action="$!webPath/buyer/predeposit_save.htm" method="post" id="theForm">
+          <table width="520" border="0" cellpadding="0" cellspacing="0" class="phone_common_table">
+            <tr>
+              <td width="70" align="right" valign="top" >会员账号：</td>
+              <td><input name="mobile" type="text" class="phone_txt" id="mobile" value="$!mobile" autocomplete="off" placeholder="为会员绑定的手机号"/>
+                <b class="phone_b">请准确核对充值号码，充错号将无法退款</b><span class="phone_sp" id="recharge_mobile_result">$!map.get("game_area")</span></td>
+            </tr>
+            <tr>
+              <td  align="right" valign="top" >面值：</td>
+              <td><span id="recharge_info">$!pd_amount元<a href="javascript:void(0);" class="phone_edit_a" onclick="recharge_modify();">修改</a></span>
+                <div id="other_recharge" style="display:none;"></div>
+              </td>
+            </tr>
+            #if($!mark != "1")  
+            <tr>
+              <td  align="right" valign="top">支付方式：</td>
+              <td>
+				<span style="color:#F00">
+					<select name="pd_payment" id="pd_payment"  class="base_select_check">
+                      <option value="" selected="selected">请选择支付方式</option>                          
+                      #set($payments=$!paymentTools.queryByTerminalMark("pc"))
+                      #foreach($payment in $payments)                      
+                      <option value="$!payment.mark">$!payment.name</option>                          
+                      #end                    
+                    </select>
+				</span>
+				<!-- 银行列表start -->
+				$!httpInclude.include("/chinapay.htm")
+				<!-- 银行列表end -->
+			  </td>
+            </tr>
+            #end
+           <!--  <tr>
+              <td align="right" valign="top">说明：</td>
+              <td>由于平台收款存在较高手续费，系统仅支持<a href="$!webPath/buyer/predeposit.htm">【预存款】</a>充值</td>
+            </tr> -->
+            <tr>
+              <td>&nbsp;</td>
+              <td><input type="submit"  class="forget_btn" value="确认充值"/>             
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+    <div class="phone_payfor_right">
+      <h4>温馨提示</h4>
+      <div class="phone_warning">
+        <ul>
+          <li> 如遇运营商系统繁忙，到账时间会有延迟。</li>
+          <li> 充值金额可能会分多次到账。</li>
+          <li> 本充值不参加当地运营商活动。</li>
+          <li> 支持全国各省市（不包括港、澳、台地区）。</li>
+          <li> 部分地区无法提供充值发票，请谨慎购买。</li>
+          <li> 话费到账情况请拨打运营商客服电话查询（移动：10086，联通：10010，电信：10000）。</li>
+        </ul>
+      </div>
+      <h4>客户服务</h4>
+      <div class="phone_warning">
+        <ul>
+          <li> 客服电话：#foreach($telphone in $CommUtil.str2list("$!config.service_telphone_list"))$!{telphone}  #end</li>
+          <li> 服务时间：9:00-21:00</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main">
+  $!httpInclude.include("/footer.htm")
+</div>
+</body>
+</html>

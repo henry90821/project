@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes">
+<meta name="apple-wap-web-app-status-bar-style"
+	content="black-translucent">
+<title>$!config.website_title - $!config.title -
+	$!{config.poweredby}</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css"
+	rel="stylesheet" type="text/css" />
+</head>
+<body class="index_bg">
+	<div class="loading_effect">
+		<img class="loading-img"
+			src="$!webPath/resources/style/system/front/wap/images/loading_eff.gif"
+			width="30">
+		<p>正在加载，请稍后...</p>
+	</div>
+	<div class="phone_main">
+		<!--顶部-->
+		#if($!config.app_download==1)
+		<div class="phone_top">
+			<a href="$!webPath/wap/app/download.htm"> <img
+				src="$!webPath/resources/style/system/front/wap/images/download.jpg" />
+			</a><a class="close" href="javascript:void(0);"
+				onClick="jQuery('.phone_top').remove();"><img
+				src="$!webPath/resources/style/system/front/wap/images/close.png"
+				width="30" height="30" /></a>
+		</div>
+		#end
+		<!--<div class="logo_line"> #if($!config.store_weixin_logo)
+    #set($img="$!{config.store_weixin_logo.path}/$!{config.store_weixin_logo.name}")
+    #else
+    #set($img="$!webPath/resources/style/system/front/wap/images/logo.png")
+    #end <img src="$!img" width="250" height="33" /> #if(!$!user) <a class="log" href="$!webPath/wap/buyer/center.htm">登陆</a> #else <a class="log_after" href="$!webPath/wap/buyer/center.htm">$!user.userName</a> #end </div>-->
+
+		<form name="theForm" id="theForm" action="$!webPath/wap/search.htm"
+			method="post">
+			<div class="search_line">
+				<div class="sp0_logo">
+					<a href="$!webPath/wap/index.htm"></a>
+				</div>
+				<span class="sp1"> <label class="hotwords" id="hotwords"></label>
+					<input type="text" name="keyword" id="keyword" /> <b class="sp3">
+						<img
+						src="$!webPath/resources/style/system/front/wap/images/search_icon.png"
+						width="25" height="25" onclick="search_form();" />
+				</b>
+				</span> <span class="sp2" id="welcome"> <!-- <input type="submit"  value="搜索" name="searchBtn" id="searchBtn" class="searchaInt" />  -->
+					#if(!$!user) <input type="hidden" id="nologin"> <a
+					href="$!webPath/wap/buyer/center.htm" rel="nofollow">登录</a> #else <a
+					href="$!webPath/xmh_logout.htm">退出</a> #end
+				</span>
+
+			</div>
+		</form>
+		<!--幻灯-->
+		<div class="focusBox" id="ad1"></div>
+
+		<!--导航菜单-->
+		<div class="xm-menu nav">
+			<ul>
+				<li class="active"><a href="$!webPath/wap/buyer/coupon.htm">
+						<i class="nav_ico_bg_01"><img
+							src="$!webPath/resources/style/system/front/wap/images/nav_ico_01.png" /></i>
+						<p>优惠券</p>
+				</a></li>
+				<li class="active"><a href="$!webPath/wap/goods_cart1.htm">
+						<i class="nav_ico_bg_02"><img
+							src="$!webPath/resources/style/system/front/wap/images/nav_ico_02.png" /></i>
+						<p>购物车</p>
+				</a></li>
+				<li class="active"><a href="$!webPath/wap/buyer/order_list.htm">
+						<i class="nav_ico_bg_03"><img
+							src="$!webPath/resources/style/system/front/wap/images/nav_ico_03.png" /></i>
+						<p>订单</p>
+				</a></li>
+				<li class="active"><a href="$!webPath/wap/buyer/predeposit.htm">
+						<i class="nav_ico_bg_04"><img
+							src="$!webPath/resources/style/system/front/wap/images/nav_ico_04.png" /></i>
+						<p>充值</p>
+				</a></li>
+			</ul>
+		</div>
+		<!-- 秒杀商品 -->
+		#if($!seckill_goods.size()>0)
+		<div class="phone_floor">
+			<h2 class="seckill_title">
+				<span>立即秒杀</span>
+			</h2>
+			<div class="seckill_goods_list">
+				<ul>
+					#foreach($obj in $seckill_goods)
+					#set($img="$!obj.wx_photo.path/$!obj.wx_photo.name")
+
+					<li><a href="$!webPath/wap/goods.htm?id=$!obj.gg_goods.id">
+							<img src="$!img" />
+					</a></li> #end
+				</ul>
+			</div>
+		</div>
+		#end #if($!subject_list.size()>0)
+		<div class="phone_floor">
+			<h1>
+				<span class="fl">购购购</span>
+			</h1>
+			<div class="gg_new_add">
+				<div class="gg_new_left">
+					#set($count = 0) #foreach($obj in $subject_list) #if($!count == 0)
+					<a href="$!webPath/wap/view.htm?id=$!{obj.id}"> <img
+						src="$!obj.banner.path/$!obj.banner.name" />
+					</a> #end #set($count = $!count+1) #end
+				</div>
+				<div class="gg_new_right">
+					<ul>
+						#set($count = 0) #foreach($obj in $subject_list) #if($!count > 0)
+						<li><a href="$!webPath/wap/view.htm?id=$!{obj.id}"> <img
+								src="$!obj.banner.path/$!obj.banner.name" />
+						</a></li> #end #set($count = $!count+1) #end
+					</ul>
+				</div>
+			</div>
+		</div>
+		#end
+		<!--精品推荐-->
+		#if($!top_recommends.size()>0)
+		<div class="phone_floor">
+			<h1>
+				<span class="fl">精品推荐</span>
+			</h1>
+			<div class="recom">
+				<div class="ohbox">
+					<ul class="piclist">
+						#foreach($goods in $top_recommends) #if($!goods.goods_main_photo)
+						#set($img="$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+						#else
+						#set($img="$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+						#end
+						<li><a href="$!webPath/wap/goods.htm?id=$!goods.id"> <img
+								src="$!img" /> <!-- -->
+						</a> <span class="re_name">$!{goods.goods_name}</span> <span
+							class="re_short_text"></span></li> #end
+					</ul>
+				</div>
+			</div>
+		</div>
+		#end
+
+		<!-- 手机端商品广告-->
+		#if($!advertPosition.size()>0) #foreach($adpo in $advertPosition)
+		#if($!adpo.ap_location=="Mobile" && $!adpo.ap_marked=="Commodity")
+		<div class="focusBox" containid="ad2" adid="$!adpo.id"></div>
+		#end #end #end
+
+		<!--爆款商品-->
+		#if($!wx_moldbabys.size()>0)
+		<div class="phone_floor" id="recom_bksp">
+			<h1>
+				<span class="fl">爆款商品</span>
+			</h1>
+			<div class="recom">
+				<div class="ohbox">
+					<div class="ohbox_down">
+						<div class="ohbox_right or_br">
+							<ul>
+								#set($count = 0) #foreach($goods in $wx_moldbabys) #if($!count
+								== 0 || $!count == 1)
+								<li><a href="$!webPath/wap/goods.htm?id=$!goods.id"> <img
+										src="$!goods.wx_moldbaby_photo.path/$!goods.wx_moldbaby_photo.name" />
+								</a></li> #end #set($count = $!count + 1) #end
+							</ul>
+						</div>
+						#set($count = 0) #foreach($goods in $wx_moldbabys) #if($!count ==
+						2)
+						<div class="ohbox_left">
+							<a href="$!webPath/wap/goods.htm?id=$!goods.id"> <img
+								src="$!goods.wx_moldbaby_photo.path/$!goods.wx_moldbaby_photo.name" />
+							</a>
+						</div>
+						#end #set($count = $!count + 1) #end
+					</div>
+
+					<div class="ohbox_down od_bt">
+						#set($count = 0) #foreach($goods in $wx_moldbabys) #if($count ==
+						3)
+						<div class="ohbox_left">
+							<a href="$!webPath/wap/goods.htm?id=$!goods.id"> <img
+								src="$!goods.wx_moldbaby_photo.path/$!goods.wx_moldbaby_photo.name" />
+							</a>
+						</div>
+						#end #set($count = $!count + 1) #end
+						<div class="ohbox_right">
+							<ul>
+								#set($count = 0) #foreach($goods in $wx_moldbabys) #if($count ==
+								4 || $count == 5)
+								<li><a href="$!webPath/wap/goods.htm?id=$!goods.id"> <img
+										src="$!goods.wx_moldbaby_photo.path/$!goods.wx_moldbaby_photo.name" />
+								</a></li> #end #set($count = $!count + 1) #end
+							</ul>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		#end
+
+
+		<!-- 手机端活动广告    -->
+		#if($!advertPosition.size()>0) #foreach($adpo in $advertPosition)
+		#if($!adpo.ap_location=="Mobile" && $!adpo.ap_marked=="Activity")
+		<div class="focusBox" containid="ad3" adid="$adpo.id"></div>
+		#end #end #end #if($!activitygoods && $!activitygoods.size()>0)
+		<!--商城活动-->
+		<!--  
+  <div class="phone_floor">
+    <div class="phone_activity">
+      <h1><span class="fl">商城活动</span><span class="fr"><a href="$!webPath/wap/activitys.htm">更多</a></span></h1>
+      <ul>
+        #foreach($obj in $activitygoods)
+        #set($img="$!config.goodsImage.path/$!config.goodsImage.name")
+        #if($!obj.ag_goods.goods_main_photo)
+        #set($big="$!obj.ag_goods.goods_main_photo.path/$!obj.ag_goods.goods_main_photo.name")
+        #set($img="$!{big}_small.$!{obj.ag_goods.goods_main_photo.ext}")
+        #end
+        <li><a href="$!webPath/wap/goods.htm?id=$!obj.ag_goods.id"><img src="$!img" />
+          <p class="price">¥<b>$!obj.ag_goods.goods_current_price</b></p>
+          </a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+   -->
+		#end #if($!groupgoods.size()>0)
+		<!--超值购-->
+		<div class="phone_floor">
+			<div class="phone_group">
+				<h1>
+					<span class="fl">超值购</span><span class="fr"><a
+						href="$!webPath/wap/group/index.htm?type=goods">更多</a></span>
+				</h1>
+				<ul>
+					#foreach($obj in $groupgoods)
+					#set($img="$!config.goodsImage.path/$!config.goodsImage.name")
+					#if($!obj.gg_img) #set($img="$!obj.gg_img.path/$!obj.gg_img.name")
+					#end
+					<li><a href="$!webPath/wap/group/view.htm?id=$!obj.id">
+							<p class="g_name">$!obj.gg_goods.goods_name</p>
+							<p class="price">
+								<b>¥$!obj.gg_price</b><s>¥$!obj.gg_goods.goods_price</s>
+							</p> <img src="$!img" />
+					</a></li> #end
+				</ul>
+			</div>
+		</div>
+		#end #if($!gbs.size()>0)
+		<!--品牌街-->
+		<!--  <div class="phone_floor" id="phone_floor">
+    <h1><span class="fl">品牌街</span><span class="fr"><a href="$!webPath/wap/brand.htm">更多</a></span></h1>
+    <div class="phone_brand" >
+      <ul  id="banners" >
+        #foreach($obj in $gbs)
+        <li><a href="$!webPath/wap/brand_goods.htm?gb_id=$!obj.id"><img src="$!obj.brandLogo.path/$!obj.brandLogo.name" width="142" height="66" /></a></li>
+        #end
+      </ul>
+    </div>
+  </div>   -->
+		#end
+
+		<!--主题馆-->
+		<div class="phone_floor">
+			<div class="phone_menu">
+				<h1>
+					<span class="fl">主题馆</span>
+				</h1>
+				<ul>
+					#foreach($gc in $gcs) #if($!gc.icom_sys)
+					#set($wx_img="$!webPath/resources/style/common/images/icon/icon_$!{gc.icon_sys}.png")
+					#end #if($!gc.wx_icon)
+					#set($wx_img="$!imageTools.queryImg($!gc.wx_icon).path/$!imageTools.queryImg($!gc.wx_icon).name")
+					#end
+					<li><a href="$!webPath/wap/goodsclass.htm?id=$!gc.id"> <span
+							class="fl">$!gc.className</span>
+							<p class="phone_menu_text">$!gc.halfTitle</p> <span class="fr">#if($!gc.icom_sys
+								|| $!gc.wx_icon)<img src="$!wx_img" width="50" height="50" />#end
+						</span></a></li> #end
+				</ul>
+			</div>
+		</div>
+
+		<!-- 手机端商品广告-->
+		#if($!advertPosition.size()>0) #foreach($adpo in $advertPosition)
+		#if($!adpo.ap_location=="Mobile" && $!adpo.ap_marked=="Commodity")
+		<div class="focusBox" containid="ad4" adid="$adpo.id"></div>
+		#end #end #end
+
+		<!-- 商城热卖 -->
+		#if($!goods_hots.size()>0)
+		<div class="phone_floor">
+			<h1>
+				<span class="fl">商城热卖</span>
+			</h1>
+			<div class="hot_goods">
+				<ul>
+					#foreach($goods in $goods_hots) #if($!goods.goods_main_photo)
+					#set($img="$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_middle.$!{goods.goods_main_photo.ext}")
+					#else
+					#set($img="$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+					#end
+					<li><a href="$!webPath/wap/goods.htm?id=$!goods.id">
+							<div class="hot_img_box">
+								<img data-original="$!img"
+									src="$!webPath/resources/style/system/front/wap/images/load.gif" />
+							</div>
+							<p class="hot_goods_price">¥$!{goods.store_price}</p>
+							<p class="hot_goods_desc">$!{goods.goods_name}</p>
+					</a></li> #end
+				</ul>
+				<a href="javascript:void(0)" class="load_more_goods"
+					id="load_more">点击继续加载</a>
+				</ul>
+				<input type="hidden" id="hots_size" value="$!goods_hots.size()" />
+			</div>
+		</div>
+		#end
+	</div>
+	</div>
+	</div>
+	$!httpInclude.include("/wap/footer.htm?op=index")
+	$!httpInclude.include("/wap/layer.htm")
+	</div>
+	<script>
+		var Global = {
+			webPath : "$!webPath",
+			CommUtil : "$!CommUtil.randomInt(6)",
+			preInputKey : "$!config.preInputKeys",
+			arr_img : []
+		}
+	</script>
+	<script  src="http://apps.bdimg.com/libs/require.js/2.1.11/require.min.js" data-main="$!webPath/resources/js/wap/index"></script>    
+</body>
+</html>

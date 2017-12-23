@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>订单支付 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>订单支付<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="pd5">
+  <div class="payment">
+    <div class="pay_detail">
+      <dl>
+        <dt><img src="$!webPath/resources/style/system/front/wap/images/dun.png" width="62"></dt>
+        <dd>
+          <ul>
+            <li style="font-size:20px; margin-bottom:10px;">订单支付</li>
+            <li>应付金额：<span class="red">¥ $!CommUtil.formatMoney($!orderFormTools.query_order_price("$!of.id"))</span></li>
+            <li></li>
+          </ul>
+        </dd>
+      </dl>
+    </div>
+    <form id="theForm" method="post" action="$!webPath/wap/order_pay.htm">
+    <input type="hidden" name="order_id" id="order_id" value="$!{of.id}">
+    <div class="payfor">
+      <h1>请选择支付方式：</h1>
+      #set($install=$!paymentTools.queryShopPayment("balance").get("install"))
+      #if($!install==true)
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">预存款支付</span></td>
+          </tr>
+          <tr>
+            <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="balance" #if($!{user.availableBalance}) checked="checked" #else disabled="disabled" #end  ></td>
+            <td align="left">
+	            <!-- <div class="pay_style">
+	            	<a href="javascript:void(0)">预存款</a>
+	            </div> -->
+	            <span><img src="$!webPath/resources/style/common/images/payment/balance.jpg" width="115" height="41" /></span>
+	            <p style="color: #ff6600;"margin-top: 13px;>余额：#if($!{user.availableBalance})¥$!{user.availableBalance} #else ¥0 #end元<br /><span>（首次支付必须先修改支付密码）</span></p>
+	            <br>
+	            <input name="pay_pwd"  id="pay_pwd" type="password"  maxlength="6" placeholder="请输入支付密码"    autocomplete="off"  />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      #end
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">在线支付</span></td>
+          </tr>
+          #set($payments=$!paymentTools.queryByTerminalMark("wap"))
+          #if($!payments && $!payments.size() > 0)
+          #foreach($payment in $!payments)
+          <tr id="$!{payment.mark}" style="display:none">
+	          <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="$!{payment.mark}" checked="checked"></td>
+	          <td>
+	          	<span><img src="$!webPath/resources/style/common/images/payment/$!{payment.icon_url}" width="115" height="41" /></span>
+	          </td>
+	      </tr>
+          #end
+      </table>
+      #end
+      <!-- #set($install=$!paymentTools.queryShopPayment("payafter").get("install"))
+      #if($!install==true)
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">货到付款</span></td>
+          </tr>
+          <tr>
+            <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="payafter" checked="checked"></td>
+            <td>
+            <div class="pay_style"><a href="javascript:void(0)">货到付款</a></div>
+            <span><img src="$!webPath/resources/style/common/images/payment/payafter.jpg" width="115" height="41" /></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      #end -->
+       </div>
+    </form>
+    <div class="pay_btn"><a href="javascript:void(0)" onClick="order_pay()">马上支付</a></div>
+  </div>
+</div>
+
+$!httpInclude.include("/wap/footer.htm")
+<script>
+jQuery(document).ready(function(e) {
+	$("#pay_pwd").val("");
+    jQuery(".pay_style").click(function(){
+		jQuery(".pay_style").removeClass("this");
+		jQuery(this).addClass("this");
+		var index = jQuery(this).index(".pay_style");
+		jQuery(" input[name=payType]").get(index).checked=true;
+	});
+	 if(isWeiXin()){
+       jQuery("#wx_pay").show();
+     }else{
+    	 #set($payments=$!paymentTools.queryByTerminalMark("wap"))
+         #if($!payments && $!payments.size() > 0)
+         #foreach($payment in $!payments)
+	    	 	#if($!{payment.mark} !="wx_pay")
+			 		jQuery("#$!{payment.mark}").show();
+	    	 	#end
+	    	 #end
+    	 #end
+	 }
+});
+var type="goods";
+#if($!of.order_cat==2)
+type = "group";
+#end
+function order_pay(){
+	if(jQuery("input[type='radio']:checked").val()=="wx_pay"){
+		var or_id=jQuery("#order_id").val();
+		//网页授权获取用户基本信息,第一步：用户同意授权，获取code,若提示“该链接无法访问”，请检查参数是否填写错误，是否拥有scope参数对应的授权作用域权限。
+		window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?"+
+				"appid=$!{appid}&redirect_uri=$!webPath/catchopenid.htm"+
+				"&response_type=code&scope=snsapi_userinfo"+
+				"&state=order_"+or_id+"_"+type+"#wechat_redirect";
+	}else{
+		if(jQuery('input[name="payType"]:checked').val()=="balance"){
+			 var pwd = $("#pay_pwd").val();
+			 if(typeof(pwd)=="undefined" || pwd=="")
+			 {
+				 $("#pay_pwd").focus();
+				 return;
+			 }
+		}
+		jQuery("#theForm").submit();
+	}
+}
+function isWeiXin(){
+    var ua = window.navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+        return true;
+    }else{
+        return false;
+    }
+}
+</script>
+</body>
+</html>

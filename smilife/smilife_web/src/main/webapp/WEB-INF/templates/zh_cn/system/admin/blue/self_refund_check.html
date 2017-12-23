@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+ var w = jQuery(".cont").width();
+ var l_w = jQuery(".edit_left").width();
+ jQuery(".edit_right").width(w-l_w);
+});
+//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+function saveForm(){
+   jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">退款查看</h1>
+  <div class="nav_list">
+  <ul>
+   <li><a href="$!webPath/admin/self_refund_list.htm"><b>订单退款</b></a></li>
+   <li ><a href="javascript:void(0);" class="this"><b>退款查看</b></a></li>
+   </ul>  
+   </div>
+   <div class="edit_left">
+  <form name="theForm" id="theForm" action="$!webPath/admin/self_refund_check_save.htm" method="post">
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+   <div class="edit">
+    <div class="editul setcont">
+      <!--鼠标经过样式-->
+      <ul class="set1">
+        <li class="logistics_left"><strong class="sred"></strong>商品名称：</li>
+        <li class="logistics_right" ><span class="webname"><table cellpadding="0" cellspacing="0">
+          #set($goods_info=$!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+       				#foreach($map in $!goods_info)
+       				<tr><td style="padding:0">$!{map.get('goods_name')}</td></tr>
+       				#end
+        </table></span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="logistics_left"><strong class="sred"></strong>申请者：</li>
+        <li  class="logistics_right"><span class="webname">
+          $!obj.user_name
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="logistics_left"><strong class="sred"></strong>价格*数量：</li>
+        <li  class="logistics_right"><span class="webname">
+          	#foreach($map in $!goods_info)
+			<strong id="store_price">¥</strong>$!{map.get('goods_price')}*$!{map.get('goods_count')}&nbsp;&nbsp;&nbsp;
+			#end
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="logistics_left"><strong class="sred"></strong>退款金额：</li>
+        <li  class="logistics_right"><span class="webname">
+          $!price
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="logistics_left"><strong class="sred"></strong>商品图片：</li>
+        <li  class="logistics_right"><span class="webname">
+        #foreach($map in $!goods_info)
+		<img src="$!{map.get('goods_mainphoto_path')}" width="160" height="160" />
+		#end
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="logistics_left"><strong class="sred"></strong>退货说明：</li>
+        <li  class="logistics_right"><span class="webname">
+          $!obj.refund_cause
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="logistics_left"><strong class="sred"></strong>审核：</li>
+        <li  class="logistics_right"><span class="use_code">
+          <label><input type="radio" name="order_status" value="80" checked="checked" />审核通过</label></span>
+          <span class="use_code"><label><input type="radio" name="order_status" value="27"  />审核未通过</label></span>
+        </li>
+      </ul>
+    </div>
+    </div>
+  </form>
+  </div>
+  <div class="submit">
+    <span class="pad80"><input name="save" type="button" value="提交" onclick="saveForm()" /></span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>修改支付密码-$!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+ jQuery(document).ready(function(){
+	jQuery("#theForm").validate({
+       rules: {
+			mobile_verify_code:{required:true},
+			new_password:{required:true,minlength:6,maxlength:6,number:6},
+			new_password1:{required:true,equalTo:"#new_password"}
+		  },
+	   messages: {
+			mobile_verify_code:{required:"验证码不能为空"},
+			new_password:{required:"新密码不能为空",minlength:"新密码不能少于{0}位",maxlength:"新密码不能大于{0}位",number:"请输入{0}位纯数字"},
+			new_password1:{required:"重复密码不能为空",equalTo:"两次密码输入不一样"}
+		}
+  });
+	
+ });
+function saveForm(){
+    jQuery("#theForm").submit();
+}
+
+			var time=60;
+			var time_id="";
+			function generic_mobile_verify_code(){
+               var mobile=jQuery("#mobile").val();
+               if(isMobil(mobile)){
+			      jQuery.post("$!webPath/buyer/account_mobile_sms.htm",{"type":"paypwd_vetify_code","mobile":mobile},function(data){
+				    if(data.code=="100"){
+					     jQuery("#mobile_verify_code_generic").hide();
+				         time_id=setInterval(countDown,1000);
+					} else {
+						showDialog("msg_info","",data.msg, 2,"error",3,function(){});
+					}					
+				  },"json");
+               }else{
+				   showDialog("msg_info","","请输入正确的手机号码",2,"warning",3,function(){});
+			   }
+            }
+		   function countDown(){
+		     --time;
+			 jQuery("#time_out_generic").html(time+"秒后可以重新获取,验证码15分钟有效");
+			 if(time==0){
+			   clearInterval(time_id);
+			   jQuery("#time_out_generic").html("");
+			   jQuery("#mobile_verify_code_generic").show();
+               time=10;
+			 }
+		   }
+           function isMobil(s) {
+             var patrn = /(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+             if (!patrn.exec(s)) {
+                 return false;
+             }
+             return true;
+            } 
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="usercenter">
+     $!httpInclude.include("/buyer/nav.htm?op=account")
+    <div class="usercenter_right">
+      <div class="myorder">
+        <h4><strong>账户信息</strong></h4>
+      </div>
+      <div class="user_list">
+        <div class="user_list_title">
+          <ul class="user_title_ul">
+            <li><i></i><a href="$!webPath/buyer/account.htm">基本信息</a></li>
+            <li><i></i><a href="$!webPath/buyer/account_password.htm">修改登录密码</a></li>
+            <li class="this"><i></i><a href="$!webPath/buyer/account_paypwd.htm">修改支付密码</a></li>
+            <li><i></i><a href="$!webPath/buyer/account_mobile.htm">修改绑定的手机号</a></li>
+            <li><i></i><a href="$!webPath/buyer/account_avatar.htm">修改头像</a></li>
+            
+          </ul>
+        </div>       
+        <div class="add_usercenter">      
+             <form action="$!webPath/buyer/account_paypwd_save.htm" method="post" name="theForm" id="theForm">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" class="user_base_table">
+            <tr>
+              <td width="170" align="right"><strong class="redstr"></strong>已验证手机：</td>
+              <td><input name="mobile" type="hidden" id="mobile" class="base_txt" value="$!user.mobile"/>
+             	  <strong>$!user.mobile</strong>
+              	  <a href="javascript:void(0);" onclick="generic_mobile_verify_code();" id="mobile_verify_code_generic" class="get_code_generic">获取验证码</a>
+              	  <span id="time_out_generic"></span></td>
+            </tr>
+            <tr>
+              <td align="right">手机验证码：</td>
+              <td><span style="color:#F00"><input name="mobile_verify_code" type="text" id="mobile_verify_code" class="base_txt_code"/></span>
+                </td>
+            </tr>
+            <tr>
+              <td align="right">新密码：</td>
+              <td><span style="color:#F00"> <input name="new_password" type="password" id="new_password" class="base_txt"/></span>
+                </td>
+            </tr>
+            <tr>
+              <td align="right">确认新密码：</td>
+              <td><span style="color:#F00"> <input name="new_password1" type="password" id="new_password1" class="base_txt"/></span>
+                </td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td><input name="button" type="button" value="保存" class="save" onclick="saveForm()" /></td>
+            </tr> 
+          </table>
+            </form>
+        </div> 
+      </div>
+    </div>
+  </div>
+  $!httpInclude.include("/footer.htm")
+</div>
+</body>
+</html>

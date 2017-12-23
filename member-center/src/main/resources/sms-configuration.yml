@@ -1,0 +1,40 @@
+# ----------------------------------------
+# COMMON PROPERTIES
+# ----------------------------------------
+
+smi-sms:
+  # 账号类型【1-生产账号(业务使用),2-服务账号(客服使用)】
+  account-type: 1
+  # 渠道编码【101-星美商场,102-星美电影,103-星美生活客户端,104-大数据服务,105-活动服务,106-星美通行证】
+  channel-code: 106
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+
+smi-sms:
+  url: http://192.168.68.22:8088/sms/send.do
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+
+smi-sms:
+  url: http://192.168.68.22:8088/sms/send.do
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+smi-sms:
+  url: http://192.168.38.235:8080/sms/send.do

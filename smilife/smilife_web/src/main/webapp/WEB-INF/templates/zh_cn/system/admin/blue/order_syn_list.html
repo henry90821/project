@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("#config_code").val("$!config_code");
+	jQuery("#syn_status").val("$!syn_status");
+	jQuery("#syn_system").val("$!syn_system");
+	jQuery("#order_id").val("$!order_id");
+	
+	jQuery("#all_check").click(function(){
+		var is_all_check = jQuery(this).is(':checked');
+		if(is_all_check){
+			jQuery("[name='checkbox']").attr("checked",'true');
+		}else{
+			jQuery("[name='checkbox']").removeAttr("checked");//取消全选
+		}
+	});
+});	
+
+function operation(){
+	var ids = "";
+	var currentPage = jQuery("#currentPage").val();
+	jQuery("[name='checkbox']").each(function(){
+		var is_check = jQuery(this).is(':checked');
+		if(is_check){
+			ids = jQuery(this).val() + "," + ids;
+		}
+	});
+	if(ids){
+		//window.location.href="$!webPath/admin/order_syn_operation.htm?ids="+ids+"&currentPage="+currentPage+"&config_code="+config_code+"&syn_status="+syn_status+"&order_id="+order_id+"&syn_system="+syn_system; 
+		window.location.href="$!webPath/admin/order_syn_operation.htm?ids="+ids+"&currentPage="+currentPage; 
+	}else{
+		alert("请先勾选需要同步的数据!");
+	}
+	
+}
+
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">订单同步管理</h3>
+  <div class="nav_list">
+  	<ul>
+    	<li><a href="javascript:void(0);" class="this"><b>所有同步订单</b></a></li>
+    </ul>
+  </div>
+</div>
+<form action="$!webPath/admin/order_syn_list.htm" method="post" id="queryForm" >
+<div class="search">
+  <ul>
+    <li> 
+    <span>同步系统：</span> <span>
+    <select name="config_code" id="config_code">
+          <option value="">全部</option>
+          <option value="hx">海信系统</option>
+          <option value="ddapp">订单APP系统</option>
+    </select>
+    </span><span>同步状态：</span><span>
+    <select name="syn_status" id="syn_status">
+      <option value="">全部</option>
+      <option value="0">未同步</option>
+      <option value="1">同步成功</option>
+      <option value="2">同步失败</option>
+      <option value="3">同步中</option>
+    </select>
+    </span><span>订单号：</span> <span class="size200">
+    <input name="order_id" type="text" value="$!order_id" id="order_id" />
+     </span>
+    <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+    </li>
+  </ul>
+</div>  
+</form>
+
+<form action="$!webPath/admin/order_syn_list.htm" method="post" id="ListForm" >
+  <div class="fshoptb">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+    <tr>
+      <th width="2%"><span class="form_btna"></span></th>
+      <th width="12%"><span class="form_btna">同步系统</span></th>
+      <th width="14%"><span class="form_btna">订单号</span></th>
+      <th width="12%"><span class="form_btna">同步时间</span></th>
+      <th width="12%"><span class="form_btna">同步状态</span></th>
+      <th width="24%"><span class="form_btna">同步URL地址</span></th>
+      <th width="10%"><span class="form_btna">操作人</span></th>
+      <th align="center"><b class="form_btnb">操作</b></th>
+    </tr>
+    #foreach($obj in $objs)
+    <tr>
+      <td align="center">	
+      #if($!obj.synStatus == "2")
+      	<input type="checkbox" value="$!obj.id" id="check_$!obj.id" name="checkbox"/>
+      #end
+      </td>	
+      <td align="center">
+      	#if($!obj.goodsConfig.configCode == "hx")
+      	海信系统
+      	#elseif($!obj.goodsConfig.configCode == "ddapp")
+      	订单app系统
+      	#end
+      </td>
+      <td align="center">$!obj.orderForm.order_id</td>
+      <td align="center">$!obj.addTime</td>
+      <td align="center">
+      	#if($!obj.synStatus == "0")
+      	未同步
+      	#elseif($!obj.synStatus == "1")
+      	同步成功
+      	#elseif($!obj.synStatus == "2")
+      	同步失败
+      	#elseif($!obj.synStatus == "3")
+      	同步中
+      	#end
+      </td>
+      <td align="center">$!obj.goodsConfig.synIUrl</td>
+      <td align="center">$!obj.synUser</td>
+      <td align="center" class="hui oprate_con">
+      	#if($!obj.synStatus == "2")
+      	<a href="$!webPath/admin/order_syn_operation.htm?ids=$!obj.id&currentPage=$!currentPage" class="blue">手动同步</a>
+      	#end
+      	<a href="$!webPath/admin/order_syn_view.htm?id=$!obj.id" class="blue">查看</a>
+      </td>
+    </tr>
+    #end
+  </table>
+  </div>
+   <div class="operate_bar">
+   <span style="float:left;margin-top:10px;margin-left:10px;">
+   <input type="checkbox" id="all_check" />全部
+   <input type="button" value="手动同步"  class="search_btn" style="margin-left:10px;" onclick="operation();"/></span>
+    <div class="fenye">
+	    <input name="config_code" type="hidden" id="config_code" value="$!config_code" />
+		<input name="syn_status" type="hidden" id="syn_status" value="$!syn_status" />
+	    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        $!gotoPageFormHTML
+    </div>   
+  </div>
+  <div class="fenye"></div>
+</form>       
+</body>
+</html>

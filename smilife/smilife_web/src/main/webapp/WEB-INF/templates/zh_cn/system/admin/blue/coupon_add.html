@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery.validator.methods.endTime = function(value, element, param) {
+   var startDate = jQuery(param).val();
+   var date1=new Date(Date.parse(startDate));
+   var date2=new Date(Date.parse(value));
+   if(jQuery.browser.msie==true){
+      date1 = new Date(Date.parse(startDate.replace("-", "/")));
+      date2 = new Date(Date.parse(value.replace("-", "/")));
+   }
+   return date1 < date2;
+ };
+ jQuery.validator.methods.beginTime = function(value, element, param) {
+   var endDate = jQuery(param).val();
+   var date1=new Date(Date.parse(endDate));
+   var date2=new Date(Date.parse(value));
+   if(jQuery.browser.msie==true){
+      date1 = new Date(Date.parse(endDate.replace("-", "/")));
+      date2 = new Date(Date.parse(value.replace("-", "/")));
+   }
+   return date1 > date2;
+ };
+  jQuery("#theForm").validate({
+	errorPlacement: function(error, element) {  
+       error.appendTo(element.parent());  
+    },						  
+    rules:{
+	   coupon_name:{required:true},	
+	   coupon_begin_time:{required:true},
+	   coupon_end_time:{required:true,endTime:"#coupon_begin_time"},
+	   coupon_count:{required:true,digits:true},
+	   coupon_amount:{required:true,digits:true,min:0},
+	   coupon_order_amount:{required:true,digits:true,min:0}
+	 },
+    messages:{
+	 coupon_name:{required:"优惠券名称不能为空"},		
+	 coupon_begin_time:{required:"开始时间不能为空"},
+	 coupon_end_time:{required:"结束时间不能为空",endTime:"结束日期必须大于开始日期"},
+	 coupon_count:{required:"优惠券数量不能为空",digits:"优惠券只能为整数"},
+	 coupon_amount:{required:"优惠券金额不能为空",digits:"优惠券金额只能为整数",min:"优惠券金额必须大于0"},
+	 coupon_order_amount:{required:"可使用订单金额不能为空",digits:"可使用订单金额只能为整数",min:"可使用订单金额必须大于0"}
+	}
+  });
+  
+ 	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+  //
+  jQuery('#coupon_begin_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#coupon_end_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  //
+  jQuery("#coupon_show").mouseover(function(){
+	jQuery("#coupon").css('display','block');
+	});
+	jQuery("#coupon_show").mouseout(function(){
+		jQuery("#coupon").css('display','none');
+	});
+  //
+    jQuery("input[type=file]").change(function(){
+	   var id=jQuery(this).attr("id");
+	   jQuery("#"+id+"_text").val(jQuery(this).val());
+   })
+  //
+});
+//检查优惠券适用范围是否选择了没
+function check_global_coupon_range()
+{
+	 var associated_ids=$('.coupon_range_select').val();
+	 if(associated_ids==null || associated_ids=="" || associated_ids.length<=0)
+		 return false;
+	 
+	 return true;
+}
+
+function saveForm(){
+	if($('.coupon_range_select').length>0 && !check_global_coupon_range()){
+		alert("请在优惠券适用范围一栏中选择品类或者品牌！");
+		return;
+		
+	}
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/coupon_save.htm#if($!global_coupon_flag==1)?global_coupon_flag=1#end" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+  <div class="cont">
+    <h1 class="seth">新增优惠券</h1>
+    <div class="nav_list">
+   <ul>
+	#if($!global_coupon_flag==1)
+ 	<li><a href="$!webPath/admin/global_coupon_list.htm?global_coupon_flag=1"><b>所有优惠券</b></a></li>
+    <li><a href="$!webPath/admin/coupon_add.htm?global_coupon_flag=1" class="this"><b>新增优惠券</b></a></li>
+    <li><a href="$!webPath/admin/couponbag_activity.htm" ><b>优惠券礼包</b></a></li>
+    #else
+    <li><a href="$!webPath/admin/coupon_list.htm"><b>所有优惠券</b></a></li>
+    <li><a href="$!webPath/admin/coupon_add.htm" class="this" ><b>新增优惠券</b></a></li>
+    #end
+   </ul>
+    </div>
+    <div class="edit">
+    <div class="editul setcont" id="base">
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>优惠券名称
+          <input name="id" type="hidden" id="id" value="$!obj.id" />
+        </li>
+        <li><span class="webname">
+          <input name="coupon_name" type="text" id="coupon_name" value="$!obj.coupon_name" />
+          </span></li>
+      </ul>
+      #if($!global_coupon_flag==1)
+      <ul class="set1" id="global_coupon_container">
+      	<li class="setcont_bg" style="line-height:100px;"><strong class="sred">*</strong>优惠券适用范围</li>
+        	<li><span class="use_code">
+        	<input name="coupon_type" id="coupon_type_2" type="hidden" value="2" />
+            <select id="category_select" class="coupon_range_select" name="associated_ids" style="height:200px;" multiple="multiple">
+            #genericTree($!gcs)
+            </select>  
+            <label style="float:left;margin-right:10px;"> <strong>
+              <input name="associated_type" id="associated_type_2" type="radio" value="1" checked="checked" onclick="$('.coupon_range_select').attr('disabled',true);$('#category_select').attr('disabled',false);">
+              </strong><strong class="usecode">适用于品类</strong> 
+            </label>
+            </span>
+            <span class="use_code">
+            <select id="brand_select" class="coupon_range_select" name="associated_ids" disabled style="height:200px;" multiple="multiple">
+		        #foreach($gb in $gbs)
+		        <option value="$!gb.id">$!gb.name</option>
+		        #end
+            </select>
+            <label style="float:left;margin:0px 10px 0px 50px;"> <strong>
+              <input name="associated_type" id="associated_type_3" type="radio" value="2" onclick="$('.coupon_range_select').attr('disabled',true);$('#brand_select').attr('disabled',false);">
+              </strong><strong class="usecode">适用于品牌</strong> 
+            </label>
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">使用Shift或者Ctrl键来选择多个条目</strong><strong class="c"></strong></span></li>
+      </ul>
+      #end
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>开始时间</li>
+        <li> <span class="webname">
+          <input name="coupon_begin_time" type="text" id="coupon_begin_time" value="$!obj.coupon_begin_time" size="25" />
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>结束时间</li>
+        <li> <span class="webname">
+          <input name="coupon_end_time" type="text" id="coupon_end_time" value="$!obj.coupon_end_time" size="25" />
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>优惠券数量</li>
+        <li> <span class="size70">
+          <input name="coupon_count" type="text" id="coupon_count" value="$!obj.coupon_count" />
+        </span><span id="nothis"><strong class="q"></strong><strong class="w">数量为0时表示不限制数量</strong><strong class="c"></strong></span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg" style="height:35px;">优惠券模板</li>
+        <li> <span class="size13" >
+          <input name="coupon_img_text" type="text" id="coupon_img_text" />
+          </span> <span class="filebtn">
+          <input name="button" type="button" id="button1" value=""/>
+          </span> <span style="float:left;" class="file">
+          <input name="coupon_img" type="file" id="coupon_img" class="file-text" size="30"/>
+          </span> <span class="preview"> <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="25" height="25"  id="coupon_show" style="cursor:help"/> </span> </li>
+        <li>  <span id="nothis"><strong class="q"></strong><strong class="w">尺寸:235px * 103px，模板制作参考默认模板信息尺寸及空白区域尺寸，<a href="$!webPath/resources/style/common/template/coupon_template.jpg" target="_blank">点击下载默认模板</a>不选择模板图片将使用默认模板</strong><strong class="c"></strong></span>
+          <div class="bigimgpre" id="coupon" style="display:none;"><img  src="$!webPath/resources/style/common/images/coupon.jpg" width="235" height="103" /> </div>
+        </li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>优惠券金额</li>
+        <li> <span class="webname">
+          <input name="coupon_amount" type="text" id="coupon_amount" value="$!obj.coupon_amount" />
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>可使用订单金额</li>
+        <li> <span class="webname">
+          <input name="coupon_order_amount" type="text" id="coupon_order_amount" value="$!obj.coupon_order_amount" />
+        </span><span id="nothis"><strong class="q"></strong><strong class="w">订单金额达到该数值才可使用此优惠券</strong><strong class="c"></strong></span></li>
+      </ul>
+    </div>
+    </div>
+    <div class="submit">
+  <span class="pad120">  <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/></span>
+  </div>
+  </div>
+  
+</form>
+</body>
+</html>

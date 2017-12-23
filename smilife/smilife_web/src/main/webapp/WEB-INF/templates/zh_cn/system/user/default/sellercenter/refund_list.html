@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-退货列表- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=refund") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>客户服务</b>><b>订单退款</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href="#"><i></i>订单退款</a></li>
+          </ul>
+        </div>
+        #if($objs.size()>0)
+        <div  class="user_sp_right">
+          <form action="$!webPath/seller/refund_list.htm" method="post">
+            <div  class="seller_title_sp"> <span>订单号</span> <span class="size150">
+              <input name="order_id" type="text" id="order_id" value="$!order_id" />
+              </span> <span>申请者</span> <span class="size150">
+              <input name="user_name" type="text" id="user_name" value="$!user_name" />
+              </span> <span>
+              <input name="" type="submit"  value="搜索" style="cursor:pointer;"  class="seller_sear_btn"/>
+              </span> </div>
+          </form>
+        </div>
+        <div class="seller_list_box">
+          <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/refund_list.htm">
+            <div class="operation">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+                <tr id="opertitle">
+                  <th width="22%">订单号</th>
+                  <th width="10%">商品图片</th>
+                  <th width="10%">商品价格</th>
+                  <th width="8%">商品数量</th>
+                  <th width="10%">商品总价</th>
+                  <th width="12%">申请者</th>
+                  <th width="13%">退单状态</th>
+                  <th align="center">操作</th>
+                </tr>
+                #foreach($obj in $objs)
+                #set($goods_info=$!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+                #set($index = 0)
+        		#foreach($map in $!goods_info)
+        		#set($index = $!index + 1)
+        		#set($goods_id = "$!{map.get('goods_id')}")	
+        		#set($goods_name = "$!{map.get('goods_name')}")
+		        #set($goods_count = "$!{map.get('goods_count')}")
+		        #set($goods_price = "$!{map.get('goods_price')}")
+		        #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+		        #set($goods_all_price = "$!{map.get('goods_all_price')}")
+		        #set($goods_url="$!webPath/goods_$!{map.get('goods_id')}.htm")
+                <tr >
+                  #if($!index == 1)
+                  <td align="center" rowspan="$!goods_info.size()">$!obj.order_id</td>
+                  #end
+                  <td align="center">
+                  <a href="$!goods_url" target="_blank"><img src="$!goods_mainphoto_path" width="70" height="70" /></a>
+                    <!-- 商品图标start -->
+                    #set($good=$!goodsViewTools.query_Goods("$!goods_id"))
+                    #if($!{good.goodsConfig.iconUrl})
+                        <img src="$!webPath/$!{good.goodsConfig.iconUrl}" />
+                    #end
+              		<!-- 商品图标end -->
+                    
+                  </td>
+                  <td align="center">$!goods_price</td>
+                  <td align="center">$!goods_count</td>
+                  <td align="center">$!goods_all_price</td>
+                  
+                 
+                  #if($!index == 1)
+                  	  <td align="center" rowspan="$!goods_info.size()">$!obj.user_name</td>	
+	                  #if($!obj.order_status==25)
+	                   #set($status="买家申请退款")
+	                  #end
+	                  #if($!obj.order_status==27)
+	                   #set($status="审核不通过")
+	                  #end
+	                  #if($!obj.order_status==80)
+	                   #set($status="退款中")
+	                  #end
+	                  #if($!obj.order_status==85)
+	                   #set($status="退款已提交")
+	                  #end
+	                  #if($!obj.order_status==87)
+	                   #set($status="退款失败")
+	                  #end
+	                  #if($!obj.order_status==90)
+	                   #set($status="退款完成")
+	                  #end
+                  <td align="center" rowspan="$!goods_info.size()">$!{status}</td> 
+                  <td align="center" class="del_operate" rowspan="$!goods_info.size()"> #if($!obj.order_status==25) <a href="$!webPath/seller/refund_check.htm?id=$!obj.id&currentPage=$!currentPage" class="del_a">审核</a> #end
+                  #end
+                </tr>
+                #end
+                #end
+              </table>
+            </div>
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+            <div class="seller_list_page">
+              <div  class="seller_page_sp"> $!gotoPageFormHTML</div>
+            </div>
+          </form>
+        </div>
+        #else
+        <table>
+          <tr>
+            <td colspan="8" align="center"><div class="seller_center_nothing">
+                <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                <div class="seller_center_nothing_right">暂时没有数据</div>
+              </div></td>
+          </tr>
+        </table>
+        #end </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

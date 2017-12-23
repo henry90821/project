@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoCertiMapper">
+  <resultMap id="BaseResultMap" type="com.smi.mc.model.cust.InfoCerti">
+    <id column="CERTI_ID" jdbcType="VARCHAR" property="certiId" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="CERTI_TYPE" jdbcType="DECIMAL" property="certiType" />
+    <result column="CERTI_NBR" jdbcType="VARCHAR" property="certiNbr" />
+    <result column="CERTI_ADDR" jdbcType="VARCHAR" property="certiAddr" />
+    <result column="STATUS_CD" jdbcType="VARCHAR" property="statusCd" />
+    <result column="AUTH_FLAG" jdbcType="VARCHAR" property="authFlag" />
+    <result column="CRT_DATE" jdbcType="DATE" property="crtDate" />
+    <result column="AUTH_DATE" jdbcType="DATE" property="authDate" />
+    <result column="MOD_DATE" jdbcType="DATE" property="modDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    CERTI_ID, CUST_ID, CERTI_TYPE, CERTI_NBR, CERTI_ADDR, STATUS_CD, AUTH_FLAG, CRT_DATE, 
+    AUTH_DATE, MOD_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.smi.mc.model.cust.InfoCertiExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from INFO_CERTI
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from INFO_CERTI
+    where CERTI_ID = #{certiId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from INFO_CERTI
+    where CERTI_ID = #{certiId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.mc.model.cust.InfoCertiExample">
+    delete from INFO_CERTI
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.mc.model.cust.InfoCerti">
+    insert into INFO_CERTI (CERTI_ID, CUST_ID, CERTI_TYPE, 
+      CERTI_NBR, CERTI_ADDR, STATUS_CD, 
+      AUTH_FLAG, CRT_DATE, AUTH_DATE, 
+      MOD_DATE)
+    values (#{certiId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{certiType,jdbcType=DECIMAL}, 
+      #{certiNbr,jdbcType=VARCHAR}, #{certiAddr,jdbcType=VARCHAR}, #{statusCd,jdbcType=VARCHAR}, 
+      #{authFlag,jdbcType=VARCHAR}, #{crtDate,jdbcType=DATE}, #{authDate,jdbcType=DATE}, 
+      #{modDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.mc.model.cust.InfoCerti">
+    insert into INFO_CERTI
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="certiId != null">
+        CERTI_ID,
+      </if>
+      <if test="custId != null">
+        CUST_ID,
+      </if>
+      <if test="certiType != null">
+        CERTI_TYPE,
+      </if>
+      <if test="certiNbr != null">
+        CERTI_NBR,
+      </if>
+      <if test="certiAddr != null">
+        CERTI_ADDR,
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD,
+      </if>
+      <if test="authFlag != null">
+        AUTH_FLAG,
+      </if>
+      <if test="crtDate != null">
+        CRT_DATE,
+      </if>
+      <if test="authDate != null">
+        AUTH_DATE,
+      </if>
+      <if test="modDate != null">
+        MOD_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="certiId != null">
+        #{certiId,jdbcType=VARCHAR},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="certiType != null">
+        #{certiType,jdbcType=DECIMAL},
+      </if>
+      <if test="certiNbr != null">
+        #{certiNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="certiAddr != null">
+        #{certiAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="authFlag != null">
+        #{authFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDate != null">
+        #{crtDate,jdbcType=DATE},
+      </if>
+      <if test="authDate != null">
+        #{authDate,jdbcType=DATE},
+      </if>
+      <if test="modDate != null">
+        #{modDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.mc.model.cust.InfoCertiExample" resultType="java.lang.Integer">
+    select count(*) from INFO_CERTI
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update INFO_CERTI
+    <set>
+      <if test="record.certiId != null">
+        CERTI_ID = #{record.certiId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.custId != null">
+        CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.certiType != null">
+        CERTI_TYPE = #{record.certiType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.certiNbr != null">
+        CERTI_NBR = #{record.certiNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.certiAddr != null">
+        CERTI_ADDR = #{record.certiAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusCd != null">
+        STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authFlag != null">
+        AUTH_FLAG = #{record.authFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crtDate != null">
+        CRT_DATE = #{record.crtDate,jdbcType=DATE},
+      </if>
+      <if test="record.authDate != null">
+        AUTH_DATE = #{record.authDate,jdbcType=DATE},
+      </if>
+      <if test="record.modDate != null">
+        MOD_DATE = #{record.modDate,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update INFO_CERTI
+    set CERTI_ID = #{record.certiId,jdbcType=VARCHAR},
+      CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      CERTI_TYPE = #{record.certiType,jdbcType=DECIMAL},
+      CERTI_NBR = #{record.certiNbr,jdbcType=VARCHAR},
+      CERTI_ADDR = #{record.certiAddr,jdbcType=VARCHAR},
+      STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      AUTH_FLAG = #{record.authFlag,jdbcType=VARCHAR},
+      CRT_DATE = #{record.crtDate,jdbcType=DATE},
+      AUTH_DATE = #{record.authDate,jdbcType=DATE},
+      MOD_DATE = #{record.modDate,jdbcType=DATE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.mc.model.cust.InfoCerti">
+    update INFO_CERTI
+    <set>
+      <if test="custId != null">
+        CUST_ID = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="certiType != null">
+        CERTI_TYPE = #{certiType,jdbcType=DECIMAL},
+      </if>
+      <if test="certiNbr != null">
+        CERTI_NBR = #{certiNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="certiAddr != null">
+        CERTI_ADDR = #{certiAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="authFlag != null">
+        AUTH_FLAG = #{authFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDate != null">
+        CRT_DATE = #{crtDate,jdbcType=DATE},
+      </if>
+      <if test="authDate != null">
+        AUTH_DATE = #{authDate,jdbcType=DATE},
+      </if>
+      <if test="modDate != null">
+        MOD_DATE = #{modDate,jdbcType=DATE},
+      </if>
+    </set>
+    where CERTI_ID = #{certiId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.mc.model.cust.InfoCerti">
+    update INFO_CERTI
+    set CUST_ID = #{custId,jdbcType=VARCHAR},
+      CERTI_TYPE = #{certiType,jdbcType=DECIMAL},
+      CERTI_NBR = #{certiNbr,jdbcType=VARCHAR},
+      CERTI_ADDR = #{certiAddr,jdbcType=VARCHAR},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      AUTH_FLAG = #{authFlag,jdbcType=VARCHAR},
+      CRT_DATE = #{crtDate,jdbcType=DATE},
+      AUTH_DATE = #{authDate,jdbcType=DATE},
+      MOD_DATE = #{modDate,jdbcType=DATE}
+    where CERTI_ID = #{certiId,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!-- 根据custId获取证件信息 -->
+  <select id="getInfoCertiByCustId" parameterType="java.lang.String" resultType="com.smi.mc.model.cust.InfoCerti">
+  	SELECT CERTI_TYPE,CERTI_NBR,CERTI_ADDR FROM INFO_CERTI WHERE CUST_ID = #{custId} AND STATUS_CD = '1000'
+  </select>
+  
+</mapper>

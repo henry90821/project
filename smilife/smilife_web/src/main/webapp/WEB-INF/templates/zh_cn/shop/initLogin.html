@@ -1,0 +1,22 @@
+<script>
+	window.onload = function(){
+		var welcome;
+		alert("$!{agent}");
+		alert("$!{user.userName}");
+		if('$!{user.userName}' != ''){
+			if("$!{agent}" == 'wap'){
+				welcome ='<a href="$!webPath/xmh_logout.htm">退出</a>';
+				window.parent.document.getElementById("welcome").innerHTML = welcome;
+				welcome ='您好，$!user.userName|'+
+    	         	'<a href="$!webPath/xmh_logout.htm">退出</a> ! '+
+    	         	'<b>|</b><span><a  href="#">回到顶部</a></span>';
+				window.parent.document.getElementById("welcome2").innerHTML = welcome;
+			}else{
+				welcome = '$!CommUtil.substring("$!{user.userName}",12)您好,欢迎来到$!CommUtil.substring("$!{config.websiteName}",30)！'+
+			    	'#if($!CommUtil.indexOf("$!user.userRole","ADMIN")>=0)[<a href="$!webPath/admin/index.htm">管理后台</a>] #end'+
+			    	'[<a href="$!webPath/xmh_logout.htm">退出商城</a>]';
+				window.parent.document.getElementById("welcome").innerHTML = welcome;
+			}
+		}
+	}
+</script>

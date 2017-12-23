@@ -1,0 +1,220 @@
+# ----------------------------------------
+# CORE PROPERTIES
+# ----------------------------------------
+
+# BANNER
+banner:
+  charset: UTF-8
+
+spring:
+  # IDENTITY
+  application:
+    name: Member Center
+  # AOP
+  aop:           
+    auto: true
+    proxy-target-class: false
+  # FILE ENCODING (FileEncodingApplicationListener)
+  mandatory-file-encoding: utf-8
+  # HTTP encoding (HttpEncodingProperties)
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  # JACKSON (JacksonProperties)
+  jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    connection-timeout: 60000
+    maximum-pool-size: 1000
+    type: com.alibaba.druid.pool.DruidDataSource
+    initial-size: 50
+    min-idle: 50
+    max-active: 1000
+    max-wait: 60000
+  # INTERNATIONALIZATION (MessageSourceAutoConfiguration)
+  messages:
+    encoding: utf-8
+    basename: i18n/messages*,i18n/exception*
+
+# MAYBATIS PROPERTIES
+mybatis:
+  check-config-location: true
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mybatis-mapper/**/*.xml
+  type-aliases-package: com.smi.mc.model
+  #type-handlers-package: #{type-handlers-package}
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  display-name: Member Center
+  connection-timeout: 120000
+  compression: 
+    enabled: true
+    mime-types: application/json
+  error:
+    include-stacktrace: always
+    whitelabel:
+      enabled: true
+  undertow:
+    buffer-size: #{buffer-size}
+    buffers-per-region: #{buffers-per-region}
+    direct-buffers: #{direct-buffers}
+    io-threads: 32
+    worker-threads: 160
+
+# LOGGING
+logging:
+  level.root: info
+
+# ----------------------------------------
+# ACTUATOR PROPERTIES
+# ----------------------------------------
+
+# ENDPOINTS (AbstractEndpoint subclasses)
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+  
+# REDIS (RedisProperties)
+  redis:
+    host: 192.168.68.23
+    port: 6379
+vip:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.68.6:1521:dbtest2
+      username: smi_member_dev
+      password: smi_member_dev
+   
+bill:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.68.6:1521:dbtest2
+      username: billing
+      password: "!DIC_smi#24"
+      
+# LOGGING
+logging:
+  level.com.smi: debug
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8080
+  context-path: /member
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+  
+# REDIS (RedisProperties)
+  redis:
+    host: 192.168.68.23
+    port: 6379
+vip:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.68.66:1521:SMITEST
+      username: smi_member_dev
+      password: Smi+0814
+   
+bill:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.68.66:1521:SMITEST
+      username: billing
+      password: Smi+0814
+      
+# LOGGING
+logging:
+  path: /logs/member-center
+  level.com.smi: warn
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8084
+  context-path: /member
+  undertow:
+    accesslog:
+      enabled: true
+      dir: /logs/member-center
+  
+---
+# PreProduct environment
+spring:
+  # PROFILES
+  profiles: preProduct
+  
+# REDIS (RedisProperties)
+  redis:
+    host: 192.168.68.23
+    port: 6379  
+vip:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.68.66:1521:SMITEST
+      username: smi_member_dev
+      password: Smi+0814
+   
+bill:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.68.66:1521:SMITEST
+      username: billing
+      password: Smi+0814
+      
+# LOGGING
+logging:
+  path: /logs/member-center
+  level.com.smi: warn
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8085
+  context-path: /member
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+# REDIS (RedisProperties)
+  redis:
+    host: 192.168.86.19
+    port: 6379    
+vip:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.28.61:1521/crmdb
+      username: SMI_MEMBER
+      password: Smi_0113!@#
+   
+bill:
+  datasource:
+      url: jdbc:oracle:thin:@192.168.28.61:1521/smidb
+      username: BILLING
+      password: DR1#8E6V
+
+# LOGGING
+logging:
+  path: /project/webproject/member-center/logs
+  level.com.smi: warn
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8088
+  context-path: /
+  undertow:
+    accesslog:
+      enabled: true
+      dir: /logs/member-center

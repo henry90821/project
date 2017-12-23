@@ -1,0 +1,105 @@
+# ----------------------------------------
+# 支付宝配置文件
+# ----------------------------------------
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+  
+alisdk:
+  #合作身份者ID，签约账号，以2088开头由16位纯数字组成的字符串
+  partner: 2088911291591882
+  #收款支付宝账号，以2088开头由16位纯数字组成的字符串，一般情况下收款账号就是签约账号
+  seller_id: 2088911291591882
+  #MD5密钥，安全检验码，由数字和字母组成的32位字符串
+  key: taxtupf81w08w9n8hpv7v7586ou04frm
+  #服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+  notify_url: http://smi25.xingmeihui.com/smipay/alicallback.do
+  #页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+  return_url: http://smi25.xingmeihui.com/smipay/alireturn.do
+  #签名方式
+  sign_type: MD5
+  #字符编码格式 目前支持utf-8
+  input_charset: utf-8 
+  #支付类型 ，无需修改
+  payment_type: 1
+  #PC调用的接口名
+  service: create_direct_pay_by_user
+  #手机调用的接口名
+  wapservice: alipay.wap.create.direct.pay.by.user
+  #退款的接口名
+  refundservice: refund_fastpay_by_platform_pwd
+  
+  ras_private: MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBANVWAvkqjfF/XwNE2pv8nv7HWiRtEUhQHDciTiwDLkW4MxaVr/u8s5hLxKruVBhzGX6d0xsPDDIpu0fFCfVdwzjPGriIMRSgD2aclqIXXLDsR4riR9S2ZJjnaRRyIqvReQ9IemgraG0oMEQXEN4oligek3ySJY4y2rEQNSToJ219AgMBAAECgYAygSFFEZD2+htpL7S9NuoBEPrDItrzjpuPZdyxyLL8qGXX0+oMo5i01kMh4DgibaU8d2qRvlc5zO1cSUZZQzBC5QRvP3hOBYSfQgEmqz0jDgiODS4Zw9itQehs2DbgktxsaTKMkhdyxD9B+u9NR3GVPje88HSBnBE7YbDGRK6CYQJBAOxSbyDjy8Z3hAXZmveXZhUbBPQuyTbnlm9qTiUSyHGu2ExXrMbv/BJL7HvNxIabPM7I1bb7p8XMOf51SRX9SnUCQQDnGZhbvh798vQE5zlgjbLOI2WtN3jcqE3qEOmRXF6zYThC/O8X6M9nzGFWoh77pPEn8awM67n3EQPmRNnEdOXpAkEAzbYUNjUUtPZkXhNF6jBIFCco8MWpMbn2IZYP4AWxpgPlFM9c/u74JZUhjcNYRzPqgrYgEuCM8okMEoxVymZp4QJBANol5xRzG35M4NvgCOGD4M2FzGz+eDCTDzlsTY7RyvM5SoqxiGDheydYXmoRD34r7RjvoKFxw1Hd1fh/9bDlSEECQQDiRrSxY2H+RxKDI2NgIVb00O95Sy0FTkP7I4GOgC85BAnBKUKhDD88RKO92YF2qOOvmx6YGL+/MAHrv77nHMnM
+  
+  ras_public: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDVVgL5Ko3xf18DRNqb/J7+x1okbRFIUBw3Ik4sAy5FuDMWla/7vLOYS8Sq7lQYcxl+ndMbDwwyKbtHxQn1XcM4zxq4iDEUoA9mnJaiF1yw7EeK4kfUtmSY52kUciKr0XkPSHpoK2htKDBEFxDeKJYoHpN8kiWOMtqxEDUk6CdtfQIDAQAB
+  
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+  
+alisdk:
+  #合作身份者ID，签约账号，以2088开头由16位纯数字组成的字符串
+  partner: 2088911291591882
+  #收款支付宝账号，以2088开头由16位纯数字组成的字符串，一般情况下收款账号就是签约账号
+  seller_id: 2088911291591882
+  #MD5密钥，安全检验码，由数字和字母组成的32位字符串
+  key: taxtupf81w08w9n8hpv7v7586ou04frm
+  #服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+  notify_url: http://smi25.xingmeihui.com/smipay/alicallback.do
+  #页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+  return_url: http://smi25.xingmeihui.com/smipay/alireturn.do
+  #签名方式
+  sign_type: MD5
+  #字符编码格式 目前支持utf-8
+  input_charset: utf-8 
+  #支付类型 ，无需修改
+  payment_type: 1
+  #PC调用的接口名
+  service: create_direct_pay_by_user
+  #手机调用的接口名
+  wapservice: alipay.wap.create.direct.pay.by.user
+  #退款的接口名
+  refundservice: refund_fastpay_by_platform_pwd
+  
+  ras_private: MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBANVWAvkqjfF/XwNE2pv8nv7HWiRtEUhQHDciTiwDLkW4MxaVr/u8s5hLxKruVBhzGX6d0xsPDDIpu0fFCfVdwzjPGriIMRSgD2aclqIXXLDsR4riR9S2ZJjnaRRyIqvReQ9IemgraG0oMEQXEN4oligek3ySJY4y2rEQNSToJ219AgMBAAECgYAygSFFEZD2+htpL7S9NuoBEPrDItrzjpuPZdyxyLL8qGXX0+oMo5i01kMh4DgibaU8d2qRvlc5zO1cSUZZQzBC5QRvP3hOBYSfQgEmqz0jDgiODS4Zw9itQehs2DbgktxsaTKMkhdyxD9B+u9NR3GVPje88HSBnBE7YbDGRK6CYQJBAOxSbyDjy8Z3hAXZmveXZhUbBPQuyTbnlm9qTiUSyHGu2ExXrMbv/BJL7HvNxIabPM7I1bb7p8XMOf51SRX9SnUCQQDnGZhbvh798vQE5zlgjbLOI2WtN3jcqE3qEOmRXF6zYThC/O8X6M9nzGFWoh77pPEn8awM67n3EQPmRNnEdOXpAkEAzbYUNjUUtPZkXhNF6jBIFCco8MWpMbn2IZYP4AWxpgPlFM9c/u74JZUhjcNYRzPqgrYgEuCM8okMEoxVymZp4QJBANol5xRzG35M4NvgCOGD4M2FzGz+eDCTDzlsTY7RyvM5SoqxiGDheydYXmoRD34r7RjvoKFxw1Hd1fh/9bDlSEECQQDiRrSxY2H+RxKDI2NgIVb00O95Sy0FTkP7I4GOgC85BAnBKUKhDD88RKO92YF2qOOvmx6YGL+/MAHrv77nHMnM
+  
+  ras_public: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDVVgL5Ko3xf18DRNqb/J7+x1okbRFIUBw3Ik4sAy5FuDMWla/7vLOYS8Sq7lQYcxl+ndMbDwwyKbtHxQn1XcM4zxq4iDEUoA9mnJaiF1yw7EeK4kfUtmSY52kUciKr0XkPSHpoK2htKDBEFxDeKJYoHpN8kiWOMtqxEDUk6CdtfQIDAQAB
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+alisdk:
+  #合作身份者ID，签约账号，以2088开头由16位纯数字组成的字符串
+  partner: 2088911291591882
+  #收款支付宝账号，以2088开头由16位纯数字组成的字符串，一般情况下收款账号就是签约账号
+  seller_id: 2088911291591882
+  #MD5密钥，安全检验码，由数字和字母组成的32位字符串
+  key: taxtupf81w08w9n8hpv7v7586ou04frm
+  #服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+  notify_url: http://smi25.xingmeihui.com/smipay/alicallback.do
+  #页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+  return_url: http://smi25.xingmeihui.com/smipay/alireturn.do
+  #签名方式
+  sign_type: MD5
+  #字符编码格式 目前支持utf-8
+  input_charset: utf-8 
+  #支付类型 ，无需修改
+  payment_type: 1
+  #PC调用的接口名
+  service: create_direct_pay_by_user
+  #手机调用的接口名
+  wapservice: alipay.wap.create.direct.pay.by.user
+  #退款的接口名
+  refundservice: refund_fastpay_by_platform_pwd
+  
+  ras_private: MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBANVWAvkqjfF/XwNE2pv8nv7HWiRtEUhQHDciTiwDLkW4MxaVr/u8s5hLxKruVBhzGX6d0xsPDDIpu0fFCfVdwzjPGriIMRSgD2aclqIXXLDsR4riR9S2ZJjnaRRyIqvReQ9IemgraG0oMEQXEN4oligek3ySJY4y2rEQNSToJ219AgMBAAECgYAygSFFEZD2+htpL7S9NuoBEPrDItrzjpuPZdyxyLL8qGXX0+oMo5i01kMh4DgibaU8d2qRvlc5zO1cSUZZQzBC5QRvP3hOBYSfQgEmqz0jDgiODS4Zw9itQehs2DbgktxsaTKMkhdyxD9B+u9NR3GVPje88HSBnBE7YbDGRK6CYQJBAOxSbyDjy8Z3hAXZmveXZhUbBPQuyTbnlm9qTiUSyHGu2ExXrMbv/BJL7HvNxIabPM7I1bb7p8XMOf51SRX9SnUCQQDnGZhbvh798vQE5zlgjbLOI2WtN3jcqE3qEOmRXF6zYThC/O8X6M9nzGFWoh77pPEn8awM67n3EQPmRNnEdOXpAkEAzbYUNjUUtPZkXhNF6jBIFCco8MWpMbn2IZYP4AWxpgPlFM9c/u74JZUhjcNYRzPqgrYgEuCM8okMEoxVymZp4QJBANol5xRzG35M4NvgCOGD4M2FzGz+eDCTDzlsTY7RyvM5SoqxiGDheydYXmoRD34r7RjvoKFxw1Hd1fh/9bDlSEECQQDiRrSxY2H+RxKDI2NgIVb00O95Sy0FTkP7I4GOgC85BAnBKUKhDD88RKO92YF2qOOvmx6YGL+/MAHrv77nHMnM
+  
+  ras_public: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDVVgL5Ko3xf18DRNqb/J7+x1okbRFIUBw3Ik4sAy5FuDMWla/7vLOYS8Sq7lQYcxl+ndMbDwwyKbtHxQn1XcM4zxq4iDEUoA9mnJaiF1yw7EeK4kfUtmSY52kUciKr0XkPSHpoK2htKDBEFxDeKJYoHpN8kiWOMtqxEDUk6CdtfQIDAQAB
+
+  

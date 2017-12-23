@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>星美资源认证服务说明文档</title>
+    <link type="text/css" href="../css/markdown-style.css" rel="stylesheet">
+    <link type="text/css" href="../css/markdown-highlight.css" rel="stylesheet">
+</head>
+<body>
+<div id="preview" class="markdown-body"></div>
+</body>
+<script src="../js/require.js"></script>
+<script>
+    require.config({
+        paths: {
+            text: "../js/text",
+            "showdown": "../js/showdown"
+        }
+    });
+    require(["text!README.MD", "showdown"],
+            function (mdText, showdown) {
+                var $ = function (id) {
+                    return document.getElementById(id);
+                };
+                var converter = new showdown.Converter({'tasklists': true, 'tables': true});
+                $("preview").innerHTML = converter.makeHtml(mdText);
+            }
+    );
+</script>
+</html>

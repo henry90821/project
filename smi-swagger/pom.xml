@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.smi</groupId>
+    <artifactId>smi-swagger</artifactId>
+    <version>1.0.1</version>
+
+    <name>smi-swagger</name>
+    <description>星美在线接口模块</description>
+
+    <!--SMI private maven repository configuration-->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>v2_smilife_snapshots</id>
+            <name>SMI LIFE V1 SNAPSHOTS</name>
+            <url>http://192.168.78.9:8081/nexus/content/repositories/v2_smilife_snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>v2_smilife_release</id>
+            <name>SMI LIFE V2 RELEASES</name>
+            <url>http://192.168.78.9:8081/nexus/content/repositories/v2_smilife_release/</url>
+        </repository>
+    </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.7</java.version>
+        <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+        <swagger-springmvc.version>1.0.2</swagger-springmvc.version>
+        <spring-boot.version>1.3.5.RELEASE</spring-boot.version>
+        <spring-beans.version>4.2.5.RELEASE</spring-beans.version>
+        <smilife-core.version>RELEASE</smilife-core.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet-api.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mangofactory</groupId>
+            <artifactId>swagger-springmvc</artifactId>
+            <version>${swagger-springmvc.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring-beans.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.smilife</groupId>
+            <artifactId>smilife-core</artifactId>
+            <version>${smilife-core.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>

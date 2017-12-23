@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.LogCinemaCardMergeMapper">
+	<!-- 老会员归集日志新增 -->
+	<insert id="addLogCinemaCardMerge" parameterType="java.util.Map">
+		insert into
+		LOG_CINEMA_CARD_MERGE
+		(ORDER_ID,
+		CUST_ID,
+		OLD_CARD_NBR,
+		BALANCE, 
+		SCORE,
+		OPER_ID,
+		DEPT_NO,
+		EXT_SYS_ID,
+		MESSAGE,
+		RESULT_FALG)
+		values
+		(#{ORDER_ID},
+		#{CUST_ID},
+		#{OLD_CARD_NBR},
+		#{BALANCE},
+		#{SCORE},
+		#{OPER_ID},
+		#{DEPT_NO},
+		#{EXT_SYS_ID},
+		#{MESSAGE},
+		#{RESULT_FALG})
+	</insert>
+</mapper>

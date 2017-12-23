@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+
+<script>
+function delete_ftp(size,users,id,useing){
+	var flag = true;
+	if(size==1){
+		alert("系统至少存在一个FTP服务器，不可删除");
+		flag =false;
+		}else{
+			if(useing==1){
+			alert("该系统FTP服务器正在使用，不可删除");
+			flag =false;
+			}
+			}
+	if(users>0){
+		alert("该FTP服务器上存在用户，不可删除");
+		flag =false;
+		}	
+	if(flag){
+		if(confirm("删除后不可恢复，是否继续")){
+			window.location.href="$!webPath/admin/ftpserver_del.htm?mulitId="+id+"&type=$!{type}&currentPage=$!{currentPage}";
+			}
+		}
+	}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">FTP服务器</h3>
+  <div class="nav_list">
+  		<ul>
+        	<li><a href="$!webPath/admin/ftpserver_list.htm" #if(!$!type)class="this"#end><b>用户服务器</b></a></li>
+            <li><a href="$!webPath/admin/ftpserver_list.htm?type=1" #if($!type==1)class="this"#end><b>系统服务器</b></a></li>
+            <li><a href="$!webPath/admin/ftpserver_add.htm"><b>新增</b></a></li>
+        </ul>
+  </div>
+  <div class="operation">
+    <h3>友情提示</h3>
+    <ul>
+      <li>系统FTP服务器，系统平台上传图片资源存储的图片服务器</li>
+      <li>用户FTP服务器，系统所有商家及用户上传图片资源存储的图片服务器</li>
+      <li>本系统版本为集群版，至少需要配置一个平台FTP服务器和一个用户FTP服务器，否则不允许本站点的开启</li>
+      <li>可以配置多个系统FTP服务器，但是只能同时使用一个</li>
+    </ul>
+  </div> 
+   <FORM name="ListForm" id="ListForm"  action="$!webPath/admin/ftpserver_list.htm" method="post">
+   <div class="fshoptb2">
+ 
+    <table width="100%" border="0" cellspacing="0" cellpadding="0"  class="fshop_table2">
+      <tr>
+        <th width="22%"><span class="form_btna">服务器名称</span></th>
+        <th width="20%" ><span class="form_btna">服务器地址</span></th>
+        <th width="18%"><span class="form_btna">服务器IP</span></th>
+        <th width="15%"><span class="form_btna">FTP用户名</span></th>
+        <th><span class="form_btna">操作</span></th>
+      </tr>
+      #foreach($obj in $arrList)
+      <tr>
+        <td align="center">$!obj.ftp_name #if($!obj.ftp_system==1 && $!obj.ftp_type==1)<b style="color:#03F">（当前使用）</b>#end #if($!obj.ftp_type==0)[$obj.user_Count/$!obj.ftp_amount] #end</td>
+        <td align="center">$!obj.ftp_addr</td>
+        <td align="center">$!obj.ftp_ip</td>
+        <td align="center">$!obj.ftp_username</td>
+        <td align="center" class="hui oprate_con"><a class="blue" href="$!webPath/admin/ftpserver_edit.htm?id=$!obj.id&currentPage=$!currentPage">编辑</a>|<a class="blue" href="javascript:void(0);" onclick="delete_ftp($!objs.size(),$obj.user_Count,$!obj.id,$!obj.ftp_system)">删除</a>#if($!obj.ftp_type==0 && $!objs.size()>1)|<a class="blue" href="javascript:void(0);"  dialog_uri="$!webPath/admin/ftpserver_transfer.htm?fid=$!obj.id" dialog_title="转移用户" dialog_width="500" dialog_height="250" dialog_id="ftpserver_transfer">转移用户</a>#end</td>
+        </td>
+      </tr>
+      #end     
+    </table> 
+  </div>
+  <div class="operate_bar">
+    <div class="fenye">
+    	<input type="hidden" name="currentPage" id="currentPage" value="$!currentPage" />
+	 	<input name="type" type="hidden" id="type" value="$!type" />
+      	$!gotoPageFormHTML
+    </div> 
+  </div>  	 
+  </FORM>
+ 
+</div>
+</body>
+</html>

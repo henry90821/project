@@ -1,0 +1,114 @@
+<!--底部-->
+        <div class="phone_foot">
+        	<div class="foot_top" id="welcome2">
+        			#if(!$!user)
+        	         	<span><a href="$!webPath/wap/buyer/center.htm" rel="nofollow">登录</a></span>
+        	          	<b>|</b>
+        	         	<span><a href="$!webPath/wap/register.htm" rel="nofollow">注册</a></span>
+        	         #else 
+        	         	您好，$!user.userName|
+        	         	<a href="$!webPath/xmh_logout.htm">退出</a> ! 
+        	         #end
+        	         <b>|</b><span><a  href="#">回到顶部</a></span>
+        	</div>
+        <div class="foot_nav">
+            <a class="this" href="$!webPath/wap/index.htm"> <img src="$!webPath/resources/style/system/front/wap/images/footer_phone_icon.jpg" /> 触屏版</a>
+            <a href="$!webPath/index.htm"> <img src="$!webPath/resources/style/system/front/wap/images/footer_pc_icon.jpg" /> 电脑版</a>
+            
+            <div class="footer_copyright">
+            	<p class="phone_copy_right">京ICP备14028245号-1</p>
+				<p class="phone_copy_right">Copyright © 2015 星美生活smi170.com 版权所有</p>	 
+				<p>
+				<script>
+				var _hmt = _hmt || [];
+				(function() {
+				  var hm = document.createElement("script");
+				  hm.src = "//hm.baidu.com/hm.js?478d0ffce51471d80006fc57965101f7";
+				  var s = document.getElementsByTagName("script")[0]; 
+				  s.parentNode.insertBefore(hm, s);
+				})();
+				</script>
+				</p>	 
+			</div>           
+		
+        </div>
+       </div>
+	<script type="text/javascript">
+		if(!window.jQuery){
+			document.write('<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"><\/script>');
+		}
+	</script>
+<!--按钮-->
+
+<script>
+	//星美统计
+	var _XmAnalysisData = _XmAnalysisData || [];
+	(function () {
+		var XmAnalysis = document.createElement('script');
+		XmAnalysis.type = 'text/javascript';
+		XmAnalysis.async = true;
+		XmAnalysis.id = 'XM-analysis';
+		XmAnalysis.src = 'http://log.smi170.com/smilogger/js/XmAnalysisPcWeb.min.js?SmiLife';
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(XmAnalysis, s);
+		/**
+		 * cookie操作
+		 * @param {String} name     必填，字段名，当参数仅有一个name时，为读取cookie
+		 * @param {String} value    选填，字段值，当value值为null时为删除cookie
+		 * @param {Object} options  选填，cookie详细设置：
+		 * {Number|Date}   expires     有效期(number类型:小时，Date类型：有效期结束时刻毫秒单位)，缺省：不设置
+		 * {String}        domain      有效域，缺省：当前域
+		 * {String}        path        有效目录，缺省：当前目录
+		 * {Boolean}       secure      secure值为true时，在http模式中不会向服务回发Cookie的验证信息；在https模式中会认为是安全的，会回发数据。
+		 */
+		var cookie=function (name, value, options) {
+			//console.log(value !== undefined)
+			if (value !== undefined) {
+				options = options || {};
+				if (value === null) {
+					value = '';
+					//options = $.extend({}, options);
+					options.expires = -1;
+				}
+				var expires = '';
+				if (options.expires && ( typeof options.expires == 'number' || options.expires.toUTCString)) {
+					var date;
+					if (typeof options.expires == 'number') {
+						date = new Date();
+						date.setTime(date.getTime() + (options.expires * 60 * 60 * 1000));
+					} else {
+						date = options.expires;
+					}
+					expires = '; expires=' + date.toUTCString();
+				}
+				var path = options.path ? '; path=' + (options.path) : '';
+				var domain = options.domain ? '; domain=' + (options.domain) : '';
+				var secure = options.secure ? '; secure' : '';
+				document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+				//document.cookie = [name, '=', (value), expires, path, domain, secure].join('');
+			} else {
+
+				var cookieValue = null;
+				if (document.cookie && document.cookie != '') {
+					var cookies = document.cookie.split(';');
+					for (var i = 0; i < cookies.length; i++) {
+						var cookie = cookies[i].replace(/(^\s*)|(\s*$)/g, '');
+						if (cookie.substring(0, name.length + 1) == (name) + '=') {
+
+							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+							break;
+						}
+					}
+				}
+				return cookieValue;
+			}
+		};
+
+		var userId =cookie("uid");
+		if(userId&&userId !=null){//保存用户userid
+			_XmAnalysisData.push(['_setUserSignIn','app',userId,2]);
+		}else{
+			_XmAnalysisData.push(['_setUserSignOff']);
+		}
+	})();
+</script>

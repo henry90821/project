@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.billing.SmsInfoMapper">
+	
+	<!-- 记录短信接口 -->
+	<insert id="smsSendInsert" parameterType="java.util.Map">
+	
+	<selectKey resultType="java.math.BigDecimal" order="BEFORE" keyProperty="MSG_ID">  
+       SELECT seq_hlp_sms_send.Nextval as ID from DUAL  
+    </selectKey>
+	
+	   INSERT INTO HLP_SMS_SEND
+		  (MSG_ID,
+		   MSISDN_SEND,
+		   MSISDN_RECEIVE,
+		   PRIORITY,
+		   MESSAGE_TEXT,
+		   SEND_TIME,
+		   CREATE_TIME,
+		   RETRY_TIMES)
+		VALUES
+		  ( #{MSG_ID},
+			#{MSISDN_SEND},
+			#{MSISDN_RECEIVE},
+			#{PRIORITY},
+			#{MESSAGE_TEXT},
+			sysdate,
+			sysdate,
+			#{RETRY_TIMES})
+	</insert>
+	
+</mapper>

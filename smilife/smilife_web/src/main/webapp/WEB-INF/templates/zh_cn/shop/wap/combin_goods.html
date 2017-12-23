@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+<div class="phone_hd">
+	<a class="back" href="$!webPath/wap/goods.htm?id=$!{id}"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>
+    组合销售  
+</div>
+
+<div class="combination">
+#if($!goodsViewTools.getCombinPlans("$!obj.id","suit").size()>0)
+  #foreach($plan in $goodsViewTools.getCombinPlans("$!obj.id","suit"))
+	<dl class="dl1_$!{obj.id}" ret="$!obj.id">
+	<h3>组合套装：</h3>
+    	<dt><span class="fl">组合$!{velocityCount}<b>¥$!{plan.get('plan_goods_price')}</b></span><span class="fr">
+        <img src="$!webPath/resources/style/system/front/wap/images/other_arrow.png" width="30" height="30" /></span></dt>
+        <dd class="shrink">
+        	<ul>
+            #if($!obj.goods_main_photo)
+            #set($img="$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_middle.$!{obj.goods_main_photo.ext}")
+            #else
+            #set($img="$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            #end
+            	<li><img src="$!img" width="63" height="63" /></li>
+                #foreach($map in $goodsViewTools.getCombinPlanGoods($!{plan})) 
+                #if($!{velocityCount} < 4 )
+                <li><img src="$!{map.get('img')}" width="63" height="63" /></li>
+                #end
+                #end
+            </ul>
+        </dd>
+    </dl>
+	<dl class="dl2_$!{obj.id}" ret="$!obj.id">
+	<h3>组合套装：</h3>
+    	<dt><span class="fl">组合$!{velocityCount}<b>¥$!{plan.get('plan_goods_price')}</b></span><span class="fr">
+        <img src="$!webPath/resources/style/system/front/wap/images/arrow_up.png" width="30" height="30" /></span></dt>
+        <dd class="unfold">
+        	<ul>
+	            #if($!obj.goods_main_photo)
+	            	#set($img="$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_middle.$!{obj.goods_main_photo.ext}")
+	            #else
+	            	#set($img="$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+	            #end
+            	<li>
+            		<span class="fl"><img src="$!{img}" width="63" height="63" /></span>
+            		<span class="name">$!obj.goods_name</span>
+                	<input id="goods_inventory_$!obj.id" mark="$!obj.id" value="$!{obj.goods_inventory}" type="hidden" />
+                </li>
+            #foreach($map in $goodsViewTools.getCombinPlanGoods($!{plan}))
+                <li>
+                	<span class="fl"><img src="$!{map.get('img')}" width="63" height="63" /></span>
+                	<span class="name">$!{map.get('name')}</span>
+                	<input id="goods_inventory_$!{map.get('id')}" mark="$!{map.get('id')}" value='$!goodsViewTools.queryInventory("$!{map.get('id')}")' type="hidden" />
+                	<input id="combin_ids_$!{map.get('id')}" name="combin_ids_$!{map.get('id')}" value="$!{map.get('id')}" type="hidden" />
+                </li>
+            #end
+            </ul>
+            <div class="price"><span class="fl">套装价：<b>¥$!{plan.get('plan_goods_price')}</b></span><span class="fr">参考价：<s>¥$!{plan.get('all_goods_price')}</s></span>
+            #set($last = $!CommUtil.subtract($!{plan.get('all_goods_price')},$!{plan.get('plan_goods_price')}))
+            <p><span>立即省：¥$!{last}</span></p></div>
+            <div class="red_submit"><a href="javascript:void(0);" _id="$!{goodsViewTools.getCombinPlanGoodsIds($!plan)}" _version="$!velocityCount" onclick="buy_goods('suit', this);">加入购物车</a></div>
+        </dd>
+    </dl>
+  #end
+#end    
+#if($!goodsViewTools.getCombinPlans("$!obj.id","parts").size()>0)
+	#foreach($plan in $goodsViewTools.getCombinPlans("$!obj.id","parts"))
+		<dl id="dl1_$!{obj.id}" ret="$!obj.id">
+		<h3>组合配件：</h3>
+	    	<dt><span class="fl">组合$!{velocityCount}</span><span class="fr">
+	        <img src="$!webPath/resources/style/system/front/wap/images/other_arrow.png" width="30" height="30" /></span></dt>
+	        <dd class="shrink">
+	        	<ul>
+	            #if($!obj.goods_main_photo)
+	            #set($img="$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_middle.$!{obj.goods_main_photo.ext}")
+	            #else
+	            #set($img="$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+	            #end
+	            	<li><img src="$!img" width="63" height="63" /></li>
+	                #foreach($map in $goodsViewTools.getCombinPlanGoods($!{plan})) 
+	                #if($!{velocityCount} < 4 )
+	                <li><img src="$!{map.get('img')}" width="63" height="63" /></li>
+	                #end
+	                #end
+	            </ul>
+	        </dd>
+	    </dl>
+		<dl id="dl2_$!{obj.id}" ret="$!obj.id">
+		<h3>组合配件：</h3>
+	    	<dt><span class="fl">组合$!{velocityCount}</span><span class="fr">
+	        <img src="$!webPath/resources/style/system/front/wap/images/arrow_up.png" width="30" height="30" /></span></dt>
+	        <dd class="unfold">
+	        	<ul>
+	            #if($!obj.goods_main_photo)
+	            #set($img="$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_middle.$!{obj.goods_main_photo.ext}")
+	            #else
+	            #set($img="$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+	            #end
+	            	<li><span class="fl"><img src="$!{img}" width="63" height="63" /></span><span class="name">$!obj.goods_name<br /><br />&nbsp;&nbsp;<b style="color: red;">单价：$!obj.store_price</b></span>
+	                	<input id="goods_inventory_$!obj.id" mark="$!obj.id" value="$!{obj.goods_inventory}" type="hidden" />
+	                </li>
+	            #foreach($map in $goodsViewTools.getCombinPlanGoods($!{plan}))    
+	                <li><span class="fl"><img src="$!{map.get('img')}" width="63" height="63" /></span><span class="name">$!{map.get('name')}<br />&nbsp;&nbsp;<b style="color: red;">单价：¥$!{map.get('price')}</b>
+	                <input type="checkbox" mark="parts_ids" value="$!{map.get('id')}" /></span>
+	                <input id="goods_inventory_$!{map.get('id')}" mark="$!{map.get('id')}" value='$!goodsViewTools.queryInventory("$!{map.get('id')}")' type="hidden" />
+	                </li>
+	            #end
+	            </ul>
+	            <div class="price"><span class="fl">&nbsp;&nbsp;已选择：<b id="parts_count">1</b>&nbsp;&nbsp; 个配件  <br /> &nbsp;&nbsp;搭配价：<b id="parts_price">¥$!{obj.goods_current_price}</b></span>
+	            #set($last = $!CommUtil.subtract($!{plan.get('all_goods_price')},$!{plan.get('plan_goods_price')}))
+	            </div>
+	            <div class="red_submit"><a href="javascript:void(0);" onclick="buy_goods('parts');">加入购物车</a></div>
+	        </dd>
+	    </dl>
+	#end  
+#end	
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+jQuery(function(){
+	jQuery(" dl[class^=dl2_]").each(function(index, element) {
+        jQuery(element).hide();
+    });
+	jQuery(" dl[class^=dl1_]").click(function(e) {
+        var ret = jQuery(this).attr("ret");
+		jQuery(this).hide();
+		if(jQuery(this).next()){
+			jQuery(this).next(".dl2_"+ret).show();
+		}
+    });
+	jQuery(" dl[class^=dl2_]").click(function(e) {
+        var ret = jQuery(this).attr("ret");
+		jQuery(this).hide();
+		if(jQuery(this).prev()){
+			jQuery(this).prev(".dl1_"+ret).show();
+		}	
+    });
+	
+	jQuery("input[type='checkbox'][mark='parts_ids']").click(function(){
+		var count = 0;
+		var parts_ids ="";
+		jQuery("input[mark='parts_ids']:checked").each(function(){
+				count++;										
+
+		
+				parts_ids = parts_ids +","+ jQuery(this).val();						
+
+								
+		});
+		jQuery.post("$!webPath/getPartsPrice.htm",
+			{"gid":"$!{obj.id}",
+			"parts_ids":parts_ids
+				},function(data){
+					jQuery("#parts_count").html(count+1);
+					jQuery("#parts_price").html("¥"+data);
+		},"text");
+	});
+})
+
+function buy_goods(type, _self){
+	var add=true;
+  	var suit_gsp="";
+  	var store_price="";
+  	var combin_version = jQuery(_self).attr("_version");
+	jQuery("input[id^=goods_inventory_]").each(function(){
+		var val = jQuery(this).val();
+		if(val=="0"){
+	   		 var id =jQuery(this).attr("mark");
+			 jQuery("#inv_"+id).css("font-size","17px");
+			 add=false;
+		}
+	});
+  	if(add){
+		var combin_ids = "";
+		if(type=="suit"){
+		  	/* jQuery(" input[id^=combin_ids_]").each(function(index, element) {
+		        combin_ids = combin_ids + "," + jQuery(element).val();
+		    }); */
+			combin_ids = jQuery(_self).attr("_id");
+		}else{
+			jQuery("input[mark='parts_ids']:checked").each(function(){
+				combin_ids = combin_ids +","+ jQuery(this).val(); 
+			});
+		}		
+		jQuery.ajax({
+			url:"$!current_webPath/wap/add_goods_cart.htm",
+			type:"post",
+			data:{"id":"$!{id}","count":1,"price":store_price,"gsp":"","suit_gsp":suit_gsp,"buy_type":type,"combin_ids":combin_ids,"combin_version":combin_version},
+			success:function(data){
+				console.log(data);
+				if(typeof(data)==="string"){
+					data =  JSON.parse(data);
+				}
+				if(data.code==-1){		
+					alert("添加失败，请刷新重试！");
+				}else if(data.code==-2){
+					alert("商品已下架，添加失败！");
+				}else if(data.code==-3){
+					alert("库存数量不足！");
+				}else{
+					window.location.href="$!webPath/wap/goods_cart1.htm";
+				}
+			}
+		});
+		
+		
+  	}
+}
+</script>
+
+
+    
+</body>
+</html>

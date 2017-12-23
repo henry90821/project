@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.LoginLogMapper">
+	
+	
+	<!-- 登录日志新增 -->
+	<insert id="addLoginLog" parameterType="java.util.Map">
+	  insert into LOGIN_LOG
+		(
+		LOGIN_LOG_ID, 
+		LOGIN_USER_ID, 
+		ORG_ID, MAC_ADDRESS, 
+		LOGIN_DATE
+		)values(
+		#{LOGIN_LOG_ID},
+		#{LOGIN_USER_ID},
+		#{ORG_ID},
+		#{MAC_ADDRESS},
+		<![CDATA[sysdate]]>
+		)
+	</insert>
+	
+</mapper>

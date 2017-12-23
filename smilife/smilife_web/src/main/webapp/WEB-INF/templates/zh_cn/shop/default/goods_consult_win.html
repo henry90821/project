@@ -1,0 +1,89 @@
+<script>
+require(["jquery", "validator"], function(){
+  $("#theForm").validate({					 
+       rules: {
+			consult_content: "required"#if($!config.securityCodeConsult),
+			consult_code:{
+				required:true,
+				remote:{
+		           url: Global.webPath + "/verify_code.htm",     //后台处理程序
+                   type: "post",               //数据发送方式
+                   dataType: "json",           //接受数据格式   
+                   data: {                     //要传递的数据
+                         "code": function(){return $("#consult_code").val();}
+						 
+		                }
+			       }
+			}
+			#end
+			},
+		messages: {
+			consult_content: "内容不能为空"#if($!config.securityCodeConsult),
+			consult_code:{required:"不能为空","remote":"验证码错误"}
+			#end
+					},
+	   errorPlacement: function(error, element){ 
+	      if($(error[0]).html()!=""){
+		      element.parent().remove(".ask_error");
+		      element.parent().append("<i class='ask_error'></i>");
+              error.appendTo(element.parent().find(".ask_error"));
+	        }
+        },
+	   submitHandler:function(){
+	      var params = $("#theForm").serialize();
+		  $.ajax({type:'POST',url:Global.webPath + '/goods_consult_save.htm',data:params,success:function(data){
+		      $("#goods_consult_list").empty();
+			  $("#goods_consult_list").append(data);
+			  layer.closeAll();
+		  }}
+		 );
+	   }
+  });
+
+$("#btn-consult-submit").on("click", function(){
+		$("#theForm").submit();
+});
+
+   $(document).off("click.verify-code").on("click.verify-code", "#code_img", function(){
+ 		$(this).attr("src",Global.webPath + "/verify.htm?d"+new Date().getTime());
+});
+function readCode(id){
+  var  s = "<embed id='sound_play' name='sound_play' src='$!webPath/resources/flash/soundPlayer.swf?" + (new Date().getTime()) + "' FlashVars='url=$!webPath"+ "' width='0'   height='0' allowScriptAccess='always' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' /></embed>";
+	$("#"+id).html(s);
+}
+	$(document).off("click.read-code").on("click.read-code", "[name='read-code']", function(){
+		readCode("player");
+	});
+});
+</script>
+<form action="$!webPath/goods_consult_save.htm" method="post" id="theForm" name="theForm">
+  <div class="consultation_top_c_ask_center">
+    <ul>
+      <li class="ask_c_select"> <span>分类：</span>
+        <select name="consult_type" id="consult_type" class="ask_c_select_s">
+          <option value="产品咨询">产品咨询</option>
+          <option value="库存及配送">库存及配送</option>
+          <option value="支付及发票">支付及发票</option>
+          <option value="售后咨询">售后咨询</option>
+          <option value="促销活动">促销活动</option>
+        </select>
+      </li>
+      <li class="ask_c_word"> <span>内容：</span>
+        <textarea name="consult_content" cols="" rows="" id="consult_content"></textarea>
+        </li>
+       #if($!config.securityCodeConsult) 
+       
+      <li class="ask_c_password"> <span>验证码：</span> <i>
+        <input name="consult_code" type="text" id="consult_code" />
+        </i>#if($!config.securityCodeType=='voice')
+                  
+                  <img id="code_img" src="$!webPath/verify.htm" width="59" height="27" style="display:none;" /> <a href="javascript:void(0);" name="read-code" title="朗读验证码" class="code_speech"></a> <span id="player"></span> #else <b><img style="cursor:pointer;" src="$!webPath/verify.htm" id="code_img" width="59" height="27"  title="点击更换验证码" /></b>#end
+
+       </li>
+       #end
+      <li class="ask_c_submit" style="margin-left:0px; text-align:center;"><a href="javascript:void(0);" id="btn-consult-submit">提交</a>
+        <input name="goods_id" type="hidden" id="goods_id" value="$!goods_id" />
+      </li>
+    </ul>
+  </div>
+</form>

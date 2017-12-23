@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoRandomCodeMapper">
+	
+	<!-- 随机码查询 -->
+	<select id="qryInfoRandomCode" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT * FROM  INFO_RANDOM_CODE t
+		<where>
+			1=1
+			 <if test="RANDOM_CODE != null and RANDOM_CODE != ''">
+				and	t.RANDOM_CODE = #{RANDOM_CODE}
+			</if>
+			<if test="CODE_TYPE != null and CODE_TYPE != ''">
+				and	t.CODE_TYPE = #{CODE_TYPE}
+			</if>
+			<if test="APPLICANT_TYPE != null and APPLICANT_TYPE != ''">
+				and	t.APPLICANT_TYPE = #{APPLICANT_TYPE}
+			</if>
+			<if test="APPLICANT_ID != null and APPLICANT_ID != ''">
+				and	t.APPLICANT_ID = #{APPLICANT_ID}
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				and	t.STATUS_CD = #{STATUS_CD}
+			</if>
+			<if test="CRT_DATE != null and CRT_DATE != ''">
+				and	t.CRT_DATE = to_date(#{CRT_DATE},'yyyy-MM-dd  hh24:mi:ss')
+			</if>
+			<if test="EFF_DATE != null and EFF_DATE != ''">
+				and	t.EFF_DATE = to_date(#{EFF_DATE},'yyyy-MM-dd  hh24:mi:ss')
+			</if>
+			<if test="EXP_DATE != null and EXP_DATE != ''">
+				and	t.EXP_DATE = to_date(#{EXP_DATE},'yyyy-MM-dd  hh24:mi:ss')
+			</if>
+			<if test="USE_DATE != null and USE_DATE != ''">
+				and	t.USE_DATE = to_date(#{USE_DATE},'yyyy-MM-dd  hh24:mi:ss')
+			</if>
+		</where>
+	</select>
+	<!-- 	随机码新增 -->
+	<insert id="addInfoRandomCode" parameterType="java.util.Map">
+		INSERT INTO INFO_RANDOM_CODE
+		(
+			RANDOM_CODE_ID, CODE_TYPE, RANDOM_CODE, APPLICANT_TYPE, APPLICANT_ID, STATUS_CD, CRT_DATE, EFF_DATE, EXP_DATE, USE_DATE, DEV_NUM
+		)
+		VALUES 
+		(
+			#{RANDOM_CODE_ID},#{CODE_TYPE},#{RANDOM_CODE},#{APPLICANT_TYPE},#{APPLICANT_ID},#{STATUS_CD},sysdate,sysdate,sysdate+1/24/4,'',#{DEV_NUM}
+		)
+		
+	</insert>
+	
+	<!-- 	随机码修改 -->
+	<update id="updInfoRandomCode" parameterType="java.util.Map" >
+		UPDATE INFO_RANDOM_CODE t
+			<set>
+				t.USE_DATE=sysdate
+			</set>
+			where t.RANDOM_CODE_ID=#{RANDOM_CODE_ID}
+	</update>
+	
+	<!-- 	随机码修改 -->
+	<update id="updInfoRandomCode1" parameterType="java.util.Map" >
+		UPDATE INFO_RANDOM_CODE t
+			<set>
+				t.STATUS_CD = #{STATUS_CD}
+			</set>
+			where t.APPLICANT_ID=#{APPLICANT_ID}
+	</update>
+</mapper>

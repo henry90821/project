@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.pay.dao.RefundDao" >
+  <resultMap id="BaseResultMap" type="com.smi.pay.model.Refund" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="appcode" property="appcode" jdbcType="VARCHAR" />
+    <result column="reqno" property="reqno" jdbcType="VARCHAR" />
+    <result column="sign" property="sign" jdbcType="VARCHAR" />
+    <result column="custid" property="custId" jdbcType="VARCHAR" />
+    
+    <result column="refund_fee" property="refundFee" jdbcType="INTEGER" />
+    <result column="refund_no" property="refundNo" jdbcType="VARCHAR" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="commodity" property="packageValue" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime"   />  
+     <result column="status" property="status" jdbcType="VARCHAR" />
+     
+    <result column="callback_status" property="callBackStatus" jdbcType="VARCHAR" />
+    <result column="paysn" property="paySn" jdbcType="VARCHAR" />
+    <result column="callback_memo" property="callBackMemo" jdbcType="VARCHAR" /> 
+    <result column="callback_time" property="callBackTime"   /> 
+    <result column="notice_status" property="noticeStatus" jdbcType="VARCHAR" /> 
+    <result column="notice_return" property="noticeReturn" jdbcType="VARCHAR" /> 
+    <result column="last_notice_time" property="lastNoticeTime"  /> 
+    <result column="notice_times" property="noticeTimes"  jdbcType="INTEGER"/> 
+              
+  </resultMap>
+ 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from refund
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.smi.pay.model.Refund" >  
+    insert into refund (appcode,reqno,sign,custid,refund_fee,refund_no,bill_no,memo,commodity,create_time)
+    values (#{appcode}, #{reqno},#{sign},#{custId},#{refundFee},#{refundNo},#{billNo},#{memo},#{packageValue},#{createTime})
+   <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id"> 
+     SELECT LAST_INSERT_ID() 
+   </selectKey> 
+ 
+  </insert>
+   
+  <update id="update" parameterType="com.smi.pay.model.Refund" >   
+    update refund
+    set status = #{status}, callback_status = #{callBackStatus}, callback_memo = #{callBackMemo},  
+    callback_time = #{callBackTime}, notice_status = #{noticeStatus}, notice_return = #{noticeReturn},  
+   last_notice_time = #{lastNoticeTime},notice_times = #{noticeTimes}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getAll" resultMap="BaseResultMap">
+  select  * from refund where 1=1 
+   <if test="appcode != null and appcode != ''">
+    	 and appcode = '${appcode}' 
+    </if>
+    <if test="billNo != null and billNo != ''">
+    	 and bill_no like '%${billNo}%' 
+    </if>
+    
+    <if test="status != null and status != '' ">
+    	 and status = '${status}'
+    </if>
+    
+    <if test="beginDate != null and beginDate != ''">
+    	AND create_time &gt;= CONCAT(#{beginDate},' 00:00:00')  
+    </if> 
+    <if test="endDate != null and endDate != ''">
+    	AND create_time &lt;= CONCAT(#{endDate},' 23:59:59')  
+    </if>
+    
+  </select>
+  
+  <select id="load" resultMap="BaseResultMap">
+     select  * from refund where id= #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getByRefundNo" resultMap="BaseResultMap">
+     select  * from refund where refund_no= #{refundNo} LIMIT 1;
+  </select>
+  
+   <select id="refundCount"  resultType="java.lang.Integer" >
+     select  IFNULL(sum(refund_fee),0) from refund where bill_no= #{billNo} and callback_status = '0';
+  </select>
+  
+  
+</mapper>

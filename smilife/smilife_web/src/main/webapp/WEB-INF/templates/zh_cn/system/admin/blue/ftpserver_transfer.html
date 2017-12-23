@@ -1,0 +1,63 @@
+<style type="text/css">
+.transfer_tb {
+	width:490px;
+	float:left;
+}
+.transfer_tb td {
+	border:1px solid #eeeeee;
+	padding:5px;
+}
+.transfer_scrool {
+	width:100%;
+	height:210px;
+	overflow-y:scroll;
+}
+.transfer_scrool ul li {
+	width:100%;
+	height:30px;
+	float:left;
+}
+</style>
+<script>
+function trans(){
+jQuery("#trans_img").attr("src","$!webPath/resources/style/system/manage/blue/images/transfer.gif");	
+var from_id = jQuery("#from_id").val();
+var to_id = jQuery("input:radio:checked").val();	
+		jQuery.post("$!webPath/admin/ftpserver_transfer_save.htm",{
+				"from_id":from_id,
+				"to_id":to_id
+				},function(data){
+					jQuery("#trans_img").attr("src","$!webPath/resources/style/system/manage/blue/images/ftpserver_transfer.jpg");
+					alert("成功转移"+data+"个用户")
+					window.location.href="$!webPath/admin/ftpserver_list.htm"
+					},"text");	
+	
+	};
+							
+</script>
+  <table width="390" border="0" cellspacing="0" cellpadding="0" class="transfer_tb">
+    <tbody>
+      <tr>
+        <td width="40%">$!ftp_from.ftp_name</td>
+        <td width="20%"><img src="$!webPath/resources/style/system/manage/blue/images/ftpserver_transfer.jpg" id="trans_img"/></td>
+        <td align="left"><div class="transfer_scrool">
+            <ul>
+              #foreach($obj in $objs)
+              <li>
+                <label>
+                  <input name="to_id" type="radio" #if($!velocityCount==1) checked="checked" #end  value="$!obj.id"/>
+                  $!obj.ftp_name</label>
+              </li>
+              #end
+            </ul>
+          </div></td>
+      </tr>
+      <tr>
+        <td colspan="3" align="center"><span class="inputbtn">
+          <input name="" type="submit" value="转移" style="cursor:pointer;" onclick="trans();"/>
+          <input name="from_id" type="hidden" value="$!ftp_from.id" id="from_id"/>
+          <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+          </span></td>
+      </tr>
+    </tbody>
+  </table>

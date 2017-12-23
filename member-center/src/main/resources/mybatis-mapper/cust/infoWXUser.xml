@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoWXUserMapper">
+
+   <!-- 微信用户新增 -->
+	<insert id="addInfoWXUser" parameterType="java.util.Map">
+		insert into info_wx_user
+		(
+		WX_USER_ID 	   ,
+		STATUS_CD 	   ,
+		CUST_ID     ,
+		OPEN_ID         ,
+		WX_CODE      ,
+		USER_MOBILE ,
+		CRT_DATE       ,
+		ON_CARE_DATE  
+		)values(
+		#{WX_USER_ID}        ,
+		#{STATUS_CD}    ,
+		#{CUST_ID}            ,
+		#{OPEN_ID}         ,
+		#{WX_CODE}      ,
+		#{USER_MOBILE}     ,
+		#{CRT_DATE}         ,
+		#{ON_CARE_DATE}    
+		)
+
+	</insert>
+
+
+
+	<!-- 微信用户信息查询 -->
+	<select id="queryInfoWXUser" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  SELECT 
+         t.WX_USER_ID, 
+         t.OPEN_ID, 
+         t.WX_CODE,
+         t.USER_MOBILE,
+         t.STATUS_CD, 
+         t.CUST_ID, 
+         <![CDATA[to_char(t.crt_date,'yyyy-MM-dd') CRT_DATE,]]>
+         <![CDATA[to_char(t.mod_date,'yyyy-MM-dd') MOD_DATE,]]>
+         <![CDATA[to_char(t.mod_date,'yyyy-MM-dd') ON_CARE_DATE,]]>
+         <![CDATA[to_char(t.mod_date,'yyyy-MM-dd') OFF_CARE_DATE]]>
+      from info_wx_user t
+      <where>
+        1 = 1 and t.wx_code='1000' and t.status_cd='10' 
+        <if test=" OPEN_ID != null and OPEN_ID != ''">
+			and	t.open_id = #{OPEN_ID}
+		</if>
+		<if test=" CUST_ID != null and CUST_ID != ''">
+			and	t.cust_id = #{CUST_ID}
+		</if>
+      </where>  
+	</select>
+	
+	<!-- 微信用户信息更新-->
+	 <update id="updateStateByWXUserId" parameterType="java.util.Map"> 
+         update info_wx_user 
+         <set>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				status_cd = #{STATUS_CD},
+			</if>
+			 off_care_date = sysdate,
+			 mod_date = sysdate
+		</set>
+           where  wx_user_id = #{WX_USER_ID}
+       </update>
+ 
+      
+ 	<!-- 微信用户信息更新-->
+	 <update id="updateCustIdByWXUserId" parameterType="java.util.Map"> 
+         update info_wx_user 
+         <set>
+			<if test="CUST_ID != null and CUST_ID != ''">
+				cust_id = #{CUST_ID},
+			</if>
+			<if test="USER_MOBILE != null and USER_MOBILE != ''">
+				user_mobile = #{USER_MOBILE},
+			</if>
+			 mod_date = sysdate
+		</set>
+           where  wx_user_id = #{WX_USER_ID}
+       </update>
+ 
+
+   
+	<!-- 微信用户信息查询 -->
+	<select id="getInfoWXUserId" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	select   SEQ_INFO_WX_USER.nextval  WX_USER_ID  from  dual
+      
+	</select>
+</mapper>

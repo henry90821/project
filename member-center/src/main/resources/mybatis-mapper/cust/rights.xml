@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.RightMapper">
+	<!-- -->
+	<select id="qryRights" parameterType="java.util.Map" resultType="java.util.Map">
+		select t.RIGHTS_TYPE,
+		t.RIGHT_TYPE_ID,
+		t.ATTR_ID,
+		t.ATTR_VALUE_ID
+		from RIGHTS t
+		<where>
+			1=1
+			<if test="RIGHT_TYPE_ID != null and RIGHT_TYPE_ID != ''">
+				and t.RIGHT_TYPE_ID =#{RIGHT_TYPE_ID}
+			</if>
+		</where>
+	</select>
+</mapper>

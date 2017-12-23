@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-退货审核-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left">  $!httpInclude.include("/seller/nav.htm?op=refund") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b>><b>退款管理</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+             <li><a href="$!webPath/seller/refund_list.htm"><i></i>订单退款</a></li>
+              <li class="this"><a href="javascript:void(0);"><i></i>退款详情</a></li>
+          </ul>
+        </div>
+        <div class="add_usercenter"> 
+          <form action="$!webPath/seller/refund_check_save.htm" method="post" name="theForm" id="theForm">
+            <input name="id" type="hidden" id="id"  value="$!obj.id"/>
+            <input name="currentPage" type="hidden" id="currentPage"  value="$!currentPage"/>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td width="100" valign="top" align="right">商品名称：</td>
+                <td><span class="user_base_info"><ul>
+                	#set($goods_info=$!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+       				#foreach($map in $!goods_info)
+       				<li>$!{map.get('goods_name')}</li>
+       				#end
+                	</span>
+                	</ul></td>
+              </tr>
+              <tr>
+                <td align="right">申请者：</td>
+                <td><span class="user_base_info">$!obj.user_name</span>
+                  </td>
+              </tr>
+              <tr>
+                <td align="right">退货(价格*数量)：</td>
+                <td ><span class="user_base_info">
+       			#foreach($map in $!goods_info)
+       			<strong id="store_price">¥</strong>$!{map.get('goods_price')}*$!{map.get('goods_count')}&nbsp;&nbsp;&nbsp;
+       			#end
+                </span>
+                  </td>
+              </tr>
+              <tr>
+                <td align="right">退款金额：</td>
+                <td><span class="user_base_info"> <strong id="store_price2">¥</strong>$!price</span>
+                	</td>
+              </tr>
+              <tr>
+                <td align="right" valign="top" style=" line-height:34px">商品图片：</td>
+                <td>                	
+                	<span class="user_base_info">
+                	#foreach($map in $!goods_info)
+       				<img src="$!{map.get('goods_mainphoto_path')}" width="160" height="160" />
+       				#end
+                	</span>
+               		</td>
+              </tr>
+              <tr>
+                <td align="right">退货说明：</td>
+                <td> <span class="user_base_info">$!obj.refund_cause</span>
+                	</td>
+              </tr>
+              <tr>
+                <td align="right">审核：</td>
+                <td><span class="user_info_radio">
+          <label><input type="radio" name="order_status" value="80" checked="checked" />审核通过</label></span>
+          <span class="user_info_radio"><label><input type="radio" name="order_status" value="27"  />审核未通过</label></span>
+                	</td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td class="px10"><span class="setsub">
+                  <input type="submit" value="保存" style="cursor:pointer;" class="seller_save"/>
+                  </span></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

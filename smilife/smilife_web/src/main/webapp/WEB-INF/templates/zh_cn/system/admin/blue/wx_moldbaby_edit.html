@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){	
+	#if($!obj && $!obj.wx_moldbaby_photo)
+		jQuery("#theForm").validate({
+			ignore: "",						  
+		    rules:{
+		      wx_squence:{required :true, digits:true, maxlength:9}
+			 },
+			messages:{
+			  wx_squence:{required:"排序不能为空", digits:"排序必须为正整数", maxlength:"排序不能大于{0}个字符"}
+			 }
+		  });
+	#else
+		jQuery("#theForm").validate({
+			ignore: "",						  
+		    rules:{
+		      wx_squence:{required :true, digits:true, maxlength:9},
+		      upload_img$!obj.id:{ required :true}
+			 },
+			messages:{
+			  wx_squence:{required:"排序不能为空", digits:"排序必须为正整数", maxlength:"排序不能大于{0}个字符"},
+			  upload_img$!obj.id:{required:"图片不能为空"}
+			 }
+		  });
+	#end
+});	
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+<style>
+   .sort_order{margin-bottom:10px;text-align:left;}
+   .sort_order_text{padding-left:135px;}
+   .current_div_l,.current_div_k{overflow:hidden;margin-bottom:10px;}
+   .current_photo_text{float:left;margin-left:115px;}
+   .current_photo_img,.current_div_k2{float:left;margin-left:5px;}
+   .current_div_k1{float:left;margin-left:115px;}
+   .submit_btn111{margin-left:-118px !important;}
+</style>
+</head>
+<body>
+<form action="$!webPath/admin/wx_moldbaby_save.htm" method="post"  name="theForm" id="theForm" enctype="multipart/form-data">
+	 <input name="id" type="hidden" id="id" value="$!obj.id" />
+	 <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage"/>
+	 <div class="sort_order">
+	  	   <span class="sort_order_text"><sup style="color:red">*</sup>排序 :</span>
+	  	   <span class="size200">
+	  	  	 <input type="text" name="wx_squence" id="wx_squence" style="height:25px;" value="$!obj.wx_squence"  />
+	  	   </span>
+	  </div>
+	  #if($!obj && $!obj.wx_moldbaby_photo)
+	  <div class="mt15 current_div_l">
+	  	 	<span class="current_photo_text">当前图片 :</span>	
+	  	 	<span class="current_photo_img">
+	  	  		 <img src="$!obj.wx_moldbaby_photo.path/$!obj.wx_moldbaby_photo.name" width="150" height="60" />
+	  	    </span>
+	  </div>
+      #end
+	   <div class="mt15 current_div_k">
+	  	 	<span class="current_div_k1">爆款图片 :</span>	
+	  	 	<span class="current_div_k2">
+	  	  		 <input name="upload_img$!obj.id" type="file" id="upload_img$!obj.id" value="$!obj.wx_moldbaby_photo.path/$!obj.wx_moldbaby_photo.name"/>
+	  	    </span>
+	  </div>
+	  <div><span style="color: red;">(最佳尺寸： 大图312px*346,小图312px*173)</span></div>
+	  <div class="submit">
+   		<span class="pad130"><input name="save" type="button" class="submit_btn111" value="提交" onclick="saveForm()"/></span>
+  	  </div>
+</form>
+</body>
+</html>
+

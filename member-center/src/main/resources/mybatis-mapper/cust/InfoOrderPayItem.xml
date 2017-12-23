@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoOrderPayItemMapper"> 
+	<!-- 原子服务-子订单新增 -->
+	<insert id="addInfo" parameterType="java.util.Map">
+		INSERT INTO
+		INFO_ORDER_PAY_ITEM
+		VALUeS
+		(#{ORDER_PAY_ITEM_ID},
+		#{ORDER_ID},
+		#{PAY_SERIAL},
+		#{PAY_TYPE},
+		#{PAY_AMOUNT},
+		sysdate ,
+		#{DEDU_AMOUNT},
+		#{EXT_PAY_SERIAL})
+	</insert>
+	<select id="qryInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		select *
+		from INFO_ORDER_PAY_ITEM
+		<where>
+			1=1
+			<if test="ORDER_ID != null and ORDER_ID != ''">
+				and ORDER_ID = #{ORDER_ID}
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,40 @@
+# ----------------------------------------
+# COMMON PROPERTIES
+# ----------------------------------------
+member-center:
+  # 是否开启登录密码逻辑:MD5(密文+随机数)
+  open_rndnum_encryption: true
+  # 短信验证码模板
+  sms-login-model: "星美登录验证码为:#smsCode#，请您及时填写。如非本人操作，请忽略本短信。"
+  # 短信验证码模板
+  sms-register-model: "星美注册验证码为:#smsCode#，请您及时填写。如非本人操作，请忽略本短信。" 
+  
+  
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+
+member-center:
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+
+member-center:
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+member-center:

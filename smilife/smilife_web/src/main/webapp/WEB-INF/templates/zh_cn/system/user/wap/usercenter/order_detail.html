@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>订单详情 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body class="user_bg">
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/order_list.htm?type=$!type"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">订单详情</span>#if($!obj.order_status==10) <input class="del" type="button" id="cond" value="取消订单"> #end</div>
+
+<div class="order_page">
+	<!--交易成功-->
+	<table class="trade_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	<td class="td_left"><img src="$!webPath/resources/style/system/front/wap/images/order_info_01.png" width="30" height="30" /></td>
+                <td>
+                	<ul> 
+                	#if($!obj.order_status == 0)
+                    	<li class="big"><span class="fl">订单已取消</span></li>
+                    #elseif($!obj.order_status > 15)
+                    	<li class="big"><span class="fl">交易成功</span></li>
+                    #else
+                    	<li class="big"><span class="fl">交易中</span></li>
+                    #end
+                        #set($price = $!orderFormTools.query_order_price("$!obj.id"))
+                        <li>订单金额：￥ $!{price}</li> 
+                        #set($order_total_ship_price=$!obj.ship_price) 
+                        #if($!obj.child_order_detail)
+						   #foreach($child_map in $!orderFormTools.queryGoodsInfo("$!obj.child_order_detail"))
+						       #set($child_order=$!orderFormTools.query_order("$!child_map.get('order_id')"))
+						       #set($order_total_ship_price=$!order_total_ship_price+$!child_order.ship_price)
+				           #end
+    					#end
+                        <li>运费金额：￥ $!order_total_ship_price</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+	<!--收货人-->
+    <table class="trade_table cnee_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	<td class="td_left"><img src="$!webPath/resources/style/system/front/wap/images/order_info_02.png" width="30" height="30" /></td>
+                <td>
+                	<ul>
+                    	<li class="big"><span class="fl">收货人: $!obj.receiver_Name	</span><span class="fr">$!obj.receiver_mobile</span></li>
+                    	 #if($!obj.receiver_card)<li>身份证: $!obj.receiver_card</li>#end
+                        <li>收货地址：$!obj.receiver_area $!obj.receiver_area_info</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+
+	
+	<div class="order_page_box">
+    	<h1><span class="fl">订单号：$!obj.order_id</span>
+    		  <!-- 商品图标start -->
+                   #if($!{obj.goodsConfig.iconUrl})
+                       <img class="global-logo" src="$!webPath/$!{obj.goodsConfig.iconUrl}" />
+                   #end
+              <!-- 商品图标end -->
+    	</h1>
+        
+        
+        #foreach($map in $!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+        #set($goods_name = "$!{map.get('goods_name')}")
+        #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+        #set($img="$!{goods_mainphoto_path}")
+        #set($goods_count = "$!{map.get('goods_count')}")
+        #set($goods_price = "$!{map.get('goods_price')}")
+        #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+        <div class="order_goods">
+        	<div class="dt"><a href="javascript:void(0);"><img src="$img" width="50" height="50" /></a></div>
+            <ul>
+            	<li><b>¥ $!goods_price</b></li>
+                <li>X $!goods_count</li>
+            </ul>
+            <div class="dd dd_01">
+            	<span class="name"><a href="javascript:void(0);">$!goods_name</a></span>
+                <span class="size">$!goods_gsp_val </span>
+            </div>
+        </div>    
+        #end    
+        
+        #if($!obj.order_seller_intro)
+        <table class="trade_table cnee_table" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="td_mid">
+                    #foreach($osi in $!orderFormTools.queryGoodsInfo("$!obj.order_seller_intro"))
+                    #if($!osi.get("order_id")==$!obj.id)
+                        <ul>
+                            <li class="big"><span class="fl">虚拟商品名称： $!osi.goods_name</span></li>
+                            <li class="big green">卖家留言</li>
+                            <li class="gray">$!osi.order_seller_intro</li>
+                        </ul>
+                    #end
+                    #end  
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+        #end
+        #if($!obj.shipCode)
+        <!--物流信息-->
+        <a href="$!webPath/wap/buyer/ship_detail2.htm?order_id=$!obj.id">
+        <table class="trade_table cnee_table" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="td_left"><img src="$!webPath/resources/style/system/front/wap/images/order_info_03.png" width="22" height="70" /></td>
+                    <td class="td_mid">
+                        <ul>
+                            <li class="big"><span class="fl">物流信息: $!orderFormTools.queryGoodsInfo("$!obj.express_info").get("express_company_name")</span></li>
+                            <li class="green">点击查看您的物流信息</li>
+                            <li class="gray">物流单号：$!obj.shipCode</li>
+                        </ul>
+                    </td>
+                    <td><img src="$!webPath/resources/style/system/front/wap/images/order_info_04.png" width="13" height="45" /></td>
+                </tr>
+            </tbody>
+        </table>
+        </a>
+        #end
+        #set($coupon_map = $!orderFormTools.getDiscountAmounts($!obj.id))
+      #set($coupon_total_amount=$coupon_map.get("totalCouponPrice"))
+      #set($er_amount=$coupon_map.get("totalEnoughReducePrice"))
+        
+        
+        <table class="fre_table" cellpadding="0" cellspacing="0">
+        	<tbody>
+        		<tr>
+            		<td width="50%" align="left">商品金额</td>
+            		<td align="right"><span class="big red" id="sc_total_price">¥$!obj.goods_amount</span></td>
+          		</tr>
+        		<tr>
+            		<td align="left">优惠券</td>
+           			<td align="right"><span class="big red" id="bottom_coupon_price">¥$!{coupon_total_amount}</span></td>
+         	 	</tr>
+            	<tr>
+                	<td width="50%" align="left">运费</td>
+                    <td align="right"><span class="big red">¥$!obj.ship_price</span></td>
+                </tr>
+                <tr>
+          			<td align="left">满减金额 </td>
+         			<td align="right"><span class="big red" id="bottom_er_price">¥$!er_amount</span></td>
+          		</tr>
+                <tr>
+                	<td align="left"><span class="big">实付款</span></td>
+                    <td align="right"><span class="big red">¥$!obj.totalPrice</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="order_box_bt" style="border-top: 1px solid #eee;">
+        #if($!obj.goodsConfig && $!obj.goodsConfig.configCode != "hx")
+        #if($!obj.order_status==20)
+	    	<a onclick="checkOrderStatus('$!webPath/wap/buyer/order_application_refund.htm?id=$!obj.id',this,'$!obj.id',1);" href="javascript:void(0);"  class="refund_bottom">申请退款</a>     
+		#end
+		#if($!obj.order_status==25)
+			<a onclick="checkOrderStatus('$!webPath/wap/buyer/order_application_refund.htm?id=$!obj.id', this, '$!obj.id',2);" href="javascript:void(0);"  class="refund_bottom">审核中</a>                                             
+		#end
+		#if($!obj.order_status==27)
+			<a onclick="checkOrderStatus('$!webPath/wap/buyer/order_application_refund.htm?id=$!obj.id',this,'$!obj.id',1);" href="javascript:void(0);"  class="refund_bottom">申请退款</a>                                       
+		#end
+		#if($!obj.order_status==80)
+			 退款中                                        
+		#end
+		#if($!obj.order_status==85)
+			 退款已提交                                          
+		#end
+		#if($!obj.order_status==87)
+			退款失败                                          
+		#end
+		#if($!obj.order_status==90)
+			退款完成                                           
+		#end
+		#end
+    </div>
+    </div>
+    #if($!obj.child_order_detail)
+    #foreach($child_map in $!orderFormTools.queryGoodsInfo("$!obj.child_order_detail"))
+        #set($child_order=$!orderFormTools.query_order("$!child_map.get('order_id')"))
+        #set($order_total_ship_price=$order_total_ship_price+$child_order.ship_price)
+        #set($coupon_map = $!orderFormTools.getDiscountAmounts($!child_order.id))
+      		#set($coupon_total_amount=$!coupon_map.get("totalCouponPrice"))
+      		#set($er_amount=$!coupon_map.get("totalEnoughReducePrice"))
+        #set($order_transport_info=$!order_transport_info+"--"+$!child_order.transport)
+    <div class="order_page_box">
+    	<h1><span class="fl">订单号：$!child_order.order_id</span>
+    	<!-- 商品图标start -->
+            #if($!{child_order.goodsConfig.iconUrl})
+                <img src="$!webPath/$!{child_order.goodsConfig.iconUrl}" />
+            #end
+        <!-- 商品图标end -->
+    	</h1>
+        #foreach($map in $!orderFormTools.queryGoodsInfo("$!child_map.get('order_goods_info')"))
+        #set($goods_id = "$!{map.get('goods_id')}")	
+        #set($goods_name = "$!{map.get('goods_name')}")
+        #set($goods_count = $!{map.get('goods_count')})
+        #set($goods_price = $!{map.get('goods_price')})
+        #set($goods_all_price = $!{map.get('goods_all_price')})
+        #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+        #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+        #set($img="$!{goods_mainphoto_path}")      
+        <div class="order_goods">
+        	<div class="dt"><a href="javascript:void(0);"><img src="$!img" width="50" height="50" /></a></div>
+            <ul>
+            	<li><b>¥ $!goods_price</b></li>
+                <li>X $!goods_count</li>
+            </ul>
+            <div class="dd dd_01">
+            	<span class="name"><a href="javascript:void(0);">$!goods_name</a></span>
+                <span class="size">$!goods_gsp_val</span>
+            </div>
+        </div>
+        #end
+        #if($!child_order.shipCode)
+        <!--物流信息-->
+        <a href="$!webPath/wap/buyer/ship_detail2.htm?order_id=$!child_order.id">
+        <table class="trade_table cnee_table" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="td_left"><img src="$!webPath/resources/style/system/front/wap/images/order_info_03.png" width="22" height="70" /></td>
+                    <td class="td_mid">
+                        <ul>
+                            <li class="big"><span class="fl">物流信息: $!orderFormTools.queryGoodsInfo("$!child_order.express_info").get("express_company_name")</span></li>
+                            <li class="green">点击查看您的物流信息</li>
+                            <li class="gray">物流单号：$!child_order.shipCode</li>
+                        </ul>
+                    </td>
+                    <td><img src="$!webPath/resources/style/wap/images/order_info_04.png" width="13" height="45" /></td>
+                </tr>
+            </tbody>
+        </table>
+        </a>
+        #end
+        #if($!child_order.order_seller_intro)
+        <table class="trade_table cnee_table" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="td_mid">
+                    #foreach($osi in $!orderFormTools.queryGoodsInfo("$!child_order.order_seller_intro"))
+                    #if($!osi.get("order_id")==$!child_order.id)
+                        <ul>
+                            <li class="big"><span class="fl">虚拟商品名称： $!osi.goods_name</span></li>
+                            <li class="green">卖家留言:$!osi.order_seller_intro</li>
+                            
+                        </ul>
+                    #end
+                    #end  
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+        #end
+        
+        <table class="fre_table" cellpadding="0" cellspacing="0">
+        	<tbody>
+            	<tr>
+            		<td width="50%" align="left">商品金额</td>
+            		<td align="right"><span class="big red" id="sc_total_price">¥$!child_order.goods_amount</span></td>
+          		</tr>
+        		<tr>
+            		<td align="left">优惠券</td>
+           			<td align="right"><span class="big red" id="bottom_coupon_price">¥$!{coupon_total_amount}</span></td>
+         	 	</tr>
+            	<tr>
+                	<td width="50%" align="left">运费</td>
+                    <td align="right"><span class="big red">¥$!child_order.ship_price</span></td>
+                </tr>
+                <tr>
+          			<td align="left">满减金额 </td>
+         			<td align="right"><span class="big red" id="bottom_er_price">¥$!er_amount</span></td>
+          		</tr>
+                <tr>
+                	<td align="left"><span class="big">实付款</span></td>
+                    <td align="right"><span class="big red">¥$!child_order.totalPrice</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="order_box_bt" style="border-top: 1px solid #eee;">
+        #if($!child_order.goodsConfig && $!child_order.goodsConfig.configCode != "hx")
+        #if($!child_order.order_status==20)
+	    	<a onclick="checkOrderStatus('$!webPath/wap/buyer/order_application_refund.htm?id=$!child_order.id', this, '$!child_order.id', 1);" href="javascript:void(0);"  class="refund_bottom">申请退款</a>     
+		#end
+		#if($!child_order.order_status==25)
+			<a onclick="checkOrderStatus('$!webPath/wap/buyer/order_application_refund.htm?id=$!child_order.id', this, '$!child_order.id', 2);" href="javascript:void(0);"  class="refund_bottom">审核中</a>                                             
+		#end
+		#if($!child_order.order_status==27)
+			<a onclick="checkOrderStatus('$!webPath/wap/buyer/order_application_refund.htm?id=$!child_order.id', this, '$!child_order.id', 1);" href="javascript:void(0);"  class="refund_bottom">申请退款</a>                                       
+		#end
+		#if($!child_order.order_status==80)
+			 退款中                                        
+		#end
+		#if($!child_order.order_status==85)
+			 退款已提交                                          
+		#end
+		#if($!child_order.order_status==87)
+			退款失败                                          
+		#end
+		#if($!child_order.order_status==90)
+			退款完成                                           
+		#end
+		#end
+    </div>
+    </div>
+    #end
+    #end
+    #if($obj.whether_gift==1)
+    <div class="order_page_box">
+    	<h1><span class="fl">满就送商品活动</span></h1>
+        #foreach($map in $!orderFormTools.queryGoodsInfo("$!obj.gift_infos"))
+        #set($goods_name = "$!{map.get('goods_name')}")
+        #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+        #set($img="$!{goods_mainphoto_path}")
+        #set($goods_count = "1")
+        #set($goods_price = "$!{map.get('goods_price')}")
+        <div class="order_goods">
+        	<div class="dt"><a href="javascript:void(0);"><img src="$img" width="50" height="50" /></a></div>
+            <ul>
+            	<li><b>¥ $!goods_price</b></li>
+                <li>X $!goods_count</li>
+            </ul>
+            <div class="dd dd_01">
+            	<span class="name"><a href="javascript:void(0);">$!goods_name</a></span>
+                <span class="size">$!goods_gsp_val </span>
+            </div>
+        </div>    
+        #end 
+    </div>  
+    #end  
+</div>
+
+<!--订单详细底部-->
+<div class="order_foot">
+    #if($!obj.order_status==40)
+    <a href="$!webPath/wap/buyer/order_discuss.htm?id=$!obj.id">添加评论</a>
+    #end
+    #if($!obj.order_status==30 || $!obj.order_status==35)
+    <a href="javascript:void(0);" onClick="order_cofirm($!{obj.id})">确认收货</a>
+    #end
+    #if($!obj.order_status==10)
+    <a class="bg_red" href="$!webPath/wap/order_pay_view.htm?id=$!obj.id"> 付 款 </a>
+    #end
+	
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+	jQuery(document).ready(function(e) {
+        jQuery("#cond").click(function(){
+			window.location.href="$!webPath/wap/buyer/order_cancel.htm?id=$!{obj.id}";
+		});
+    });
+    function order_cofirm(id){
+		if(confirm("确定要确认收货？")){
+			window.location.href="$!webPath/wap/buyer/order_cofirm.htm?id="+id;
+		}
+	}
+   
+    
+  //type:1申请退款 2取消退款
+    var checkOrderStatus=function(url,obj,id,type){
+    	if(check(url,id, type)){
+    		//jQuery(obj).attr("dialog_uri",url);
+    		window.location.href = url;
+    	}else{
+    		if(type == 1){
+    			var prompt = "目前的订单状态不能申请退款！";
+    		}else if(type == 2){
+    			var prompt = "目前的订单状态不能取消退款！";
+    		}
+    		showDialog("msg_info", "", prompt, 2, "warning", 3, function(){
+    			window.location.href=window.location.href;
+    		});
+    	}
+    };
+    var check=function(url,id, type){
+    	var result=false;
+    	jQuery.ajax({
+    		url:"$!webPath/wap/buyer/canRefund.htm",
+    		data:{id:id, type:type},
+    		async:false,
+    		dataType:"json",
+    		success:function(data){
+    			if(data){//可以退款
+    				result=true;
+    			}
+    		}
+    	});
+    	return result;
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+
+	<http auto-config="false" entry-point-ref="loginUrlEntryPoint" disable-url-rewriting="true">
+		<session-management>
+			<concurrency-control max-sessions="2" error-if-maximum-exceeded="true" />
+		</session-management>
+		
+		<access-denied-handler ref="accessDeniedHandler" />
+
+		<logout delete-cookies="uid" invalidate-session="true" logout-url="/xmh_logout.htm" success-handler-ref="logoutSuccessHandler" />
+
+		<custom-filter position="CAS_FILTER" ref="casProcessingFilter" />
+		<custom-filter after="CAS_FILTER" ref="wapCasProcessingFilter" />
+		<custom-filter position="FORM_LOGIN_FILTER" ref="loginAuthenticationFilter" />
+
+		<custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="resourceSecurityInterceptor" />
+	</http>
+
+	<beans:bean id="loginUrlEntryPoint" class="com.iskyshop.core.security.LoginUrlEntryPoint" />
+
+	<beans:bean id="securityManager" class="com.iskyshop.core.security.support.SecurityManagerSupport" />
+
+	<beans:bean id="accessDeniedHandler" class="com.iskyshop.core.security.support.CustomedAccessDeniedHandler" />
+
+	<beans:bean id="logoutSuccessHandler" class="com.iskyshop.core.security.support.LogoutSuccessHandler" />
+
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<beans:property name="decisionVoters">
+			<beans:list>
+				<beans:bean class="org.springframework.security.access.vote.RoleVoter"></beans:bean>
+				<beans:bean class="org.springframework.security.access.vote.AuthenticatedVoter"></beans:bean>
+			</beans:list>
+		</beans:property>
+		<beans:property name="allowIfAllAbstainDecisions" value="false" />
+	</beans:bean>
+
+	<beans:bean id="authenticationFailureHandler" class="com.iskyshop.core.security.support.CustomedAuthenticationFailureHandler" />
+
+	<beans:bean id="authenticationSuccessHandler" class="com.iskyshop.core.security.support.CustomedAuthenticationSuccessHandler" />
+
+	<beans:bean id="passwordEncoder" class="com.iskyshop.core.security.support.CustomedPasswordEncoder" />
+	
+	<beans:bean id="authenticationDetailsSource" class="com.iskyshop.core.security.support.CustomedAuthenticationDetailsSource" />
+
+	<authentication-manager alias="authenticationManager"  erase-credentials="true">
+		<authentication-provider ref="casAuthenticationProvider" /> 
+		<authentication-provider ref="authenticationProvider" />
+	</authentication-manager>
+
+	<!-- 买家pc端 cas 登录过滤器 -->
+	<beans:bean id="casProcessingFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationFailureHandler" ref="authenticationFailureHandler" />
+		<beans:property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
+		<beans:property name="authenticationDetailsSource" ref="authenticationDetailsSource" />
+		<beans:property name="filterProcessesUrl" value="/xmh_cas_login.xmh" /><!-- 后缀改成.xmh而不是.htm的原因是：商城有很多对.htm的post请求，而org.jasig.cas.client.util.CommonUtils.safeGetParameter方法 对这些请求总是打印warn日志，导致日志文件太多这些无用信息，故通过为退出时cas server发来的退出请求另起后缀，以减少上述的warn日志（实际效果：只会在此退出请求中出现上述日志了）-->
+	</beans:bean>
+
+	<!-- cas PC端登录成功后的返回地址 -->
+	<beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+		<beans:property name="service" value="${CAS_CLIENT_SERVICE_URL}" />
+	</beans:bean>
+
+	<!-- CAS PC端认证切入点，此Bean将在LoginUrlEntryPoint类中被引用 -->
+	<beans:bean id="casEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+		<beans:property name="loginUrl" value="${CAS_SERVER_LOGIN_URL}" />
+		<beans:property name="serviceProperties" ref="serviceProperties" />
+	</beans:bean>
+	
+	<!-- 买家wap端 cas 登录过滤器 -->
+	<beans:bean id="wapCasProcessingFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationFailureHandler" ref="authenticationFailureHandler" />
+		<beans:property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
+		<beans:property name="authenticationDetailsSource" ref="authenticationDetailsSource" />
+		<beans:property name="filterProcessesUrl" value="/xmh_wap_cas_login.xmh" /><!-- 注：此url不可随意修改，因为在CustomedAuthenticationDetailsSource中会使用其来判断cas登录请求是从PC还是从WAP端过来的 -->
+	</beans:bean>
+	
+	<!-- cas wap端登录成功后的返回地址 -->
+	<beans:bean id="wapServiceProperties" class="org.springframework.security.cas.ServiceProperties">
+		<beans:property name="service" value="${CAS_CLIENT_SERVICE_WAP_URL}" />
+	</beans:bean>
+
+	<!-- CAS wap端认证切入点，此Bean将在LoginUrlEntryPoint类中被引用 -->
+	<beans:bean id="wapCasEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+		<beans:property name="loginUrl" value="${CAS_SERVER_LOGIN_URL}" />
+		<beans:property name="serviceProperties" ref="wapServiceProperties" />
+	</beans:bean>
+
+	<!-- cas认证提供器。为性能考虑，CAS的provider要放其它provider的前面 -->
+	<beans:bean id="casAuthenticationProvider" class="com.iskyshop.core.security.support.CustomedCasAuthenticationProvider">
+		<beans:property name="authenticationUserDetailsService" ref="securityManager" />
+		<beans:property name="pcServiceProperties" ref="serviceProperties" />
+		<beans:property name="wapServiceProperties" ref="wapServiceProperties" />
+		<beans:property name="ticketValidator">
+			<beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				<beans:constructor-arg index="0" value="${CAS_SERVER_URL_PREFIX}" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="key" value="xm_xingmeihui_mall" />
+	</beans:bean>
+
+	<beans:bean id ="authenticationProvider"  class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<beans:property name="passwordEncoder" ref="passwordEncoder" />
+		<beans:property name="userDetailsService" ref="securityManager" />
+	</beans:bean>
+
+	<!-- 自定义店家及后台管理员登录过滤器 -->
+	<beans:bean id="loginAuthenticationFilter" class="com.iskyshop.core.security.support.CustomedUsernamePasswordAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
+		<beans:property name="authenticationFailureHandler" ref="authenticationFailureHandler" />
+		<beans:property name="filterProcessesUrl" value="/xmh_login.htm" />
+	</beans:bean>
+
+	<beans:bean id="secureResourceFilterInvocationDefinitionSource" class="com.iskyshop.core.security.interceptor.SecureResourceFilterInvocationDefinitionSource" />
+
+	<beans:bean id="resourceSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="accessDecisionManager" />
+		<beans:property name="securityMetadataSource" ref="secureResourceFilterInvocationDefinitionSource" />
+	</beans:bean>
+
+</beans:beans>

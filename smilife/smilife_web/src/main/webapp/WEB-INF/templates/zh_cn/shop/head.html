@@ -1,0 +1,95 @@
+<script type="text/javascript">
+ var total_price=0;
+ #set($total_price=0)
+ #foreach($gc in $cart)
+  #if($!gc.goods.group_buy==2)
+    #set($total_price=$!{gc.goods.group_goods.gg_price}*$!{gc.count}+$total_price)
+  #else
+    #set($total_price=$!{gc.goods.store_price}*$!{gc.count}+$total_price)
+  #end
+ #end
+ var current_webPath = "$!current_webPath";
+ var preInputKeys = "$!config.preInputKeys";
+</script>
+<!--[if lt IE 9]>
+    <script src="$!webPath/resources/js/css3-mediaqueries.js"></script>
+<![endif]-->
+<div class="head_width" id="head_h">
+  <div class="head"> 
+  #if($!config.websiteLogo)
+    #set($img="$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+    #else
+    #set($img="$!webPath/resources/style/system/front/default/images/logo.png")
+    #end
+    <h1 class="logo"><span>
+      <p><a href="$!webPath/index.htm"> <img src="$!img" border="0" alt="网上购物网站排名上星美汇商城,购青春,惠生活"/> </a></p>
+      </span></h1>
+    <form action="$!webPath/search.htm" method="post"  id="searchForm">
+      <input name="type" type="hidden" id="type" value="$!type" />
+      <div class="head_search" id="head_search" style="width:580px; margin-left:68px;"> <span class="head_seartxt">
+        <input name="keyword" type="text" id="keyword" placeholder="" x-webkit-speech lang="zh-CN" onwebkitspeechchange="jQuery('#searchForm').submit()" class="h_sear_txt" style="padding-left:36px;width:463px;" autocomplete="off"  value="$!keyword" />
+        <input name="" type="submit"  class="h_sear_btn" value="搜索"/>
+        </span><span class="head_searstr">#if($!config.hotSearch!="")热门搜索：#foreach($info in $CommUtil.splitByChar("$!config.hotSearch",",")) <a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a> #end #end</span>
+      	<!--搜索历史 -->
+    	<div class="head_search_history" id="head_search_history" style="display:none">
+    	<dl>
+        	<dt>
+            	<ul>
+                	<li class="head_search_history_top"><span>搜索历史</span><i ><a href="javascript:void(0)" onclick="search_data_del_all()">清除全部</a></i></li>
+                </ul>
+            </dt>
+            <dd><span  class="head_search_history_hot">热门搜索...</span>
+            	<ul>
+                	
+                    #if($!config.hotSearch!="")
+                    #foreach($info in $CommUtil.splitByChar("$!config.hotSearch",","))
+                	<li><a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a></li>
+                    #end
+                    #end
+                </ul>
+            </dd>
+        </dl>
+    </div>  
+        <!--搜索历史 -->
+        <div class="head_search_history_up" id="head_search_history_up" style="display:none">
+    	<dl>
+        	<dt>
+            	<ul>
+                	<li class="head_search_history_top"><span>搜索历史</span><i ><a href="">清除全部</a></i></li>
+                </ul>
+            </dt>
+            <dd><span  class="head_search_history_hot">热门搜索...</span>
+            	<ul>
+                	
+                    #if($!config.hotSearch!="")
+                    #foreach($info in $CommUtil.splitByChar("$!config.hotSearch",","))
+                	<li><a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a></li>
+                    #end
+                    #end
+                </ul>
+            </dd>
+        </dl>
+    </div>    	
+      </div>
+    </form>
+    <!--用户中心开始-->
+    <div class="top_user" id="top_user">
+      <span class="top_user_sp" id="top_user_sp"><a href="$!webPath/buyer/index.htm">用户中心</a><s></s></span>
+      <div class="top_user_hid" id="top_user_hid" style="display:none"> </div>
+    </div>
+    <div class="goodscar" id="goodscar">
+    
+    
+      <span class="goodscar_sp" id="goodscar_sp">
+      <span>
+      <i class="goodscar_img"></i>
+      <em class="goodscar_num"><b id="cart_goods_count_top">$!carts.size()</b></em><a href="$!webPath/goods_cart1.htm">去购物车结算</a>
+      </span>
+      </span>
+      
+
+      <div class="goodscar_con_box" id="goodscar_con_box" style="display:none" mark="none"> </div>
+    </div>
+    <!--购物车结束-->
+  </div>
+</div>

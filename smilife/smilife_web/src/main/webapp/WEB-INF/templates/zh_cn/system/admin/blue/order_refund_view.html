@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+#macro ( genericTree $somelist ) 
+#foreach ( $some in $somelist )
+<option value="$!some.id">
+#if($!some.level>0)
+#foreach($count in [0..$!some.level])&nbsp;#end #end $!some.className</option>
+#genericTree($some.childs) 
+#end 
+#end
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	
+	var payMark=jQuery("#payMark").val();
+	if(payMark=="chinapay_nocard" || payMark=="chinapay"){
+		jQuery("#ulPayType").css("display","");
+		changeText("银联");
+	}else if(payMark=="alipay" || payMark=="alipay_wap" || payMark=="alipay_app"){
+		jQuery("#ulReason").css("display","");
+		jQuery("#ulPayType").css("display","");
+		changeText("支付宝");
+	}else if(payMark=="wx_app" || payMark=="wx_pay"){
+		jQuery("#ulPayType").css("display","");
+		changeText("微信");
+	}else{
+		jQuery("#ulPre").css("display","");
+	}
+	
+	jQuery("#theForm").validate({
+	    rules:{
+	    	amount:{required :true,number:true,min:0,inputAmount:true}
+		 },
+		messages:{
+			amount:{required:"退款金额不能为空",number:"只能为数字",min:"退款金额只能正数"}
+		}
+	  });
+
+/*   jQuery("#userName").blur(function(){
+	 var userName=jQuery(this).val();								
+     jQuery.post("$!webPath/admin/predeposit_user.htm",{"mobile":userName},function(data){
+		  if(data.status=="success"){																			  
+	        jQuery("#user_balance_info").text("可用余额："+data.availableBalance+",冻结余额："+data.freezeBlance);
+			jQuery("#user_id").val(data.id);
+			jQuery("#user_balance_info_parent").show();
+		  }else{
+		     jQuery("#userName").val(""); 
+			 jQuery("#user_balance_info").text("不存在该会员");
+			 jQuery("#user_balance_info_parent").show();
+			 jQuery("#user_balance_info_parent").fadeOut(3000);
+		  }
+	 },"json");
+  }); */
+  
+  
+  /**
+ ** 减法函数，用来得到精确的减法结果
+ ** 说明：javascript的减法结果会有误差，在两个浮点数相减的时候会比较明显。这个函数返回较为精确的减法结果。
+ ** 调用：accSub(arg1,arg2)
+ ** 返回值：arg1加上arg2的精确结果
+ **/
+function accSub(arg1, arg2) {
+    var r1, r2, m, n;
+    try {
+        r1 = arg1.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r1 = 0;
+    }
+    try {
+        r2 = arg2.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r2 = 0;
+    }
+    m = Math.pow(10, Math.max(r1, r2));  //动态控制精度长度
+    n = (r1 >= r2) ? r1 : r2;
+    return ((arg1 * m - arg2 * m) / m).toFixed(n);
+}
+
+
+  jQuery("#amount").blur(function(){
+	  	 var ablePrice = jQuery("#ablePrice").val(); 
+		 var amount = jQuery(this).val();								
+		 var oldMoney = jQuery("#oldMoney").val(); 
+	  	 if(accSub(ablePrice,amount)<0){
+	  		 jQuery(this).val(oldMoney); 
+	  		 alert("退款金额已超过订单总金额,请重新输入 ");
+	  		 return;
+	  	 }
+		 var ret = accSub(amount,oldMoney);
+		 if(ret!=0){
+			 $("#info").html($("#tips").val().replace(oldMoney,amount)+",商家手动调整金额"+ret);
+		 }
+  });
+  
+});
+
+jQuery.validator.addMethod("inputAmount", function(value, element){
+	 var re = /^(([1-9][0-9]*)(\.\d{1,2})?|(0\.[0][1-9])|(0\.[1-9][0-9]?))$/g;
+	 return re.test(value);
+}, "金额格式不正确,例如：>= 0.01");	
+
+function changeText(str){
+	var tips=$("#tips");
+	var info=$("#info");
+	var tipVal=tips.val().replace("预存款",str);
+	tips.val(tipVal);
+	info.html(tipVal);
+}
+
+function saveForm(){
+	var theForm=jQuery("#theForm");
+    var url="";
+    var payCenterNo = jQuery("#payCenterNo").val();
+   if(payCenterNo){
+	    url='$!webPath/admin/refund_pay_center.htm';
+   }else{
+	   	var payMark=jQuery("#payMark").val();
+	    if(payMark=="chinapay_nocard" || payMark=="chinapay"){
+	    	url='$!webPath/admin/order_ret_pay.htm';//银联
+	    }else if(payMark=="alipay" || payMark=="alipay_wap" || payMark=="alipay_app"){
+	    	url='$!webPath/admin/order_alipay_ret_pay.htm';//支付宝
+	    }else if(payMark=="wx_app" || payMark=="wx_pay"){
+	    	url='$!webPath/admin/order_weixi_ret_pay.htm';//微信
+	    }else{
+	    	url='$!webPath/admin/order_refund_finish.htm';
+	    }
+   }
+    theForm.attr("action",url);
+    theForm.submit();
+}
+</script>
+<body>
+<div class="cont">
+  <h1 class="seth">退款管理</h1>
+  <div class="nav_list">
+     <ul>
+      <li><a href="javascript:void(0);" class="this"><b>退款操作</b></a></li>
+     </ul>
+      </div>
+ <form name="theForm" id="theForm" action="$!webPath/admin/refund_finish.htm" method="post">
+  <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+  <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/refund_list.htm" />
+  <input name="type" id="type" type="hidden" value="order_refund" />
+  <input name="userName" id="userName" type="hidden" value="$!of.user_name" />
+  <input name="oldMoney" id="oldMoney" type="hidden" value="$!refund_money" />
+  <input name="tips" id="tips" type="hidden" value="$!{msg}" />
+   <div class="edit">
+  <div class="editul setcont">
+    <ul class="set1">
+      <li class="setcont_bg"><strong class="sred">*</strong>会员名：</li>
+      <li><span class="webname">$!of.user_name
+      </span></li>
+      <li style="width:100%; float:left;display:none;" id="user_balance_info_parent"><span class="webname" id="user_balance_info" style="color:#F00;">
+      </span></li>
+    </ul>
+    
+   <!--  <ul class="set1" id="ulPayType" style="display: none;">
+      <li  class="setcont_bg"><strong class="sred">*</strong>支付方式：</li>
+      <li><span class="webname">
+        gi为消费码
+        #if($!obj) $!obj.payment.name #else $!gi.payment.name #end
+      </span>
+      </li>
+    </ul> -->
+    
+      <ul class="set1" id="ulPre" style="display: none;">
+      <li  class="setcont_bg">预存款类型：</li>
+      <li><span class="webname">
+ 						可用金额
+      </span></li>
+    </ul>
+    <ul class="set1">
+      <li  class="setcont_bg"><strong class="sred">*</strong>金额：</li>
+      <li><span class="webname">
+      #if($!refundType == "101")
+        <input name="amount" type="text" id="amount" size="40" value="$!refund_money" />
+      #else
+      	<input name="amount" type="text" id="amount" size="40" value="$!refund_money" readonly="readonly" onfocus="this.blur();"/>
+      #end
+      </span>#if($!refund_money)<span id="nothis"><strong class="q"></strong><strong class="w">当买家使用优惠券购买时，会按照优惠价格的折扣率进行平均退款</strong><strong class="c"></strong></span>#end</li>
+    </ul>
+    </ul>
+      <ul class="set1">
+      <li  class="setcont_bg">满减折扣金额：</li>
+      <li><span class="webname">
+ 						$!enough_reduce_discount
+      </span></li>
+    </ul>
+    </ul>
+      <ul class="set1">
+      <li  class="setcont_bg">优惠券折扣金额：</li>
+      <li><span class="webname">
+ 						$!coupon_discount
+      </span></li>
+    </ul>
+    
+    <ul class="set1" id="ulReason" style="display: none;">
+      <li  class="setcont_bg">退款理由：</li>
+      <li><span class="webname">
+        <input type="text" name="retReason" id="retReason" value="订单退款" maxlength="10"/>
+      </span>
+      </li>
+    </ul>
+    
+	<ul class="set1">
+      <li  class="setcont_bg">备注：</li>
+      <li><span class="webname">
+        <textarea name="info" cols="40" rows="6" id="info">$!{msg}
+</textarea>
+      </span></li>
+	</ul>
+  </div>
+  </div>
+  <input type="hidden" id="refund_user_id" name="refund_user_id" value="$!of.user_id" />
+  <input type="hidden" id="enough_reduce_discount" name="enough_reduce_discount" value="$!enough_reduce_discount" />
+  <input type="hidden" id="coupon_discount" name="coupon_discount" value="$!coupon_discount" />
+  <input type="hidden" id="order_id" name="order_id" value="$!of.order_id" />
+   <input type="hidden" id="o_id" name="o_id" value="$!of.id" />
+  <input type="hidden" id="payMark" name="payMark" value="#if($!of)$!{of.payment.mark}#end" />
+  <input type="hidden" id="main_order_id" name="main_order_id" value="$!of.id" />
+  <input type="hidden" id="payCenterNo" name="payCenterNo" value="$!payCenterNo" />
+  </form>
+  <div class="submit">
+  <span class="pad120">  <input name="save" type="button" value="提交" onclick="saveForm()" /></span>
+  </div>
+</div>
+</body>
+</html>

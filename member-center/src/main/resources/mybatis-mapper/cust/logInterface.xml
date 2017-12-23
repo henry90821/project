@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.LogInterfaceMapper">
+	
+	
+	<!-- 登录日志新增 -->
+	<insert id="addLogInterface" parameterType="java.util.Map">
+	  INSERT INTO 
+	         LOG_INTERFACE_${MONTH}(LOG_ID,
+	                          REQUEST,
+	                          REQ_DATE,
+	                          RESPONSE,
+	                          RES_DATE,
+	                          REQ_SYSTEM,
+	                          RES_SYSTEM,
+	                          CRT_DATE,
+	                          INTERFACE_CODE) 
+			 VALUES(#{LOG_ID,jdbcType=NUMERIC},
+			        #{REQUEST,jdbcType=VARCHAR},
+			        #{REQ_DATE},
+			        #{RESPONSE,jdbcType=VARCHAR},
+			        #{RES_DATE},
+			        #{REQ_SYSTEM,jdbcType=VARCHAR},
+			        #{RES_SYSTEM,jdbcType=VARCHAR},
+			        <![CDATA[sysdate]]>,
+			        #{INTERFACE_CODE,jdbcType=VARCHAR})
+	</insert>
+</mapper>

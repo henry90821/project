@@ -1,0 +1,49 @@
+# ----------------------------------------
+# COMMON PROPERTIES
+# ----------------------------------------
+
+smi-swagger:
+  # 标题
+  title: 星美业务云服务
+  # 描述信息
+  description: 业务云服务将提供OAuth2安全认证、注册发现、云配置、状态监控等功能。
+  # 服务条款网址
+  terms-service-url: #{terms-service-url}
+  # 联系方式
+  contact: huangyaxiang@smimovie.com
+  # 是否允许提供API服务,默认为TRUE
+  enable: #{enable}
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+
+smi-swagger:
+  # 是否允许提供接口文档页面服务,默认为FALSE
+  allow-page: true
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+
+smi-swagger:
+  # 是否允许提供接口文档页面服务,默认为FALSE
+  allow-page: #{allow-page}
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+smi-swagger:
+  # 是否允许提供接口文档页面服务,默认为FALSE
+  allow-page: #{allow-page}

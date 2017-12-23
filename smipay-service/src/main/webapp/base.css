@@ -1,0 +1,75 @@
+@charset "utf-8";
+
+
+body {TEXT-ALIGN: center;}
+#center { MARGIN-RIGHT: auto; MARGIN-LEFT: auto; padding-bottom:10px}
+
+
+.head{
+    text-align:center;
+    width:100%;
+    line-height:50px;
+    border-bottom: #dedede 1px solid; 
+}
+
+ .orderinfo { 
+	border: #dedede 1px solid; 
+	height:100px;  
+	margin-bottom:20px;
+	
+}
+ .orderinfo .tabhead{
+    width:100%;
+    height:50px;
+    text-align:center;
+    background:#eee
+ }
+ 
+  .orderinfo .tabline{
+    width:100%;
+    height:50px;
+    text-align:center; 
+ }
+
+.orderinfo div span{
+	float:left;
+	width:30%;
+	line-height:50px;
+}
+
+.payinfo { 
+	width:100%;
+	border: #dedede 1px solid; 
+	height:380px;  
+	margin-bottom:20px;
+	
+}
+
+.payinfo div{  
+	float:left;
+	width:100%;
+	line-height:50px;
+	border-bottom: #dedede 1px solid; 
+}
+
+.payinfo div span{  
+	float:left;
+	line-height:50px;
+	text-align:left;
+	padding-left:30px; 
+}
+
+.payinfo img {
+	vertical-align:middle;
+	margin-right:50px;
+	}
+
+ .orderinfo div span:first-of-type{
+	padding-left:10px;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+}
+
+
+

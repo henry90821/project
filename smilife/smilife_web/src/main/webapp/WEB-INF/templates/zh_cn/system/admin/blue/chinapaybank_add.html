@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title> #macro ( genericTree $somelist ) #foreach ( $some in
+$somelist )
+<option value="$!some.id">#if($!some.level>0) #foreach($count
+	in [0..$!some.level])&nbsp;#end #end $!some.className</option>
+#genericTree($some.childs) #end #end
+</head>
+<link
+	href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"
+	rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("#theForm").validate({
+		submitHandler:function(form){showUploadImg();form.submit();},
+		ignore: "",						  
+	    rules:{
+	      bank_name:{required :true},
+	      bank_gate_id:{required:true,number:true},
+	      bank_index:{required:true,digit:true}
+	      #if(!$!edit)
+	      ,fileUploadField:{required:true}
+	      #end
+		 },
+		messages:{
+		  bank_name:{required:"银行名称不能为空"},
+		  bank_gate_id:{required:"网关号不能为空"},
+		  bank_index:{required:"位置索引不能为空"}
+		  #if(!$!edit)
+		  ,fileUploadField:{required:"银行图片不能为空"}
+		  #end
+		}
+	});
+	 
+	jQuery.validator.addMethod("digit", function(value, element){
+		 var re = /^(0|[1-9][0-9]*)$/g;
+		 return re.test(value);
+	 }, "请输入零和非零开头的数字");	 
+	
+	jQuery.validator.addMethod("number", function(value, element){
+		 var re = /^[0-9]*$/g;
+		 return re.test(value);
+	 }, "请输入数字");	 
+	
+	$("#bank_position option[value=$!obj.bank_position]").attr("selected", "selected");
+});
+
+
+jQuery(function(){
+    var textButton="<input type='text' name='textfield' id='textfield1' class='size13' /><input type='button' name='button' id='button1' value='' class='filebtn' />"
+	jQuery(textButton).insertBefore("#fileUploadField");
+	jQuery("#fileUploadField").change(function(){
+	jQuery("#textfield1").val(jQuery("#fileUploadField").val());
+	})
+});	
+
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+
+function showUploadImg(){
+	var fileUploadField=jQuery("#fileUploadField").val();
+	if(fileUploadField != ""){
+		jQuery("#img_wait").css("display","");
+	}
+}
+
+
+</script>
+<body>
+	<div class="cont">
+		<h1 class="seth">新增银行</h1>
+		<div class="nav_list">
+			<ul>
+				<li><a href="$!webPath/admin/chinapaybank_list.htm"
+					id="chinapaybank_platform"><b>银联在线列表</b></a></li>
+				#if(!$!edit)
+				<li><a href="javascript:void(0);" class="this"
+					id="chinapaybank_add_platform"><b>新增银行</b></a></li>
+				#else
+			      <li><a href="javascript:void(0);" class="this"><b>编辑银行</b></a></li>
+			    #end
+			</ul>
+
+		</div>
+		<form name="theForm" id="theForm"
+			action="$!webPath/admin/chinapaybank_save.htm" method="post" enctype="multipart/form-data">
+			
+			<input name="id" type="hidden" id="id" value="$!obj.id" /> 
+			<input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" /> 
+			
+			<div class="edit">
+				<div class="editul setcont">
+					<!--鼠标经过样式-->
+					<ul class="set1">
+						<li class="setcont_bg"><strong class="sred">*</strong>银行名称</li>
+						<li><span class="webname"> <input name="bank_name"
+								type="text" id="bank_name" value="$!obj.bank_name" size="40" />
+						</span></li>
+					</ul>
+					<ul class="set1">
+						<li class="setcont_bg"><strong class="sred">*</strong>网关号</li>
+						<li><span class="webname"> <input name="bank_gate_id"
+								type="text" id="bank_gate_id" value="$!obj.bank_gate_id" size="40" />
+						</span></li>
+					</ul>
+					<ul class="set1">
+						<li class="setcont_bg"><strong class="sred">*</strong>位置</li>
+						<li><span class="webname"> 
+						<select name="bank_position" id="bank_position" style="width: 150px">
+									<option id="bank_position_0" value="0">内部</option>
+									<option id="bank_position_1" value="1">外部</option>
+						</select>
+						</span></li>
+					</ul>
+
+					<ul class="set1">
+						<li class="setcont_bg"><strong class="sred">*</strong>位置索引</li>
+						<li><span class="webname"> <input name="bank_index"
+								type="text" id="bank_index" value="$!obj.bank_index" size="40" />
+						</span></li>
+					</ul>
+					#if($!edit)
+					<ul class="set1">
+						<li class="setcont_bg">当前图片</li>
+						<li><span class="webname"> 
+						<img src="$!obj.bank_img_url" width="90" height="30" />
+						</span></li>
+					</ul>
+					#end
+					<ul class="set1">
+						<li class="setcont_bg">#if(!$!edit)<strong class="sred">*</strong>#end银行图片</li>
+						<li><span class="webname"> 
+						        <span class="size13" >
+					            <input name="textfield" type="text" id="textfield1" />
+					            </span> 
+					            <span class="filebtn">
+					            <input name="button" type="button" id="button1" value=""/>
+					            </span> 
+					            <span style="float:left;" class="file" >
+						            <input name="fileUploadField" type="file" id="fileUploadField" size="30"/>
+						            <img id="img_wait" src="$!webPath/resources/style/common/images/wait.gif" style="padding-top:5px;display:none;" />
+					            </span>
+            				</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</form>
+		<div class="submit">
+			<span class="pad120"><input name="save" type="button"
+				value="提交" onclick="saveForm()" /></span>
+		</div>
+	</div>
+</body>
+</html>

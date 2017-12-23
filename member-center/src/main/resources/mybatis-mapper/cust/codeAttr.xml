@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CodeAttrMapper">
+	
+	<!-- 业务管理-业务查询 -->
+	<select id="qryOffer" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT A.OFFER_ID,
+             A.OFFER_TYPE,
+             A.OFFER_NAME,
+             A.OFFER_DESC,
+             A.STATUS_CD,
+             A.OFFER_PRICE,
+             A.EFF_DATE,
+             A.EXP_DATE
+      FROM CODE_OFFER A, CODE_OFFER_REGION B
+      <where>
+            A.OFFER_ID = B.OFFER_ID
+        <if test="REGION_ID != null and REGION_ID != ''">
+	        AND B.REGION_ID = #{REGION_ID}
+	    </if>
+	    <if test="OFFER_ID != null and OFFER_ID != ''">
+		    AND A.OFFER_ID = #{OFFER_ID}
+		</if>
+		<if test="OFFER_NAME != null and OFFER_NAME != ''">
+		    AND A.OFFER_NAME LIKE CONCAT(CONCAT('%', #{OFFER_NAME}),'%')
+		</if>
+		<if test="STATUS_CD != null and STATUS_CD != ''">
+		    AND A.STATUS_CD = #{STATUS_CD}
+		</if>
+		<if test="EFF_DATE != null and EFF_DATE != ''">
+		    AND A.EFF_DATE = to_date(#{EFF_DATE},'YYYY-MM-DD')
+		</if>
+	    <if test="EXP_DATE != null and EXP_DATE != ''">
+		    AND A.EXP_DATE = to_date(#{EXP_DATE},'YYYY-MM-DD')
+		</if>
+	  </where>
+	</select>
+	
+	<!-- 业务管理-属性查询 -->
+	<select id="qryCodeAttr" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT A.ATTR_ID,
+      		 A.ATTR_TYPE,
+      		 A.ATTR_NAME,
+      		 A.ATTR_DESC,
+      		 A.ATTR_CODE,
+      		 A.CRT_DATE,
+      		 A.STATUS_CD,
+     		 A.VALUE_TYPE
+ 	  FROM CODE_ATTR A
+ 	  <where>
+ 	    <if test="ATTR_NAME != null and ATTR_NAME != ''">
+  			 A.ATTR_NAME LIKE CONCAT(CONCAT('%', #{ATTR_NAME}),'%')
+   		</if>
+	    <if test="ATTR_TYPE != null and ATTR_TYPE != ''">
+  			 AND A.ATTR_TYPE = #{ATTR_TYPE}
+   		</if>
+	    <if test="STATUS_CD != null and STATUS_CD != ''">
+  			 AND A.STATUS_CD = #{STATUS_CD}
+		</if>
+	  </where>
+	</select>
+	
+	<!-- 业务管理-属性值查询 -->
+	<select id="qryCodeAttrVal" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT A.ATTR_VALUE_ID,
+	  		 A.ATTR_ID,
+       		 A.ATTR_VALUE_NAME,
+      		 A.ATTR_VALUE_DESC,
+      		 A.ATTR_VALUE_CODE,
+      		 TO_CHAR(A.CRT_DATE,'YYYY-MM-DD') CRT_DATE
+  	  FROM CODE_ATTR_VALUE A
+      <where>
+         <if test="ATTR_ID != null and ATTR_ID != ''">
+            A.ATTR_ID = #{ATTR_ID}
+         </if>
+         <if test="ATTR_VALUE_NAME != null and ATTR_VALUE_NAME != ''">
+		    AND A.ATTR_VALUE_NAME LIKE CONCAT(CONCAT('%', #{ATTR_VALUE_NAME}),'%')
+		</if>
+	  </where>
+	</select>
+	
+</mapper>

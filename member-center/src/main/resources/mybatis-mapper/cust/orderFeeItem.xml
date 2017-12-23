@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.OrderFeeItemMapper">
+<!-- 订单费用新增 -->
+<insert id="addOrderFeeItem" parameterType="java.util.Map">
+   INSERT INTO INFO_ORDER_FEE_ITEM
+   (ORDER_FEE_ITEM_ID,
+   ORDER_CHILD_ID,
+   PAY_TYPE,
+   CRT_DATE,
+   AMOUNT,
+   DISCOUNT_AMOUNT,
+   DISCOUNT_RESON,
+   REAL_AMOUNT
+   )
+   VALUES(
+   #{ORDER_FEE_ITEM_ID,jdbcType=NUMERIC},
+   #{ORDER_CHILD_ID,jdbcType=NUMERIC},
+   #{PAY_TYPE,jdbcType=VARCHAR},
+   sysdate,
+   #{AMOUNT,jdbcType=NUMERIC},
+   #{DISCOUNT_AMOUN,jdbcType=NUMERIC},
+   #{DISCOUNT_RESON,jdbcType=VARCHAR},
+   #{REAL_AMOUNT,jdbcType=NUMERIC}
+   )
+</insert>
+
+<!-- 订单费用查询 -->
+<select id="qryOrderFeeItem" parameterType="java.util.Map" 
+resultType="java.util.Map">
+   SELECT * FROM INFO_ORDER_FEE_ITEM
+  <where>
+  1=1
+  <if test="ORDER_CHILD_ID != null and ORDER_CHILD_ID != ''">
+  and ORDER_CHILD_ID = #{ORDER_CHILD_ID}
+  </if>
+  </where>
+</select>
+</mapper>

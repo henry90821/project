@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProfile name="development">
+        <root level="${LOG_LEVEL_PATTERN}">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!development">
+        <appender name="DAILY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/smi-app.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- daily rollover -->
+                <FileNamePattern>smi-app.%d{yyyy-MM-dd}.log</FileNamePattern>
+                <!-- keep every day worth of history -->
+                <maxHistory>1</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <triggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <MaxFileSize>10MB</MaxFileSize>
+            </triggeringPolicy>
+        </appender>
+        <root level="${LOG_LEVEL_PATTERN}">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="DAILY_FILE"/>
+        </root>
+    </springProfile>
+</configuration>

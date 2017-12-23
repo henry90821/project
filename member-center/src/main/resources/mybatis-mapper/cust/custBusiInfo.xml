@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CustBusiInfoMapper">
+	
+	<!-- 会员业务查询 -->
+	<select id="qryCustBusiInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  select 
+         t.busi_id,
+         t.cust_id,
+         t.offer_id,
+         t.busi_name,
+         <![CDATA[to_char(t.crt_date,'yyyy-MM-dd hh24:mi:ss') crt_date,]]>
+         <![CDATA[to_char(t.mod_date,'yyyy-MM-dd hh24:mi:ss') mod_date,]]>
+         <![CDATA[to_char(t.eff_date,'yyyy-MM-dd hh24:mi:ss') eff_date,]]>
+         <![CDATA[to_char(t.exp_date,'yyyy-MM-dd hh24:mi:ss') exp_date,]]>
+         t.status_cd,
+         t.busi_nbr,
+         t.card_id,
+         t.card_name,
+         t.card_nbr
+      from info_cust_busi t
+      <where>
+        1 = 1
+        <if test="CUST_ID != null and CUST_ID != ''">
+			and	t.cust_id = #{CUST_ID}
+		</if>
+        <if test="OFFER_ID != null and OFFER_ID != ''">
+			and t.offer_id = #{OFFER_ID}
+		</if>
+		<if test="OFFER_NAME != null and OFFER_NAME != ''">
+			and t.busi_name = #{OFFER_NAME}
+		</if>
+		<if test="STATUS_CD != null and STATUS_CD != ''">
+			and t.status_cd in (#{STATUS_CD})
+		</if>
+		<if test="STATUS_CD_TWO != null and STATUS_CD_TWO != ''">
+			and t.STATUS_CD in (1000,1098)
+		</if>
+		<if test="BUSI_NBR != null and BUSI_NBR != ''">
+			and t.busi_nbr = #{BUSI_NBR}
+		</if>
+		<if test="CARD_NBR != null and CARD_NBR != ''">
+			and t.card_nbr = #{CARD_NBR}
+		</if>
+		<![CDATA[and t.eff_date < sysdate]]>
+		<![CDATA[and t.exp_date > sysdate]]>
+      </where>  
+	</select>
+	
+	<select id="isExistCardNbr" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  select 
+         t.busi_id,
+         t.cust_id,
+         t.offer_id,
+         t.busi_name,
+         <![CDATA[to_char(t.crt_date,'yyyy-MM-dd hh24:mi:ss') crt_date,]]>
+         <![CDATA[to_char(t.mod_date,'yyyy-MM-dd hh24:mi:ss') mod_date,]]>
+         <![CDATA[to_char(t.eff_date,'yyyy-MM-dd hh24:mi:ss') eff_date,]]>
+         <![CDATA[to_char(t.exp_date,'yyyy-MM-dd hh24:mi:ss') exp_date,]]>
+         t.status_cd,
+         t.busi_nbr,
+         t.card_id,
+         t.card_name,
+         t.card_nbr
+      from info_cust_busi t
+      <where>
+        1 = 1
+        <if test="CUST_ID != null and CUST_ID != ''">
+			and	t.cust_id = #{CUST_ID}
+		</if>
+        <if test="OFFER_ID != null and OFFER_ID != ''">
+			and t.offer_id = #{OFFER_ID}
+		</if>
+		<if test="OFFER_NAME != null and OFFER_NAME != ''">
+			and t.busi_name = #{OFFER_NAME}
+		</if>
+		<if test="STATUS_CD != null and STATUS_CD != ''">
+			and t.status_cd in (#{STATUS_CD})
+		</if>
+		<if test="STATUS_CD_TWO != null and STATUS_CD_TWO != ''">
+			and t.STATUS_CD in (1000,1098)
+		</if>
+		<if test="BUSI_NBR != null and BUSI_NBR != ''">
+			and t.busi_nbr = #{BUSI_NBR}
+		</if>
+		<if test="CARD_NBR != null and CARD_NBR != ''">
+			and t.card_nbr = #{CARD_NBR}
+		</if>
+      </where>  
+	</select>
+	
+	<!-- 会员业务新增 -->
+	<insert id="addCustBusi" parameterType="java.util.Map">
+	  insert into info_cust_busi 
+	  (busi_id,
+	  cust_id,
+	  offer_id,
+	  busi_name,
+	  crt_date,
+	  mod_date,
+	  eff_date,
+	  exp_date,
+	  status_cd,
+	  busi_nbr,
+	  card_id,
+	  card_name,
+	  card_nbr
+	  )values(
+	   #{BUSI_ID,jdbcType=VARCHAR},
+	   #{CUST_ID,jdbcType=VARCHAR},
+	   #{OFFER_ID,jdbcType=NUMERIC},
+	   #{BUSI_NAME,jdbcType=VARCHAR},
+	   <![CDATA[sysdate,]]>
+	   <![CDATA[sysdate,]]>
+	   <![CDATA[to_date(#{EFF_DATE},'yyyy-mm-dd'),]]>
+	   <![CDATA[to_date(#{EXP_DATE},'yyyy-mm-dd'),]]>
+	   #{STATUS_CD,jdbcType=VARCHAR},
+	   #{BUSI_NBR,jdbcType=VARCHAR},
+	   #{CARD_ID,jdbcType=NUMERIC},
+	   #{CARD_NAME,jdbcType=VARCHAR},
+	   #{CARD_NBR,jdbcType=VARCHAR}
+	  )
+	</insert>
+	
+	<!-- 会员业务修改 -->
+	<update id="updateCustBusi" parameterType="java.util.Map">
+	  update info_cust_busi t set 
+	  	<if test="EFF_DATE != null and EFF_DATE != ''">
+			<![CDATA[t.eff_date = to_date(#{EFF_DATE},'yyyy-mm-dd'),]]> 
+		</if>
+		<if test="EXP_DATE != null and EXP_DATE != ''">
+			<![CDATA[t.exp_date = to_date(#{EXP_DATE},'yyyy-mm-dd'),]]>
+		</if>
+		<if test="STATUS_CD != null and STATUS_CD != ''">
+			t.status_cd = #{STATUS_CD}, 
+		</if>
+		<if test="BUSI_NBR != null and BUSI_NBR != ''">
+			t.busi_nbr = #{BUSI_NBR}, 
+		</if>
+		<if test="CARD_NBR != null and CARD_NBR != ''">
+			t.card_nbr = #{CARD_NBR}, 
+		</if>
+		<if test="CARD_NBR != null and CARD_NBR != ''">
+			t.card_id = #{CARD_ID}, 
+		</if>
+		<if test="CARD_NBR != null and CARD_NBR != ''">
+			t.card_name = #{CARD_NAME}, 
+		</if>
+		<![CDATA[t.mod_date = sysdate]]>
+	  where 
+		t.busi_id = #{BUSI_ID}
+	</update>
+	
+	<!-- 更新会员卡号 -->
+	<update id="updateCardNbrByCustId" parameterType="java.util.Map">
+		update info_cust_busi t set card_nbr = #{CARD_NBR}
+		where cust_id = #{CUST_ID} and status_cd = #{STATUS_CD} and offer_id = #{OFFER_ID}
+	</update>
+</mapper>

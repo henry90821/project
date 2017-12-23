@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.billing.InfoPayBalanceMapper">
+
+	<!-- 新增余额账本 -->
+	<insert id="createAcctBalance" parameterType="java.util.Map">
+
+		<selectKey resultType="java.math.BigDecimal" order="BEFORE"
+			keyProperty="BALANCE_ID">
+			SELECT seq_balance_id.Nextval as ID from DUAL
+		</selectKey>
+      
+	  <![CDATA[
+		 insert into info_pay_balance
+          (balance_id,
+          pay_id,
+          balance_type_id,
+          balance,
+          real_balance,
+          latn_id,
+          eff_date,
+          exp_date) VALUES
+          (#{BALANCE_ID},#{PAY_ID},
+          #{BALANCE_TYPE_ID},#{BALANCE},
+          #{REAL_BALANCE},-1,
+          to_date(#{EFF_DATE}, 'yyyymmddhh24miss'),
+          to_date(#{EXP_DATE}, 'yyyymmddhh24miss'))
+		]]>
+	</insert>
+
+	<!-- 修改余额账本 -->
+	<select id="updateAcctBalance" parameterType="java.util.Map">
+	  <![CDATA[
+		 update info_pay_balance
+         set balance = balance + #{BALANCE}, real_balance = real_balance + #{BALANCE}
+         where balance_id = #{BALANCE_ID}
+		]]>
+	</select>
+
+	<!-- 帐户渠道支付余额查询 -->
+	<select id="queryBalance" parameterType="java.util.Map"
+		resultType="com.smi.mc.model.bill.AcctBalance">
+	  <![CDATA[  
+  select a.balance_id,
+       a.balance_type_id,
+       a.real_balance,
+       decode(c.unit_type_id, 0, 0, 8, 7, 9, 8, 20) pay_code,
+       c.unit_type_id unite_type_id,
+       c.balance_type_name balance_name,
+       to_char(a.eff_date, 'yyyy-mm-dd hh24:mi:ss') eff_date,
+       to_char(a.exp_date, 'yyyy-mm-dd hh24:mi:ss') exp_date
+  from info_pay_balance                 a,
+       rule_sys_out_bal_type_rel b,
+       code_bil_balance_type            c
+ where a.pay_id = #{PAY_ID}
+   and sysdate between a.eff_date and a.exp_date
+   and a.balance_type_id = b.balance_type_id
+   and b.system_id = #{SYSTEM_ID}
+   and a.balance_type_id = c. balance_type_id
+ order by b.priority desc, a.exp_date asc
+		]]>
+	</select>
+
+	<!-- 根据systemId查询rule_sys_out_bal_type_rel 是否有数据 -->
+	<select id="queryRuleBalType" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  <![CDATA[  
+  		select * from rule_sys_out_bal_type_rel t where t.system_id=#{SYSTEM_ID}
+		]]>
+	</select>
+
+
+	<!-- 帐户渠道支付余额查询 rule_sys_out_bal_type_rel对应的SYSTEM_ID没有值情况下，查询 -->
+	<select id="queryBalanceExp" parameterType="java.util.Map"
+		resultType="com.smi.mc.model.bill.AcctBalance">
+	  <![CDATA[  
+  select a.balance_id,
+       a.balance_type_id,
+       a.real_balance,
+       decode(c.unit_type_id, 0, 0, 8, 7, 9, 8, 20) pay_code,
+       c.unit_type_id unite_type_id,
+       c.balance_type_name balance_name,
+       to_char(a.eff_date, 'yyyy-mm-dd hh24:mi:ss') eff_date,
+       to_char(a.exp_date, 'yyyy-mm-dd hh24:mi:ss') exp_date
+  from info_pay_balance                 a,
+       code_bil_balance_type            c
+ where a.pay_id = #{PAY_ID}
+   and sysdate between a.eff_date and a.exp_date
+   and a.balance_type_id = c. balance_type_id
+ order by  a.exp_date asc
+		]]>
+	</select>
+
+	<!-- 查询余额账本 -->
+	<select id="queryAcctBalance" parameterType="java.util.Map"
+		resultType="com.smi.mc.model.bill.AcctBalance">
+	  <![CDATA[
+		 select a.balance_id,a.balance_type_id,a.real_balance,a.balance,
+          to_char(a.eff_date, 'yyymmddhh24miss'),to_char(a.exp_date, 'yyymmddhh24miss'),
+          b.unit_type_id
+         from info_pay_balance a, code_bil_balance_type b
+         where a.pay_id = #{PAY_ID}
+          and sysdate between a.eff_date and a.exp_date
+          and a.balance_type_id = b.balance_type_id
+         order by b.balance_type_id, a.exp_date asc
+		]]>
+	</select>
+
+	<!-- 百度余额查询 -->
+	<select id="baiDuAcctBalanceQuery" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+	  <![CDATA[  
+  		select sum(a.real_balance)
+	  from info_pay_balance a,code_bil_balance_type b
+	  where a.balance_type_id in (1,50) and a.balance_type_id = b.balance_type_id
+	  and a.eff_date <= sysdate and a.exp_date >= sysdate and a.pay_id = #{PAY_ID}
+		]]>
+	</select>
+	<!-- 百度余额明细查询 -->
+	<select id="baiDuAcctBalanceDetailQuery" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  <![CDATA[  
+  		select a.balance_id,b.balance_type_name,a.balance_type_id,a.eff_date,a.exp_date,a.real_balance
+	  from info_pay_balance a,code_bil_balance_type b
+	  where a.balance_type_id in (1,50) and a.balance_type_id = b.balance_type_id
+	  and a.eff_date <= sysdate and a.exp_date >= sysdate and a.pay_id = #{PAY_ID}
+		]]>
+	</select>
+
+</mapper>

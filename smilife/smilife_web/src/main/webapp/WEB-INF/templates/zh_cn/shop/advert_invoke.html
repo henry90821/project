@@ -1,0 +1,98 @@
+﻿#if($!obj.ap_type=="img")  
+#if($!obj.ap_location=="Pc")
+<div style='float:left;overflow:hidden;'><a data-aid="$!obj.adv_id" href='$!webPath/advert_redirect.htm?url=$!obj.ap_acc_url&id=$!obj.adv_id'><img width='$!obj.ap_width' height='$!obj.ap_height' src='$!obj.ap_acc.path/$!obj.ap_acc.name'></a></div>
+#end
+#end
+
+#if($!obj.ap_location=="Mobile" && $!obj.ap_type=="img")
+
+#if($!obj.ap_marked=="Activity")
+#foreach($adv in $obj.advs)
+#if($velocityCount<4)
+  <div class='ad_p'>
+  <a data-aid="$!adv_id" href='$!webPath/advert_redirect.htm?url=$!adv.ad_url&id=$!adv.id'>
+  <img width='$!obj.ap_width' height='$!obj.ap_height' src='$!adv.ad_acc.path/$!adv.ad_acc.name?_=$!CommUtil.randomInt(6)' style='border:none;' />
+  </a>
+  </div>
+#end 
+#end 
+#end
+
+#if($!obj.ap_marked=="Commodity")
+#foreach($adv in $obj.advs)
+#if($velocityCount==$!index)
+  <div class='ad_p'>
+  <a data-aid="$!adv_id" href='$!webPath/advert_redirect.htm?url=$!adv.ad_url&id=$!adv.id'>
+  <img width='$!obj.ap_width' height='$!obj.ap_height' src='$!adv.ad_acc.path/$!adv.ad_acc.name' style='border:none;' />
+  </a>
+  </div>
+#end 
+#end 
+#end
+
+#end
+
+#if($!obj.ap_type=="slide")
+ #if($!obj.ap_location=="Mobile")
+  <div id='focus' class='focus'><div class='hd'><ul></ul></div><div class='bd'><ul>
+  #foreach($adv in $obj.advs)
+    <li><a data-aid="$!adv_id" href='$!webPath/advert_redirect.htm?url=$!adv.ad_url&id=$!adv.id'><img src='$!adv.ad_acc.path/$!adv.ad_acc.name' width='100%' /></a></li>
+  #end
+  </ul></div></div>
+ #else
+  <div class='slideBox' id='iskyshop_advert'>  
+  <div class='hd'>
+  <ul style='z-index:0;'>
+  #foreach($adv in $obj.advs)
+    <li>$!{velocityCount}</li>
+  #end
+  </ul>
+  </div>
+  <div class='bd'>
+  <ul style='z-index:0;'>
+  #foreach($adv in $obj.advs)
+    <li><a data-aid="$!adv_id" href='$!webPath/advert_redirect.htm?url=$!adv.ad_url&id=$!adv.id'><img src='$!adv.ad_acc.path/$!adv.ad_acc.name' width='$!obj.ap_width' height='$!obj.ap_height' /></a></li>
+  #end
+  </ul>
+  </div>
+  </div>
+ #end
+#end
+#if($!obj.ap_type=="scroll")
+ #if($obj.advs.size()>0)
+  <div class='picScroll'> 
+  <ul>
+  #foreach($adv_list in $CommUtil.toRowChildList($obj.advs,3))
+  #foreach($adv in $adv_list)
+  <li>
+  <a data-aid="$!adv_id" href='$!webPath/advert_redirect.htm?url=$!adv.ad_url&id=$!adv.id'><span class='img_cspan'><p><img src='$!adv.ad_acc.path/$!adv.ad_acc.name' width='$!obj.ap_width' height='$!obj.ap_height' /></p></span></a>
+  </li>
+  #end
+  #end
+  </ul>
+  <a href='javascript:void(0);' class='next' style='display:none;'></a>
+  <a href='javascript:void(0);' class='prev' style='display:none;'i></a>
+  </div>
+  #end
+#end
+#if($!obj.ap_type=="text")  
+  <div style='width='$!obj.ap_width';height='$!obj.ap_height';float:left;overflow:hidden;'>
+  <a data-aid="$!obj.adv_id" href='$!webPath/advert_redirect.htm?url=$!obj.ap_acc_url&id=$!obj.adv_id'>
+  $!obj.ap_text
+  </a>
+  </div> 
+#end
+#if($!obj.ap_type=="bg_slide")
+   <div class='top_mid_slide'>
+   	<ul class='top_mid_slider_ul'>
+   #foreach($adv in $obj.advs)
+ 		<li class='top_mid_slider_ul_li'  style='background:$!{adv.bg_color} url($!adv.ad_acc.path/$!adv.ad_acc.name) no-repeat; background-position: 50% 0%;width:100%; height:$!{obj.ap_height}px;'><a data-aid="$!adv.id"  target="_blank" style='display:block; margin-left:20%; height:325px; width:1002px;' href='$!webPath/advert_redirect.htm?url=$!adv.ad_url&id=$!adv.id'></a></li>
+   #end
+   </ul>
+   <div class='banner_top'>
+   <ul>
+	#foreach($adv in $obj.advs)
+   <li #if($!velocityCount==1) class='this' #end style='cursor:pointer;'>$velocityCount</li>
+    #end
+   </ul></div></div>
+#end

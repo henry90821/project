@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	var val = $('input:radio[name="type"]:checked').val();
+	if(val=="PC"){
+		jQuery(".pcoh").html("<strong class='q'></strong><strong class='w'>专题横幅，最佳尺寸：1200像素 * 300像素</strong><strong class='c'></strong>");
+	}
+	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+//标志图片鼠标经过显示
+jQuery("#brandImgShow").mouseover(function(){
+	jQuery("#brandImg").show();
+})
+jQuery("#brandImgShow").mouseout(function(){
+	jQuery("#brandImg").hide();
+})
+jQuery("#theForm").validate({
+    rules:{
+	  title:{
+	    required :true
+	  },
+	  url:{
+	    required :true,
+		url:true
+	  },
+	  image:{
+	    accept:"$!config.imageSuffix"
+	  }
+	 },
+	messages:{
+	  title:{required:"标题不能为空"},
+	  url:{required:"URL不能为空",url:"URL格式不对"},
+	  image:{accept:"系统不允许上传该文件类型"}
+	}
+  });
+//结束
+});
+
+//样式
+jQuery(function(){
+    var textButton="<input type='text' name='textfield' id='textfield1' class='size13' /><input type='button' name='button' id='button1' value='' class='filebtn' />"
+	jQuery(textButton).insertBefore("#image");
+	jQuery("#image").change(function(){
+	jQuery("#textfield1").val(jQuery("#image").val());
+	})
+});	
+//保存
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+
+ function pccheck(){
+	jQuery(".pcoh").html("<strong class='q'></strong><strong class='w'>专题横幅，最佳尺寸：1200像素 * 300像素</strong><strong class='c'></strong>");
+}
+
+function H5check(){
+	jQuery(".pcoh").html("<strong class='q'></strong><strong class='w'>专题横幅，最佳尺寸：大图 315像素 * 340像素，小图 315像素 * 170像素</strong><strong class='c'></strong>");
+}
+</script>
+<body>
+<form action="$!webPath/admin/subject_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+ <input name="id" type="hidden" id="id" value="$!obj.id"/>
+  <div class="cont">
+    <h1 class="seth">专题管理</h1>
+    <div class="nav_list">
+      <ul>
+        <li><a href="$!webPath/admin/subject_list.htm?ifctype=PC"><b>PC端管理</b></a></li>
+        <li><a href="$!webPath/admin/subject_list.htm?ifctype=H5"><b>手机端管理</b></a></li>
+        <li><a href="$!webPath/admin/subject_add.htm" #if(!$!edit) class="this" #end><b>新增</b></a></li>
+         #if($!edit)
+        <li><a href="javascript:void(0);" class="this" ><b>编辑</b></a></li>
+        #end
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" id="base">
+      	#if(!$!obj.ifcType)
+	      	<ul class="set1">
+	      		<li class="setcont_bg"><strong class="sred">*</strong></li>
+	      		<li>
+	         	<input type="radio" name="type" id="PC" value="PC" checked="checked" onclick="pccheck();"/>PC端&nbsp;&nbsp;&nbsp;&nbsp;
+	         	<input type="radio" name="type" id="H5" value="H5" onclick="H5check();"/>手机端&nbsp;&nbsp;&nbsp;&nbsp;
+	         	</li>
+	        </ul>
+	    #end    
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>标题</li>
+          </span></li>
+            <input name="title" type="text" id="title" value="$!obj.title"  />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>横幅</li>
+          <li> <span class="size13" >
+            <input name="textfield" type="text" id="textfield1" />
+            </span> <span class="filebtn">
+            <input name="button" type="button" id="button1" value=""/>
+            </span> <span style="float:left;" class="file" >
+            <input name="image" type="file" id="image" size="30"/>
+            </span> <span class="preview"> #if($!obj.banner) <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="25" height="25" id="brandImgShow"/> #end </span>
+            #if($!obj.ifcType=="PC")
+            	<span id="nothis" class="pcoh"><strong class="q"></strong><strong class="w">专题横幅，最佳尺寸：1200像素 * 300像素</strong><strong class="c"></strong></span>
+            #else
+            	<span id="nothis" class="pcoh"><strong class="q"></strong><strong class="w">专题横幅，最佳尺寸：大图 315像素 * 340像素，小图 315像素 * 170像素</strong><strong class="c"></strong></span>
+            #end
+            <div class="bigimgpre" id="brandImg" style="display:none;"><img src="$!obj.banner.path/$!obj.banner.name" style="max-width:600px"/> </div>
+          </li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">排序</li>
+          <li><span class="webname">
+            <input name="sequence" type="text" id="sequence" value="$!obj.sequence" reg="^-?\d+$" tip="只能为整数"/>
+            </span></li>
+          <span id="nothis"><strong class="q"></strong><strong class="w">专题序号，序号越小显示越靠前</strong><strong class="c"></strong></span>
+        </ul>
+        <!-- 新增网页自定义标题 -->
+         <ul class="set1">
+          <li class="setcont_bg">标题描述</li>
+          <li> <span class="webname">
+            <input name="sub_title" type="text" id="sub_title" value="$!obj.sub_title" />
+            </span> <span id="nothis"> <strong class="q"></strong> <strong class="w">将显示在浏览器标题等位置</strong> <strong class="c"></strong> </span></li>
+        </ul>
+        <!-- 结束 -->
+        <ul class="set1">
+          <li class="setcont_bg">SEO关键字</li>
+          <li><span class="webname">
+            <textarea name="seo_keywords" cols="40" rows="6" id="seo_keywords">$!obj.seo_keywords</textarea>
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">SEO描述</li>
+          <li><span class="webname">
+            <textarea name="seo_description" cols="40" rows="6" id="seo_description">$!obj.seo_description</textarea>
+            </span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="submit"> <span class="pad120">
+    <input name="" type="button" value="提交" onclick="saveForm();"/>
+    </span> </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<script>
+	var commission = jQuery("#commission").val();
+	if(commission){
+		jQuery(".centent_fenlei > li > input").val(commission);
+	}
+	jQuery(".centent_fenlei > li > input").blur(function(){
+		var value = jQuery(this).val();
+		if(!/^0{1}(\.{1}\d{1,2})?$/.test(value)){
+			$(this).attr("value","");
+		}
+	});
+</script>
+<div id="center_content1" class="center_content1">
+	<ul class="title_fenlei">
+		<li class="title">分类1</li>
+		<li class="title">分类2</li>
+		<li class="title">分类3</li>
+	</ul>
+	<div class="centent_fenlei_wrap">
+	<ul class="centent_fenlei">
+		#foreach($goodsClass in $!goodsClassList1)
+          <li class="centent"><span class="name">$!goodsClass.className</span> <input class="commission" type="text" name="gc_commission" value="$!goodsClass.value"/></li>
+          <input type="hidden" name="gc_id" value="$!goodsClass.id"/>
+        #end
+	</ul>
+	<ul class="centent_fenlei">
+		#foreach($goodsClass in $!goodsClassList2)
+          <li class="centent"><span class="name">$!goodsClass.className</span> <input class="commission" type="text" name="gc_commission" value="$!goodsClass.value"/></li>
+          <input type="hidden" name="gc_id" value="$!goodsClass.id"/>
+        #end
+	</ul>
+	<ul class="centent_fenlei">
+		#foreach($goodsClass in $!goodsClassList3)
+          <li class="centent"><span class="name">$!goodsClass.className</span> <input class="commission" type="text" name="gc_commission" value="$!goodsClass.value"/></li>
+          <input type="hidden" name="gc_id" value="$!goodsClass.id"/>
+        #end
+	</ul>
+	</div>	
+</div>

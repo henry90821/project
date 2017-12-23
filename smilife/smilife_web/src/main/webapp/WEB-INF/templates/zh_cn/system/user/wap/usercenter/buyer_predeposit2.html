@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>账户充值 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+<div class="phone_hd"><a class="back" href="$!webPath/wap/predeposit.htm"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>充值确认</div>
+<div class="pd5">
+  <form  method="post"  name="theForm" id="theForm" action="$!webPath/wap/buyer/predeposit_save.htm">
+  <input type="hidden" name="pd_amount" id="pd_amount" value="$!pd_amount"> 
+  <input type="hidden" name="mobile" id="mobile" value="$!mobile"> 
+  
+  <div class="payment">
+    <div class="pay_detail">
+      <dl>
+        <dt><img src="$!webPath/resources/style/system/front/wap/images/dun.png" width="62"></dt>
+        <dd>
+          <ul>
+            <li style="font-size:20px; margin-bottom:10px;">账户充值</li>
+             <li>充值账户：<span class="red">$!mobile</span></li>
+            <li>应付金额：<span class="red">¥ $!pd_amount</span></li>
+            <li></li>
+          </ul>
+        </dd>
+      </dl>
+    </div>
+    #if($!mark != "1")
+    <div class="payfor">
+      <h1>请选择支付方式：</h1>
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">在线支付</span></td>
+          </tr>
+        #set($payments=$!paymentTools.queryByTerminalMark("wap"))
+        #if($!payments && $!payments.size() > 0)  
+        #foreach($payment in $!payments)
+        <tr id="$!{payment.mark}" style="display:none">
+          <td width="12%" align="center"><input type="radio" name="pd_payment" id="pd_payment" value="$!{payment.mark}" checked="checked"></td>
+          <td>
+          <span><img src="$!webPath/resources/style/common/images/payment/$!{payment.icon_url}" width="115" height="41" /></span>
+          </td>
+        </tr>
+        #end
+      </table>
+      #end
+      
+      #set($install=$!paymentTools.queryShopPayment("payafter").get("install"))
+      #if($!install==true)
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">货到付款</span></td>
+          </tr>
+          <tr>
+            <td width="12%" align="center"><input type="radio" name="pd_payment" id="pd_payment" value="payafter" checked="checked"></td>
+            <td>
+            	<span><img src="$!webPath/resources/style/common/images/payment/payafter.jpg" width="115" height="41" /></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      #end
+    </div>
+    #end
+    </form>
+    <div class="pay_btn"><a href="javascript:void(0)" onClick="order_pay()">马上支付</a></div>
+  </div>
+</div>
+  
+  </form>
+</div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+<script>
+function order_pay(){
+	if(jQuery("input[type='radio']:checked").val()=="wx_pay"){
+		//var or_id=jQuery("#order_id").val();
+		//window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=$!{appid}&redirect_uri=$!webPath/catchopenid.htm&response_type=code&scope=snsapi_userinfo&state=order_"+or_id+"_"+type+"#wechat_redirect";
+		jQuery("#theForm").submit();
+	}else{
+		if(jQuery('input[name="payType"]:checked').val()=="balance"){
+			 var pwd = $("#pay_pwd").val();
+			 if(typeof(pwd)=="undefined" || pwd=="")
+			 {
+				 $("#pay_pwd").focus();
+				 return;
+			 }
+		}
+		jQuery("#theForm").submit();
+	}
+}
+
+jQuery(document).ready(function(e) {
+	if(isWeiXin()){
+	       jQuery("#wx_pay").show();
+	     }else{
+	    	 #set($payments=$!paymentTools.queryByTerminalMark("wap"))
+	         #if($!payments && $!payments.size() > 0)
+	         #foreach($payment in $!payments)
+		    	 	#if($!{payment.mark} !="wx_pay")
+				 		jQuery("#$!{payment.mark}").show();
+		    	 	#end
+		    	 #end
+	    	 #end
+		 }
+});
+
+function isWeiXin(){
+    var ua = window.navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+        return true;
+    }else{
+        return false;
+    }
+}	
+</script>
+</body>
+</html>

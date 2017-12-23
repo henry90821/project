@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoPayMapper">
+	
+	<!-- 会员账户信息查询 -->
+	<update id="updInfoPay" parameterType="java.util.Map">
+	  update info_pay
+	  	<set>
+	      	<if test="cust_id != null and cust_id != ''">
+	        	cust_id = #{cust_id},
+	        </if>
+	        <if test="crt_date != null">
+	         	crt_date = #{crt_date,jdbcType=TIMESTAMP},
+	        </if>
+	        <if test="eff_date != null">
+	         	eff_date = #{eff_date,jdbcType=TIMESTAMP},
+	        </if>	
+	        <if test="exp_date != null">
+	         	exp_date = #{exp_date,jdbcType=TIMESTAMP},
+	        </if>	
+	        <if test="prepay_flag != null and prepay_flag != ''">
+	         	prepay_flag = #{prepay_flag}
+	        </if>
+        </set>
+       where pay_id=#{pay_id}
+	</update>
+	
+	<!-- 会员账户资料新增 -->
+	<insert id="addInfoPay" parameterType="java.util.Map">
+	  insert into info_pay
+	  (pay_id,
+	   cust_id,
+	   crt_date,
+	   eff_date,
+	   exp_date,
+	   prepay_flag
+	  )values(
+	   #{pay_id,jdbcType=VARCHAR},
+	   #{cust_id,jdbcType=VARCHAR},
+	   sysdate,
+	   #{eff_date,jdbcType=DATE},
+	   #{exp_date,jdbcType=DATE},
+	   #{prepay_flag,jdbcType=VARCHAR}
+	  )
+	</insert>
+	
+	<!-- 会员账户信息查询 -->
+	<select id="qryInfoPay" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  select 
+         t.pay_id,
+         t.cust_id,
+         t.crt_date,
+         t.eff_date,
+         t.exp_date,
+         t.prepay_flag
+      from info_pay t
+      <where>
+        1 = 1
+        <if test="pay_id != null and pay_id != ''">
+			and	t.pay_id = #{pay_id}
+		</if>
+        <if test="cust_id != null and cust_id != ''">
+			and t.cust_id = #{cust_id}
+		</if>
+      </where>  
+	</select>
+</mapper>

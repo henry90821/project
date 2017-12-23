@@ -1,0 +1,81 @@
+<!-- 1:外部 -->
+#set($chinaPayBankList_1=$!paymentTools.queryChinaPayBank(1))
+<!-- 0:内部 -->
+#set($chinaPayBankList_0=$!paymentTools.queryChinaPayBank(0))
+
+<script>
+	function showPayMore(t) {
+		$("#chinapay_more").toggle();
+		t.innerHTML = t.innerHTML == "查看更多银行" ? "关闭更多银行" : "查看更多银行";
+	}
+	$(document).delegate("#chinapay_all .item", "click", function(){
+		$("#chinapay_all .selectOn").removeClass("on");
+		$(".selectOn", this).toggleClass("on");
+		$("#gate_id").val(this.getAttribute("gateid"));
+	});
+	function initSelect(obj) {
+		if (obj.val() == "chinapay") {
+			var chinapay_all = jQuery("#chinapay_all");
+			chinapay_all.show();
+			if(!$(".on", chinapay_all).length){
+				$("#gate_id").val($(".item:eq(0)", chinapay_all).attr("gateid"));
+				$(".item:eq(0) .selectOn", chinapay_all).addClass("on");
+			}
+			
+		} else {
+			jQuery("#chinapay_all").css("display", "none");
+		}
+	}
+	jQuery(document).ready(function() {
+		jQuery("input[name='payType']").click(function() {
+			initSelect(jQuery(this));
+		});
+		jQuery("input[name='payType']").each(function(){
+			if(jQuery(this).val()=="chinapay"){
+				if(jQuery(this).attr("checked")=="checked"){
+					initSelect(jQuery(this));
+				}
+			}
+		});
+	});
+</script>
+<style type="text/css">
+#chinapay_all .item {position: relative; float: left; margin-left: 20px; margin-top: 10px; cursor: pointer; width:100px; height:30px; border:1px solid #ccc;}
+#chinapay_all .item img {width:100px; height:30px;}
+#chinapay_all .item .selectOn {position: absolute; z-index: 1; left: 0px; top: 0px; width: 100px; height: 30px;}
+#chinapay_all .item .on{background:url($!webPath/resources/style/common/images/payment/chinapay_select.png) no-repeat;}
+</style>
+<div id="chinapay_all" style="float: left; width:100%; margin-bottom: 10px; display:none;">
+	<input id="gate_id" name="gate_id" type="hidden" value="" />
+	<div style="position:relative; float:left; padding-bottom:10px; margin-top:10px;  border:solid #ccc 1px;">
+
+		#if($!chinaPayBankList_1 && $!chinaPayBankList_1.size() > 0)
+		<div id="chinapay_primary" style="padding-top: 2px; clear: both;">
+
+			#foreach($chinaPayBank_1 in $!chinaPayBankList_1) 
+			<div class="item" gateid="$!{chinaPayBank_1.bank_gate_id}">
+				<img src="$!{chinaPayBank_1.bank_img_url}" />
+				<div class="selectOn"></div>
+			</div>
+			#end 
+			
+			<div id="chinapay_more" style="display:none;">
+				#if($!chinaPayBankList_0 && $!chinaPayBankList_0.size() > 0)
+				#foreach($chinaPayBank_0 in $!chinaPayBankList_0) 				
+					<div class="item" gateid="$!{chinaPayBank_0.bank_gate_id}">
+						<img src="$!{chinaPayBank_0.bank_img_url}" />
+						<div class="selectOn"></div>
+					</div>			
+				#end 				
+				#end
+			</div>	
+			
+			<label style="position: relative; float:left; margin-left:20px; margin-top:10px;">
+				<div id="chinapayMore" style="width:100px; height:30px; cursor:pointer; line-height:30px;text-align:center; border:solid #999999 1px;" onclick="showPayMore(this)">查看更多银行</div>
+			</label>
+
+		</div>
+		#end
+
+	</div>
+</div>

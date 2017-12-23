@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CustInfoMapper">
+
+	<!-- 会员基本信息分页查询 -->
+	<select id="qryCustInfoByPage" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select *
+		from (
+		select a.*, rownum rnum
+		from
+		(SELECT
+		t.CUST_ID,
+		t.CUST_NAME,
+		CASE t.CUST_VIP_LEVEL WHEN '1000' THEN '普通会员' WHEN '1100' THEN '黄金会员' WHEN '1200' THEN '白金会员' WHEN '1300' THEN '钻石会员' END AS CUST_VIP_LEVEL,
+		t.CUST_TYPE,
+		t.STATUS_CD,
+		t.CARD_TYPE,
+		t.CUST_NBR,
+		t.CONTACT_MOBILE,
+		t.CONTACT_ADDR,
+		case t.SEX when '1000' then '男' when '1098' then '女' when '1100' then '未知' when '1198' then '未说明' end as SEX,
+		TO_CHAR(t.BIRTHDATE,'yyyy-MM-dd') BIRTHDATE,
+		t.EMAIL,
+		t.NICK_NAME,
+		TO_CHAR(t.CRT_DATE,'yyyy-MM-dd hh24:mi:ss') CRT_DATE,
+		t.ORG_ID,
+		t.LOGIN_PWD,
+		t.PAY_PWD,
+		t.BLACKLIST,
+		t.SMI_SOURCE,
+		t.RANDOM_NUMBER
+		FROM INFO_CUST t
+		<where>
+			1 = 1
+			<if test="CUST_ID != null and CUST_ID != ''">
+				and t.CUST_ID = #{CUST_ID}
+			</if>
+			<if test="CUST_NAME != null and CUST_NAME != ''">
+				and t.CUST_NAME like '%'|| #{CUST_NAME} || '%'
+			</if>
+			<if test="CUST_NBR != null and CUST_NBR != ''">
+				and t.CUST_NBR like '%'|| #{CUST_NBR} || '%'
+			</if>
+			<if test="CUST_TYPE != null and CUST_TYPE != ''">
+				and t.CUST_TYPE = #{CUST_TYPE}
+			</if>
+			<if test="CUST_VIP_LEVEL != null and CUST_VIP_LEVEL != ''">
+				and t.CUST_VIP_LEVEL = #{CUST_VIP_LEVEL}
+			</if>
+			<if test="ORG_ID != null and ORG_ID != ''">
+				and t.ORG_ID = #{ORG_ID}
+			</if>
+			<if test="CONTACT_MOBILE != null and CONTACT_MOBILE != ''">
+				and t.CONTACT_MOBILE like '%'|| #{CONTACT_MOBILE} || '%'
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				and t.STATUS_CD in (#{STATUS_CD})
+			</if>
+			<if test="STATUS_CD_TWO != null and STATUS_CD_TWO != ''">
+				and t.STATUS_CD in (1000,1098)
+			</if>
+			<if test="BondCust != null and BondCust != ''">
+			<![CDATA[ and t.STATUS_CD  <> '1100' ]]>
+			</if>
+			<if test="BEGIN_DATE != null and BEGIN_DATE != ''">
+				and t.crt_date >= to_date(#{BEGIN_DATE},'yyyy-MM-dd hh24:mi:ss')
+			</if>
+			<if test="END_DATE != null and END_DATE != ''">
+				and to_date(#{END_DATE},'yyyy-MM-dd hh24:mi:ss') >= t.crt_date
+			</if>
+		</where>
+		  ORDER BY nlssort(cust_name, 'NLS_SORT=SCHINESE_RADICAL_M') desc
+		)a
+		where rownum &lt;= #{endNum})
+		where rnum &gt;= #{startNum}
+	</select>
+	
+	<!-- 统计查询条数 -->
+	<select id="selectCountPages" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT
+		count(rowid) 
+		FROM INFO_CUST t
+		<where>
+			1 = 1
+			<if test="CUST_ID != null and CUST_ID != ''">
+				and t.CUST_ID = #{CUST_ID}
+			</if>
+			<if test="CUST_NAME != null and CUST_NAME != ''">
+				and t.CUST_NAME like '%'|| #{CUST_NAME} || '%'
+			</if>
+			<if test="CUST_NBR != null and CUST_NBR != ''">
+				and t.CUST_NBR like '%'|| #{CUST_NBR} || '%'
+			</if>
+			<if test="CUST_TYPE != null and CUST_TYPE != ''">
+				and t.CUST_TYPE = #{CUST_TYPE}
+			</if>
+			<if test="CUST_VIP_LEVEL != null and CUST_VIP_LEVEL != ''">
+				and t.CUST_VIP_LEVEL = #{CUST_VIP_LEVEL}
+			</if>
+			<if test="ORG_ID != null and ORG_ID != ''">
+				and t.ORG_ID = #{ORG_ID}
+			</if>
+			<if test="CONTACT_MOBILE != null and CONTACT_MOBILE != ''">
+				and t.CONTACT_MOBILE like '%'|| #{CONTACT_MOBILE} || '%'
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				and t.STATUS_CD in (#{STATUS_CD})
+			</if>
+			<if test="STATUS_CD_TWO != null and STATUS_CD_TWO != ''">
+				and t.STATUS_CD in (1000,1098)
+			</if>
+			<if test="BondCust != null and BondCust != ''">
+			<![CDATA[ and t.STATUS_CD  <> '1100' ]]>
+			</if>
+			<if test="BEGIN_DATE != null and BEGIN_DATE != ''">
+				and t.crt_date >= to_date(#{BEGIN_DATE},'yyyy-MM-dd hh24:mi:ss')
+			</if>
+			<if test="END_DATE != null and END_DATE != ''">
+				and to_date(#{END_DATE},'yyyy-MM-dd hh24:mi:ss') >= t.crt_date
+			</if>
+		</where>
+		</select>
+	<!-- 会员基本信息查询 -->
+	<select id="qryCustInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		t.CUST_ID,
+		t.CUST_NAME,
+		t.CUST_VIP_LEVEL,
+		t.CUST_TYPE,
+		t.STATUS_CD,
+		t.CARD_TYPE,
+		t.CUST_NBR,
+		t.CONTACT_MOBILE,
+		t.CONTACT_ADDR,
+		t.SEX,
+		TO_CHAR(t.BIRTHDATE,'yyyy-MM-dd') BIRTHDATE,
+		t.EMAIL,
+		t.NICK_NAME,
+		TO_CHAR(t.CRT_DATE,'yyyy-MM-dd hh24:mi:ss') CRT_DATE,
+		t.ORG_ID,
+		t.LOGIN_PWD,
+		t.PAY_PWD,
+		t.BLACKLIST,
+		t.SMI_SOURCE,
+		t.RANDOM_NUMBER,
+		t.ISSYNC
+		FROM INFO_CUST t
+		<where>
+			1 = 1
+			<if test="CUST_ID != null and CUST_ID != ''">
+				and t.CUST_ID = #{CUST_ID}
+			</if>
+			<if test="CUST_NAME != null and CUST_NAME != ''">
+				and t.CUST_NAME like '%'|| #{CUST_NAME} || '%'
+			</if>
+			<if test="CUST_NBR != null and CUST_NBR != ''">
+				and t.CUST_NBR = #{CUST_NBR}
+			</if>
+			<if test="CUST_TYPE != null and CUST_TYPE != ''">
+				and t.CUST_TYPE = #{CUST_TYPE}
+			</if>
+			<if test="CUST_VIP_LEVEL != null and CUST_VIP_LEVEL != ''">
+				and t.CUST_VIP_LEVEL = #{CUST_VIP_LEVEL}
+			</if>
+			<if test="ORG_ID != null and ORG_ID != ''">
+				and t.ORG_ID = #{ORG_ID}
+			</if>
+			<if test="CONTACT_MOBILE != null and CONTACT_MOBILE != ''">
+				and t.CONTACT_MOBILE = #{CONTACT_MOBILE}
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				and t.STATUS_CD in (#{STATUS_CD})
+			</if>
+			<if test="STATUS_CD_TWO != null and STATUS_CD_TWO != ''">
+				and t.STATUS_CD in (1000,1098)
+			</if>
+			<if test="BondCust != null and BondCust != ''">
+			<![CDATA[ and t.STATUS_CD  <> '1100' ]]>
+			</if>
+			<if test="BEGIN_DATE != null and BEGIN_DATE != ''">
+				and t.crt_date >= to_date(#{BEGIN_DATE},'yyyy-MM-dd hh24:mi:ss')
+			</if>
+			<if test="END_DATE != null and END_DATE != ''">
+				and to_date(#{END_DATE},'yyyy-MM-dd hh24:mi:ss') >= t.crt_date
+			</if>
+		</where>
+	</select>
+
+	<!-- 会员基本资料新增 -->
+	<insert id="addCust" parameterType="java.util.Map">
+		insert into info_cust
+		(
+		CUST_ID,CUST_NAME,CUST_VIP_LEVEL,CUST_TYPE,STATUS_CD,CARD_TYPE,CUST_NBR,CONTACT_MOBILE,CONTACT_ADDR,SEX,BIRTHDATE,EMAIL,NICK_NAME,CRT_DATE,ORG_ID,LOGIN_PWD,PAY_PWD,BLACKLIST,SMI_SOURCE,RANDOM_NUMBER,ISSYNC
+		)
+		values
+		(
+		#{CUST_ID,jdbcType=VARCHAR},
+		#{CUST_NAME,jdbcType=VARCHAR},
+		#{CUST_VIP_LEVEL,jdbcType=VARCHAR},
+		#{CUST_TYPE,jdbcType=VARCHAR},
+		#{STATUS_CD,jdbcType=VARCHAR},
+		#{CARD_TYPE,jdbcType=VARCHAR},
+		#{CUST_NBR,jdbcType=VARCHAR},
+		#{CONTACT_MOBILE,jdbcType=VARCHAR},
+		#{CONTACT_ADDR,jdbcType=VARCHAR},
+		#{SEX,jdbcType=VARCHAR},
+		to_date(#{BIRTHDATE},'yyyy-MM-dd hh24:mi:ss'),
+		#{EMAIL,jdbcType=VARCHAR},
+		#{NICK_NAME,jdbcType=VARCHAR},
+		sysdate,
+		#{ORG_ID,jdbcType=VARCHAR},
+		#{LOGIN_PWD,jdbcType=VARCHAR},
+		#{PAY_PWD,jdbcType=VARCHAR},
+		#{BLACKLIST,jdbcType=VARCHAR},
+		#{SMI_SOURCE,jdbcType=VARCHAR},
+		#{RANDOM_NUMBER,jdbcType=VARCHAR},
+		#{ISSYNC,jdbcType=INTEGER}
+		)
+	</insert>
+	<!-- 会员资料修改 -->
+	<update id="updCust" parameterType="java.util.Map">
+		update info_cust t
+		<set>
+			<if test="CUST_NAME != null and CUST_NAME != ''">
+				t.CUST_NAME=#{CUST_NAME},
+			</if>
+			<if test="CUST_VIP_LEVEL != null and CUST_VIP_LEVEL != ''">
+				t.CUST_VIP_LEVEL=#{CUST_VIP_LEVEL},
+			</if>
+			<if test="CUST_TYPE != null and CUST_TYPE != ''">
+				t.CUST_TYPE=#{CUST_TYPE},
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				t.STATUS_CD=#{STATUS_CD},
+			</if>
+			<if test="CARD_TYPE != null and CARD_TYPE != ''">
+				t.CARD_TYPE=#{CARD_TYPE},
+			</if>
+			<if test="CUST_NBR != null and CUST_NBR != ''">
+				t.CUST_NBR=#{CUST_NBR},
+			</if>
+			<if test="CONTACT_MOBILE != null and CONTACT_MOBILE != ''">
+				t.CONTACT_MOBILE=#{CONTACT_MOBILE},
+			</if>
+			<if test="CONTACT_ADDR != null and CONTACT_ADDR != ''">
+				t.CONTACT_ADDR=#{CONTACT_ADDR},
+			</if>
+			<if test="SEX != null and SEX != ''">
+				t.SEX=#{SEX},
+			</if>
+			<if test="BIRTHDATE != null and BIRTHDATE != ''">
+				t.BIRTHDATE=to_date(#{BIRTHDATE},'yyyy-MM-dd'),
+			</if>
+			<if test="EMAIL != null and EMAIL != ''">
+				t.EMAIL=#{EMAIL},
+			</if>
+			<if test="NICK_NAME != null and NICK_NAME != ''">
+				t.NICK_NAME=#{NICK_NAME},
+			</if>
+			<if test="ORG_ID != null and ORG_ID != ''">
+				t.ORG_ID=#{ORG_ID},
+			</if>
+			<if test="LOGIN_PWD != null and LOGIN_PWD != ''">
+				t.LOGIN_PWD=#{LOGIN_PWD},
+			</if>
+			<if test="PAY_PWD != null and PAY_PWD != ''">
+				t.PAY_PWD=#{PAY_PWD},
+			</if>
+			<if test="BLACKLIST != null and BLACKLIST != ''">
+				t.BLACKLIST=#{BLACKLIST},
+			</if>
+			t.MOD_DATE=sysdate,
+		</set>
+		where t.CUST_ID=#{CUST_ID}
+	</update>
+	
+	<select id="getCustIdByloginMobile" parameterType="java.lang.String" resultType="java.util.Map">
+		select distinct(cust_id),login_user from info_login_user
+		where status_cd = '1000' and login_user in
+		<foreach item="idItem" collection="array" open="(" separator=","
+			close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	
+	
+</mapper>

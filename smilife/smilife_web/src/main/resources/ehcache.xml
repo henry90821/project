@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+	<!-- 数据缓存存放目录 -->
+	<diskStore path="java.io.tmpdir" />
+
+	<!--缓存成员发现工厂，管理cacheManager对象 -->
+	<cacheManagerPeerProviderFactory
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+		properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1,
+    multicastGroupPort=4446, timeToLive=32" />
+
+	<cacheManagerPeerListenerFactory
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+		properties="port=40001" />
+
+	<!--对象、数据缓存 -->
+	<defaultCache maxElementsInMemory="1" eternal="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
+		maxElementsOnDisk="10000000" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU" />
+
+	<!-- 页面缓存 -->
+	<cache name="SimplePageFragmentCachingFilter"
+		maxElementsInMemory="10" eternal="false" timeToIdleSeconds="100"
+		timeToLiveSeconds="100" overflowToDisk="false">
+		<cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+			properties="replicateAsynchronously=true, 
+				replicatePuts=true, 
+				replicateUpdates=true,
+        		replicateUpdatesViaCopy=false, 
+				replicateRemovals=true " />
+	</cache>
+
+</ehcache>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.OrderChildDetailMapper">
+	<!-- 订单明细信息查询  tyj-->
+	<select id="qryOrderChildDetail" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  select 
+       t.order_child_detail_id, 
+	   t.order_child_id,
+	   t.obj_type, 
+	   t.obj_code, 
+	   t.entity_code,
+	   t.before_value, 
+	   t.after_value, 
+	    <![CDATA[to_char(t.crt_date,'yyyy-MM-dd') crt_date]]>
+      from info_order_child_detail t
+      <where>
+        1 = 1
+        <if test=" ORDER_CHILD_ID != null and ORDER_CHILD_ID != ''">
+			and	t.order_child_id = #{ORDER_CHILD_ID}
+		</if>
+      </where>  
+	</select>
+	
+	<!-- 订单明细资料新增 -->
+	<insert id="addOrderChildDetail" parameterType="java.util.Map">
+	  insert into info_order_child_detail(
+	   order_child_detail_id, 
+	   order_child_id,
+	   obj_type, 
+	   obj_code, 
+	   entity_code,
+	   before_value, 
+	   after_value, 
+	   crt_date
+	   ) values(
+	   #{ORDER_CHILD_DETAIL_ID},
+	   #{ORDER_CHILD_ID},
+	   #{OBJ_TYPE},
+	   #{OBJ_CODE},
+	   #{ENTITY_CODE},
+	   #{BEFORE_VALUE},
+	   #{AFTER_VALUE},
+	   <![CDATA[sysdate]]>)
+	</insert>
+	
+ 
+     
+</mapper>

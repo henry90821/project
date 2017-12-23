@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.pay.dao.AppInfoDao" >
+  <resultMap id="BaseResultMap" type="com.smi.pay.model.AppInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="appcode" property="appCode" jdbcType="VARCHAR" />
+    <result column="appdesc" property="appDesc" jdbcType="VARCHAR" />
+    <result column="kind" property="kind" jdbcType="VARCHAR" />
+    <result column="callbackurl" property="callBackUrl" jdbcType="VARCHAR" />
+    <result column="createDate" property="createDate"   />
+    <result column="createUser" property="createUser" jdbcType="INTEGER" />
+    <result column="lastUpdateDate" property="lastUpdateDate"  />
+    <result column="lastUpdateUser" property="lastUpdateUser" jdbcType="INTEGER"  />
+    
+  </resultMap>
+  
+   
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from app_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.smi.pay.model.AppInfo" >  
+    insert into app_info (appcode,kind,appdesc,callbackurl,createDate)
+    values (#{appCode},#{kind}, #{appDesc},#{callBackUrl},#{createDate})
+  </insert>
+   
+  
+  <select id="getAll" resultMap="BaseResultMap">
+  select  * from app_info
+  </select>
+  
+   <select id="load" resultMap="BaseResultMap">
+     select  * from app_info where id= #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getByCodeRefund" resultMap="BaseResultMap">
+  select  * from app_info where  appcode= #{appcode,jdbcType=VARCHAR} and   kind= '1' LIMIT 1;
+  </select>
+  
+  <select id="getByCodePay" resultMap="BaseResultMap">
+  select  * from app_info where  appcode= #{appcode,jdbcType=VARCHAR} and   kind= '0' LIMIT 1;
+  </select>
+  
+  <update id="update" parameterType="com.smi.pay.model.AppInfo" >   
+     update app_info
+    set appcode = #{appCode,jdbcType=VARCHAR},appdesc = #{appDesc,jdbcType=VARCHAR},kind= #{kind,jdbcType=VARCHAR}
+    ,callbackurl = #{callBackUrl,jdbcType=VARCHAR},lastUpdateDate= #{lastUpdateDate}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

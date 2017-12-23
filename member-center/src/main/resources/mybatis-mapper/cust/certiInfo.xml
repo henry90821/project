@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CertiInfoMapper">
+	<!-- 会员证件信息查询 -->
+	<select id="qryCertiInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  SELECT 
+         t.certi_id, 
+         t.cust_id, 
+         t.certi_type,
+         e.code_name  certi_type_name, 
+         t.certi_nbr, 
+         t.certi_addr, 
+         t.status_cd, 
+         t.auth_flag, 
+         <![CDATA[to_char(t.crt_date,'yyyy-MM-dd') crt_date,]]>
+         <![CDATA[to_char(t.auth_date,'yyyy-MM-dd') auth_date,]]>
+         <![CDATA[to_char(t.mod_date,'yyyy-MM-dd') mod_date]]>
+      from info_certi t
+          	LEFT JOIN code_list e ON t.certi_type = e.code_id AND e.tab_name = 'INFO_CERTI' AND e.col_name = 'CERTI_TYPE' AND e.status_cd = '1000'
+      
+      <where>
+        1 = 1
+        <if test=" CUST_ID != null and CUST_ID != ''">
+			and	t.cust_id = #{CUST_ID}
+		</if>
+        <if test="CERTI_TYPE != null and CERTI_TYPE != ''">
+			and t.certi_type = #{CERTI_TYPE}
+		</if>
+		 <if test="CERTI_NBR != null and CERTI_NBR != ''">
+			and t.certi_nbr = #{CERTI_NBR}
+		</if>
+		 <if test="STATUS_CD != null and STATUS_CD != ''">
+			and t.status_cd in (#{STATUS_CD})
+		</if>
+		<if test="STATUS_CD_TWO != null and STATUS_CD_TWO != ''">
+			and t.STATUS_CD in (1000,1098)
+		</if>
+      </where>  
+	</select>
+	
+	<!-- 会员证件基本资料新增 -->
+	<insert id="addCerti" parameterType="java.util.Map">
+	  insert into info_certi
+	  (certi_id,
+	   cust_id, 
+	   certi_type, 
+	   certi_nbr, 
+	   certi_addr, 
+	   status_cd, 
+	   auth_flag, 
+	   crt_date, 
+	   auth_date, 
+	   mod_date
+	  )values(
+	   #{CERTI_ID,jdbcType=VARCHAR},
+	   #{CUST_ID,jdbcType=VARCHAR},
+	   #{CERTI_TYPE,jdbcType=NUMERIC},
+	   #{CERTI_NBR,jdbcType=VARCHAR},
+	   #{CERTI_ADDR,jdbcType=VARCHAR},
+	   #{STATUS_CD,jdbcType=VARCHAR},
+	   #{AUTH_FLAG,jdbcType=VARCHAR},
+	    <![CDATA[sysdate,]]>
+	   <![CDATA[sysdate,]]>
+	   <![CDATA[sysdate]]>
+	  )
+	</insert>
+	
+	 <update id="updCerti" parameterType="java.util.Map">   
+         update info_certi  
+         <set>
+			<if test="CERTI_ADDR != null and CERTI_ADDR != ''">
+				certi_addr = #{CERTI_ADDR},
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				status_cd = #{STATUS_CD},
+			</if>
+			<if test="AUTH_FLAG != null and AUTH_FLAG != ''">
+				auth_flag = #{AUTH_FLAG},
+			</if>
+			 auth_date = sysdate,
+			 mod_date = sysdate
+		</set>
+           where  certi_id = #{CERTI_ID}
+       </update> 
+    
+    <!-- 会员证件信息查询 -->
+	<select id="queryCerti" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  SELECT 
+         t.certi_id,
+         t.certi_nbr, 
+         t.auth_flag
+      from info_certi t
+      <where>
+        1 = 1
+        <if test=" CUST_ID != null and CUST_ID != ''">
+			and	t.cust_id = #{CUST_ID}
+		</if>
+        <if test="CERTI_TYPE != null and CERTI_TYPE != ''">
+			and t.certi_type = #{CERTI_TYPE}
+		</if>
+		 <if test="CERTI_NBR != null and CERTI_NBR != ''">
+			and t.certi_nbr = #{CERTI_NBR}
+		</if>
+			and t.status_cd in ('1000','1098')
+      </where>  
+	</select>
+     
+</mapper>

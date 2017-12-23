@@ -1,0 +1,7 @@
+<img src="$!{obj.src}" usemap="#Map_$!{obj.src}" border="0" mark="$!coors_list"/>
+ <map name="Map_$!{obj.src}" id="Map_$!{obj.src}">
+#foreach($area in $coors_list)
+<area target="_blank" href="$!{area.url}" coords="$!{area.coor}" shape="rect">
+</area>
+#end
+</map>

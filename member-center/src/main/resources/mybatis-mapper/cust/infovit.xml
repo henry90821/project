@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoVitMapper">
+	<!-- 活力值查询 -->
+	<select id="qryInfoVit" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select
+		t.VIT_ID,
+		t.CUST_ID,
+		t.ORG_ID,
+		t.VIT_VALUE,
+		t.CRT_DATE,
+		t.SERV_CODE,
+		t.MOD_DATE,
+		t.STATUS_CD
+		from INFO_VIT t
+		<where>
+			1 = 1
+			<if test="CUST_ID != null and CUST_ID != ''">
+				and t.CUST_ID = #{CUST_ID}
+			</if>
+			<if test="ORG_ID != null and ORG_ID != ''">
+				and t.ORG_ID like '%'|| #{ORG_ID} || '%'
+			</if>
+			<if test="SERV_CODE != null and SERV_CODE != ''">
+				and t.SERV_CODE = #{SERV_CODE}
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				and t.STATUS_CD = #{STATUS_CD}
+			</if>
+		</where>
+	</select>
+
+	<!-- 总活力值查询 -->
+	<select id="qrySumInfoVit" parameterType="java.util.Map"
+		resultType="java.lang.Long">
+		select
+		sum(t.vit_value) SUM_VIT
+		from INFO_VIT t
+		where
+		t.cust_id = #{CUST_ID}
+		and t.status_cd =
+		'1000'
+	</select>
+
+	<!-- 活力值新增 -->
+	<insert id="addInfoVit" parameterType="java.util.Map">
+		insert into INFO_VIT
+		(VIT_ID,
+		CUST_ID,
+		ORG_ID,
+		VIT_VALUE,
+		CRT_DATE,
+		SERV_CODE,
+		MOD_DATE,
+		STATUS_CD)
+		values
+		(#{VIT_ID},
+		#{CUST_ID},
+		#{ORG_ID},
+		#{VIT_VALUE},
+		sysdate,
+		#{SERV_CODE},
+		sysdate,
+		#{STATUS_CD})
+	</insert>
+
+	<!-- 活力值修改 -->
+	<update id="updateInfoVit" parameterType="java.util.Map">
+		update INFO_VIT
+		<set>
+			<!-- <if test="VIT_ID != null and VIT_ID != ''">
+				VIT_ID = #{VIT_ID},
+			</if> -->
+			<if test="CUST_ID != null and CUST_ID != ''">
+				CUST_ID = #{CUST_ID},
+			</if>
+			<if test="ORG_ID != ORG_ID and ORG_ID != ''">
+				ORG_ID = #{ORG_ID},
+			</if>
+			<if test="VIT_VALUE != null and VIT_VALUE != ''">
+				VIT_VALUE = #{VIT_VALUE},
+			</if>
+			<if test="CRT_DATE != null" >
+				CRT_DATE = #{CRT_DATE,jdbcType=TIMESTAMP},
+			</if>
+			<if test="SERV_CODE != null and SERV_CODE != ''">
+				SERV_CODE = #{SERV_CODE},
+			</if>
+			<if test="MOD_DATE != null">
+				mod_date = #{mod_date,jdbcType=TIMESTAMP},
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				STATUS_CD = #{STATUS_CD},
+			</if>
+		</set>
+		where VIT_ID = #{VIT_ID}
+	</update>
+	
+	<!-- 根据活力值查询会员等级 -->
+	<select id="infoVitQry" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		 <![CDATA[ SELECT T.CUST_VIP_LEVEL
+		  FROM CUST_VIP_LEVEL_VIT_THRESHOLD T
+		 WHERE T.VIT_LOWER <= #{VIT_VALUE}
+		   AND T.VIT_UPPER > #{VIT_VALUE}]]>
+	</select>
+	
+
+</mapper>

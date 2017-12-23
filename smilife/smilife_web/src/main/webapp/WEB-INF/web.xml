@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>xm_b2c platform V2.0</display-name>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>iskyshopb2b2c.root</param-value>
+	</context-param>
+
+	<!--Spring配置文件 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+        	classpath:net/bull/javamelody/monitoring-spring-aspectj.xml
+        	classpath:applicationContext*.xml
+        </param-value>
+	</context-param>
+
+	<!--日志配置文件 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:config/*/log4j.properties</param-value>
+	</context-param>
+
+	<!--日志配置文件动态扫描时间配置 -->
+	<context-param>
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>6000</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>com.smilife.core.logs.SmiLog4jConfigListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+	</listener>
+
+	<!--BCP初始化加载监听器 -->
+	<listener>
+		<listener-class>com.smilife.bcp.listener.BcpLoadListener</listener-class>
+	</listener>
+
+	<!-- cas client端session失效监听器 -->
+	<listener>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+	</listener>
+
+
+	<!--编码过滤器 其它过滤器必须要在此过滤器之后（除非其它过滤器中不会对request中的参数进行操作） -->
+	<filter>
+		<filter-name>encoding-filter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<!--强制转换编码(request和response均适用) -->
+		<init-param>
+			<param-name>ForceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encoding-filter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+	
+		<!--星美生活APP2.0IP白名单过滤器——开始 -->
+	<filter>
+		<filter-name>app2IpWhiteListFilter</filter-name>
+		<filter-class>com.iskyshop.smilife.filter.IpWhiteListFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>app2IpWhiteListFilter</filter-name>
+		<url-pattern>/api/app/*</url-pattern>
+	</filter-mapping>
+	<!--星美生活APP2.0IP白名单过滤器——结束 -->
+
+
+	<!--jpaFilter用来开启session，避免系统domain中出现fetch=FetchType.EAGER -->
+	<filter>
+		<filter-name>jpaFilter</filter-name>
+		<filter-class>
+			org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+		</filter-class>
+		<init-param>
+			<param-name>singleSession</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>entityManagerFactory</param-name>
+			<param-value>entityManagerFactory</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>jpaFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+		<url-pattern>*.xmh</url-pattern>
+	</filter-mapping>
+
+	<!-- 拦截cas server发送过来的注销请求 -->
+	<filter>
+		<filter-name>casLogoutFilter</filter-name>
+		<filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>casLogoutFilter</filter-name>
+		<url-pattern>*.xmh</url-pattern>
+	</filter-mapping>
+
+	<!--CSS和JavaScript文件Header补全过滤器——开始 -->
+	<filter>
+		<filter-name>ResourceHeaderFilter</filter-name>
+		<filter-class>com.iskyshop.filter.ResourceHeaderFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ResourceHeaderFilter</filter-name>
+		<url-pattern>*.css</url-pattern>
+		<url-pattern>*.js</url-pattern>
+	</filter-mapping>
+	<!--CSS和JavaScript文件Header补全过滤器——结束 -->
+
+
+	<!--URL伪静态 -->
+	<filter>
+		<filter-name>UrlRewriteFilter</filter-name>
+		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UrlRewriteFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+
+
+	<!--spring security权限过滤 -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>*.htm</url-pattern>
+		<url-pattern>*.xmh</url-pattern><!-- 只针对cas单点登出请求 -->
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+
+
+	<!--商城过滤器 com.iskyshop.core.filter.ShopFilter -->
+	<!-- <filter> <filter-name>shopFilter</filter-name> <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
+		<init-param> <param-name>targetFilterLifecycle</param-name> <param-value>true</param-value> 
+		</init-param> </filter> <filter-mapping> <filter-name>shopFilter</filter-name> 
+		<url-pattern>*.htm</url-pattern> </filter-mapping> -->
+
+	<!--转义表单提交js 防止脚本注入攻击 -->
+	<filter>
+		<filter-name>characterFilter</filter-name>
+		<filter-class>com.iskyshop.filter.JsFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterFilter</filter-name>
+		<url-pattern>/buyer/*</url-pattern>
+	</filter-mapping>
+
+	<!--页面缓存配置 -->
+	<filter>
+		<filter-name>SimplePageFragmentCachingFilter</filter-name>
+		<filter-class>com.iskyshop.core.ehcache.PageCacheFiler</filter-class>
+		<init-param>
+			<param-name>patterns</param-name>
+			<param-value></param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>SimplePageFragmentCachingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+
+
+	<!--系统主控servlet -->
+	<servlet>
+		<servlet-name>iskyshop</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>iskyshop</servlet-name>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+
+	<!--设置系统session的有效时间为15分钟 -->
+	<session-config>
+		<session-timeout>15</session-timeout>
+	</session-config>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.htm</location>
+	</error-page>
+
+	<!-- MIME类型 -->
+	<mime-mapping>
+		<extension>doc</extension>
+		<mime-type>application/msword</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>xls</extension>
+		<mime-type>application/msexcel</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>pdf</extension>
+		<mime-type>application/pdf</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>zip</extension>
+		<mime-type>application/zip</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>rar</extension>
+		<mime-type>application/rar</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>txt</extension>
+		<mime-type>application/txt</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>chm</extension>
+		<mime-type>application/mshelp</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>ipa</extension>
+		<mime-type>application/vnd.iphone</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>apk</extension>
+		<mime-type>application/vnd.android.package-archive</mime-type>
+	</mime-mapping>
+
+	<!-- 不允许访问的文件以及文件夹 -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Base-Sql</web-resource-name>
+			<url-pattern>/resources/data/base.sql</url-pattern>
+			<url-pattern>/resources/data/iOSPushDev.p12</url-pattern>
+			<url-pattern>/resources/data/QQWry.dat</url-pattern>
+			<http-method>POST</http-method>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description>This applies only to the "tomcat" security role</description>
+			<role-name>admin</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+	<security-role>
+		<role-name>admin</role-name>
+	</security-role>
+
+	<!-- javamelody -->
+	<filter>
+		<filter-name>javamelody</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<async-supported>true</async-supported>
+	</filter>
+	<filter-mapping>
+		<filter-name>javamelody</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<!-- <dispatcher>ASYNC</dispatcher> -->
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+</web-app>

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-团购管理-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+    #if($!{status})                         
+        jQuery("#status").val("$!{status}");    
+    #end    
+});
+function query_form(){
+	jQuery("#ListForm").submit();
+	    }
+	    
+jQuery(document).ready(function(){
+	/* 动态时间文本框 */
+	jQuery('#beginTime').datepicker({
+		  dateFormat:"yy-mm-dd",
+		  changeMonth: true,
+		  changeYear: true
+	  });
+	jQuery('#endTime').datepicker({
+		  dateFormat:"yy-mm-dd",
+		  changeMonth: true,
+		  changeYear: true
+	  });
+	  //
+});
+
+/* 导出Excel表格 */
+function export_excel(){
+		var info_id = jQuery("#info_id").val();
+		var status = jQuery("#status").val();
+		var mobile = jQuery("#mobile").val();
+		var beginTime = jQuery("#beginTime").val();
+		var endTime = jQuery("#endTime").val();
+		if(beginTime!=""&&endTime!=""){
+			window.location.href="$!webPath/seller/group_excel.htm?info_id="+info_id+"&mobile="+mobile+"&beginTime="+beginTime+"&endTime="+endTime+"&order_status="+status;
+		}else{
+			alert("请选择开始时间与结束时间！");
+		}				
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+  $!httpInclude.include("/seller/nav.htm?op=group_code")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b> ><b>团购码管理</b></span></div>
+      <div class="seller_list">
+          <div class="seller_list_title">
+          <ul class="seller_title_ul">
+             <li><a href='$!webPath/seller/group_code.htm'><i></i>团购码验证</a></li>
+            <li class="this"><a href='$!webPath/seller/grouplife_selfinfo.htm'><i></i>团购消费码列表</a></li>
+          </ul>
+        </div>
+        <div class="seller_list_box">
+          <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/grouplife_selfinfo.htm">
+          <div class="search">
+              <span>消费码：</span> <span class="size140">
+              <input name="info_id" type="text" id="info_id" value="$!info_id" />
+              </span>
+              <span>手机号码：</span> <span class="size140">
+              <input name="mobile" type="text" id="mobile" value="$!mobile" />
+              </span>
+              <span>使用状态：</span><span><select name="status" id="status">
+             <option value="">请选择</option>
+          <option value="0">未使用</option>
+            <option value="-1">已过期</option>
+              <option value="1">已使用</option>
+              <option value="3">申请退款</option>
+              <option value="7">已退款</option>
+          </select></span>
+          	
+        <span>
+		 	生成日期：
+			<span class="size100">
+				<input name="beginTime" type="text" id="beginTime" value="$!beginTime" readonly="readonly" />
+			</span>
+			<spen>-</spen>
+			<span class="size100">
+				<input name="endTime" type="text" id="endTime" value="$!endTime" readonly="readonly" />
+			</span>   
+		</span>	       	
+          <span>
+          <input name="" type="button"  value="搜索" style="cursor:pointer; float:none;" onclick="query_form()" class="search_btn"/>
+          <input name="" type="button"  value="导出Excel" style="cursor:pointer; float:none;" onclick="export_excel();" class="search_btn"/>
+          </span> 
+    </div>
+            <div class="operation">
+                #if($objs.size()>0)
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+                <tr id="opertitle">
+                <th width="10%"><span class="">手机号码</span></th>
+                 <th width="15%"><span class="">团购名称</span></th>
+                <th width="15%"><span class="">团购消费码</span></th>
+         		 <th width="8%"><span class="">团购单价</span></th>
+         		 <th width="8%"><span class="">使用状态</span></th>
+         		 <!-- add -->
+          			<th width="15%"><span class="form_btna">生成时间</span></th>
+          		<!-- end -->
+          		<th width="15%"><span class="">到期时间</span></th>
+                <th ><span>操作</span></th>
+                </tr>
+            
+                #foreach($obj in $objs)
+                <tr > 
+                <td align="center">$!obj.user_mobile</td>
+                <td align="center">$!obj.lifeGoods.gg_name</td>
+                  <td align="center">$!CommUtil.genericStar("$!obj.group_sn",2,12)</td>
+              <td align="center">$!obj.lifeGoods.group_price</td>
+              <td align="center">#if($!obj.status==0)未使用#end #if($!obj.status==1) 已使用 #end #if($!obj.status==-1) 已过期 #end #if($!obj.status==3)申请退款#end #if($!obj.status==5)退款中#end #if($!obj.status==7)退款完成#end</td>
+              <!-- add -->
+              <td align="center">$!obj.addTime</td>
+              <!-- end -->
+              <td align="center">$!CommUtil.formatLongDate($!obj.lifeGoods.endTime)</td>
+              <td align="center">#if($!obj.status==0)<a href="javascript:void(0);" onclick="if(confirm('是否确定使用编号为：$!obj.group_sn 消费码？'))window.location.href='$!webPath/seller/use_lifeinfo.htm?id=$!obj.id'">验证使用</a>#end #if($!obj.status==-1)已过期#end #if($!obj.status==1)已使用#end #if($!obj.status==3)<a dialog_id="grouplife_return" dialog_height="100" dialog_top="300" dialog_width="420" 
+dialog_title="确认退款" dialog_uri="$!webPath/seller/grouplife_return_confirm.htm?id=$!obj.id" href="javascript:void(0);" 
+style="color:#06F">确认退款</a>#end  #if($!obj.status==5)平台退款中#end #if($!obj.status==7)退款完成#end</td>
+         		 </td>
+                </tr>
+                #end
+              </table>
+                 #else
+                 <table>
+                <tr>
+                  <td colspan="6" align="center"><div class="seller_center_nothing">
+                      <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                      <div class="seller_center_nothing_right">暂时没有数据</div>
+                    </div></td>
+                </tr>
+                </table>
+                #end
+            </div>
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">$!gotoPageFormHTML</div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

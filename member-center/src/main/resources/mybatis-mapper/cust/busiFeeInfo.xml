@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.BusiFeeInfoMapper">
+	<!-- 业务定义查询 -->
+	<select id="qryBusiFeeInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  SELECT *
+	  FROM CODE_OFFER_FEE
+	 WHERE 1=1
+	 <if test="OFFER_ID !=null">
+		AND (FEE_OBJ_ID IN 
+		 <foreach collection="OFFER_ID" item="item" index="index" open="(" separator="," close=")">
+			 #{item}
+	 	</foreach>
+		 AND FEE_TYPE = '1')
+     </if>
+   	 <if test="OFFER_ID !=null">
+   		OR (
+  	 </if>
+  	 <if test="OFFER_ID ==null">
+   		AND
+  	 </if>
+  	   FEE_OBJ_ID = #{SERV_CODE} AND FEE_TYPE = '2'
+     <if test="OFFER_ID !=null ">
+  	    )
+     </if>
+	   AND STATUS_CD = '1000'
+	</select>
+</mapper>

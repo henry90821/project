@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery('#ac_begin_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#ac_end_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  #if($!acType)
+	  jQuery("#acType").val($!acType);
+  #end
+  #if($!ac_status)
+	  jQuery("#ac_status").val($!ac_status);
+  #end
+});
+
+function ajax_update(id,fieldName,obj){
+   var val=jQuery(obj).val();
+   jQuery.ajax({type:'POST',
+	              url:'$!webPath/admin/activity_ajax.htm',
+				  data:{"id":id,"fieldName":fieldName,"value":val},
+				beforeSend:function(){
+				  
+				},
+			   success:function(data){
+	             if(val==""){
+				   jQuery(obj).attr("src","$!webPath/resources/style/system/manage/blue/images/"+data+".png");
+				 }else{
+				   jQuery(obj).val(val);
+				 }      
+              }
+	    });
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">
+  	#if($!global_coupon_flag==1)
+  	优惠券礼包
+  	#else
+  	活动管理
+  	#end
+  </h3>
+  <div class="nav_list">
+  	 <ul>
+      #if($!global_coupon_flag==1)
+      <li><a href="$!webPath/admin/coupon_list.htm?global_coupon_flag=1"><b>所有优惠券</b></a></li>
+      <li><a href="$!webPath/admin/coupon_add.htm?global_coupon_flag=1" ><b>新增优惠券</b></a></li>
+      <li><a href="$!webPath/admin/couponbag_activity.htm" class="this"><b>优惠券礼包</b></a></li>
+      #else
+      <li><a href="$!webPath/admin/activity_self.htm" class="this"><b>活动列表</b></a></li>
+      <li><a href="$!webPath/admin/activity_self_goods_list.htm" ><b>申请列表</b></a></li>
+      #end
+     </ul>   
+  </div>
+  #if($!global_coupon_flag==1)
+  <form method="post" id="ListForm" action="$!webPath/admin/couponbag_activity.htm">
+  #else
+  <form method="post" id="ListForm" action="$!webPath/admin/activity_self.htm">
+  #end
+  <div class="search">
+     <span>活动标题</span> <span class="size150">
+          <input name="ac_title" type="text" id="ac_title" value="$!ac_title" /></span>
+         #if($!global_coupon_flag!=1)
+         <span><select name="acType" id="acType">
+            <option value="">活动类型</option>
+            <option value="0">商品类活动 </option>
+            <option value="1">优惠券类活动</option>
+          </select>
+          </span>
+          #end
+           <span><select name="ac_status" id="ac_status">
+            <option value="">活动状态</option>
+            <option value="1">启动 </option>
+            <option value="0">关闭</option>
+          </select>
+          </span>
+          <span>活动时间</span> <span class="size100">
+        <input name="ac_begin_time" type="text" id="ac_begin_time"  value="$!ac_begin_time"/>
+        </span><span>—</span><span class="size100">
+        <input name="ac_end_time" type="text" id="ac_end_time"  value="$!ac_end_time"/>
+        </span> <span>
+          <span class="btn_search">
+          <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+          </span> 
+    </div>
+  <div class="fshoptb">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+      <tr>
+        <th width="8%"><span class="form_btna">排序</span></th>
+        <th width="20%"><span class="form_btna">活动标题</span></th>
+        <th width="12%"><span class="form_btna">活动类型</span></th>
+        <th width="15%" ><span class="form_btna">横幅图片</span></th>
+        <th width="12%" align="center"><span class="form_btna">开始时间</span></th>
+        <th align="center" width="12%"><span class="form_btna">结束时间</span></th>
+        <th  align="center" width="10%"><span class="form_btna">状态</span></th>
+        <th   align="center"><span class="form_btna">操作</span></th>
+      </tr>
+      #foreach($obj in $objs)
+      <tr> 
+        <td  align="center"> $!obj.ac_sequence</td>
+        <td  align="center"> $!obj.ac_title</td>
+        <td  align="center">
+            #if($!obj.acType==0)
+            	商品类活动
+            #elseif($!obj.acType==1)
+            	优惠券类活动
+            #elseif($!obj.acType==2)	
+            	优惠券礼包
+            #else
+            	其它
+            #end
+        </td>
+        <td align="center"><span class="tpborder">#if($!obj.acType==0)<img src="$!{obj.ac_acc.path}/$!{obj.ac_acc.name}" width="90" height="33" />#end</span></td>
+        <td align="center">$!CommUtil.formatShortDate($!obj.ac_begin_time)</td>
+        <td align="center">$!CommUtil.formatShortDate($!obj.ac_end_time)</td>
+        #if($!obj.ac_status==0)
+          #set($status="关闭")
+        #end
+        #if($!obj.ac_status==1)
+          #set($status="启动")
+        #end
+        <td align="center">$!status</td>
+        <td  align="center" class="hui oprate_con">
+        #if($!obj.ac_status==1)
+        <a href="$!webPath/admin/activity_self_apply.htm?id=$!obj.id#if($!global_coupon_flag==1)&global_coupon_flag=1#end" class="blue">参加活动</a>|
+        <a href="$!webPath/admin/activity_self_goods_list.htm?act_id=$!obj.id#if($!global_coupon_flag==1)&global_coupon_flag=1#end&acType=$!obj.acType" class="blue">申请列表</a>
+        #end
+        </td>
+      </tr>
+      #end
+    </table>
+  </div>
+  <div class="operate_bar">
+    <div class="fenye">
+  	 <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+     $!gotoPageFormHTML
+    </div> 
+    <div class="shopbtn shopfx"><span class="oper_check"></span></div>
+    <div class="shop_btn_del shopbtn"><span class="oper_del"></span></div>
+             
+ </div>
+  </form>
+</div>
+</body>
+</html>

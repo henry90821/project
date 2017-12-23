@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<style>
+  .mt15{margin-top:15px;}
+  .padleft55{padding-left:55px;}
+  .time_select{padding-left:10px;}
+  .time_select select{overflow-y:auto; border:1px solid #B2B2B2 ;width:60px;height:26px;top:0;}
+  .seckill_explain{position:relative;}
+  .seckill_explain textarea{width:200px;height:80px;position:absolute;top:-1px;left:3px;}
+  .seckill_submit{padding-left:118px;}
+  .seckill_submit input{padding:2px 15px;cursor:pointer;}
+  .seckill_explain .ke-container{position: absolute;left: 8px;top: 5px;}
+</style>
+<script type="text/javascript">
+jQuery(document).ready(function(){
+  jQuery('#beginTime2').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true,
+	  minDate:new Date()
+  });
+  jQuery('#endTime2').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true,
+	  minDate:new Date()
+  });
+  
+  var options = {
+	        cssPath : '$!webPath/resources/editor/plugins/code/prettify.css',
+	        filterMode : true,
+			uploadJson:'$!webPath/upload.htm',
+			width : '600px',
+			height:'400px',
+			resizeType : 1,
+			allowImageUpload : true,
+			allowFlashUpload : false,
+			allowMediaUpload : false,
+			allowFileManager : false,
+			syncType:"form",
+			afterCreate : function() {
+								var self = this;
+								self.sync();
+							},
+			afterChange : function() {
+								var self = this;
+								self.sync();
+							},
+			afterBlur : function() {
+								var self = this;
+								self.sync();
+							},
+			items:['source', '|', 'fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste',
+				'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+				'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+				'superscript', '|', 'selectall', 'clearhtml','quickformat','|',
+				'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+				'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image','flash', 'media', 'baidumap','table', 'hr', 'emoticons', 'link', 'unlink', '|', 'about']
+	};
+  	var editor = KindEditor.create('#gg_content',options); 
+  	
+  	/*jQuery("input[name=weixin_shop_recommend]").click(function(){
+  		if(jQuery(this).val() == 1){
+  			jQuery("#div_wx_photo").show();
+  		}else{
+  			jQuery("#div_wx_photo").hide();
+  		}
+  	});*/
+  	
+	jQuery("#theForm").validate({
+		ignore: "",	
+		rules: {
+			beginTime2:{
+				required:true
+			},
+			endTime2:{
+				required:true
+			},
+			gg_name:{required:true},
+			goods_name:{required:true},
+			gg_price:{required:true,number:true},
+			gg_count:{required:true,digits:true}
+			},
+			messages: {
+				beginTime2:{required:"开始时间不能为空"},
+				endTime2:{required:"结束时间不能为空"},
+				gg_name:{required:"团购名称不能为空"},
+				goods_name:{required:"团购商品不能为空"},
+				gg_price:{required:"团购价格不能为空",number:"团购价格只能为数字"},
+				gg_count:{required:"团购数量不能为空",digits:"团购数量只能为整数"}
+			}
+		});
+	});
+	
+	function submitForm(){
+		var beginTime = jQuery("#beginTime2").val()+" "+jQuery("#sel1").val()+":"+jQuery("#sel2").val()+":00";
+		var endTime = jQuery("#endTime2").val()+" "+jQuery("#sel3").val()+":"+jQuery("#sel4").val()+":00";
+		
+		if((new Date(beginTime) >= new Date(endTime))){
+			alert("结束时间请晚于开始时间");
+			return false;
+		}
+		jQuery("#beginTime").val(beginTime);
+		jQuery("#endTime").val(endTime);
+		
+		if(jQuery("#weixin_shop_recommend1").is(":checked")){
+			#if(!$!obj.wx_photo)
+			if(jQuery("#wx_photo").val() == ''){
+				alert("请选择秒杀图片");
+				return false;
+			}
+			#end
+		}
+		
+		//选择商品后将商品对应的库存数填充到隐藏域
+		//var $store_inventory_info = jQuery("#store_inventory_info");
+		//if($store_inventory_info.children().size() > 0){
+		//	jQuery("#store_inventory_info_hidden").val($store_inventory_info.find("span").text());
+		//}
+		return true;
+	}
+
+</script>
+
+
+
+</head>
+<body>
+
+<div class="cont">
+  <h1 class="seth">秒杀管理</h1>
+  <div class="nav_list">
+ 		<ul>
+ 		    <li><a href="$!webPath/admin/self_seckill.htm"><b>秒杀管理</b></a> </li>
+ 			<li><a class="this" href="$!webPath/admin/self_seckill_add.htm"><b>新增</b></a> </li>
+ 		 </ul>
+  </div>
+  
+  <form action="$!webPath/admin/self_seckill_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+	  <div>
+	  	   <span class="padleft55"><sup style="color:red">*</sup>秒杀名称 :</span>
+	  	   <span class="size200">
+	  	  	 <input type="text" name="gg_name" type="text" id="gg_name" style="height:25px;" value="$!obj.gg_name"  />
+	  	  	 <input name="id" type="hidden" id="id" value="$!obj.id" /></td>
+	  	   </span>
+	  </div>
+	   <div class="mt15">
+	  	   <span class="padleft55"><sup style="color:red">*</sup>开始时间 :</span>
+	  	   <span class="size200">
+	  	  	 <input name="beginTime2" type="text" id="beginTime2" value="$!CommUtil.formatShortDate($!obj.beginTime)" readonly="readonly" #if($!obj && $!obj.gg_status != 0) disabled="disabled" #end />
+	  	   	<input type="hidden"  id="beginTime" name="beginTime" value="$!CommUtil.formatLongDate($!obj.beginTime)"/>
+	  	   </span>
+	  	   <span class="time_select">
+	  	  	 <select id="sel1" #if($!obj && $!obj.gg_status != 0) disabled="disabled" #end>
+	  	  	 	  #set($num1=[0 .. 23])
+	  	  	 	  #foreach($i in $num1)
+	  	  	 	  #if($i == $!sel1)
+	  	  	 	  <option selected="selected">$i</option>
+	  	  	 	  #else
+	  	  	 	  <option>$i</option>
+	  	  	 	  #end
+	  	  	 	  #end
+	  	  	 </select>
+	  	   </span>
+	  	   <span>时</span>
+	  	   <span class="time_select">
+	  	   		<select id="sel2" #if($!obj && $!obj.gg_status != 0) disabled="disabled" #end>
+	  	   		  #set($num2=[0 .. 59])
+	  	  	 	  #foreach($i in $num2)
+	  	  	 	  #if($i == $!sel2)
+	  	  	 	  <option selected="selected">$i</option>
+	  	  	 	  #else
+	  	  	 	  <option>$i</option>
+	  	  	 	  #end
+	  	  	 	  #end
+	  	   		</select>
+	  	   </span>
+	  	   <span>分</span>
+	  </div>
+	
+	   <div class="mt15">
+	  	   <span class="padleft55"><sup style="color:red">*</sup>结束时间 :</span>
+	  	   <span class="size200">
+	  	  	 <input name="endTime2" type="text" id="endTime2" value="$!CommUtil.formatShortDate($!obj.endTime)" readonly="readonly" #if($!obj && $!obj.gg_status != 0) disabled="disabled" #end/>
+	  	   	<input type="hidden"  id="endTime" name="endTime" value="$!CommUtil.formatLongDate($!obj.beginTime)"/>
+	  	   </span>
+	  	   <span class="time_select">
+	  	  	 <select id="sel3" #if($!obj && $!obj.gg_status != 0) disabled="disabled" #end>
+	  	  	 	  #foreach($i in $num1)
+	  	  	 	  #if($i == $!sel3)
+	  	  	 	  <option selected="selected">$i</option>
+	  	  	 	  #else
+	  	  	 	  <option>$i</option>
+	  	  	 	  #end
+	  	  	 	  #end
+	  	  	 </select>
+	  	   </span>
+	  	   <span>时</span>
+	  	   <span class="time_select">
+	  	   		<select id="sel4" #if($!obj && $!obj.gg_status != 0) disabled="disabled" #end>
+	  	  	 	  #foreach($i in $num2)
+	  	  	 	  #if($i == $!sel4)
+	  	  	 	  <option selected="selected">$i</option>
+	  	  	 	  #else
+	  	  	 	  <option>$i</option>
+	  	  	 	  #end
+	  	  	 	  #end
+	  	   		</select>
+	  	   </span>
+	  	   <span>分</span>
+	  </div>
+	  
+	  <div class="mt15">
+	  	 	<span  class="padleft55"><sup style="color:red">*</sup>秒杀商品 :</span>	
+	  	 	<span class="size200">
+	  	 		#if($!obj && $!obj.gg_status != 0)
+	  	 		<input name="goods_name" type="text" id="goods_name" value="$!obj.gg_goods.goods_name" readonly="readonly" />
+	  	 		#else
+	  	  		 <input name="goods_name" type="text" id="goods_name" value="$!obj.gg_goods.goods_name" readonly="readonly" dialog_uri="$!webPath/admin/group_goods_self.htm" dialog_title="选择秒杀商品" dialog_width="450" dialog_height="200" dialog_id="group_goods" />
+	  	 		#end
+	  	  		 <input name="goods_id" type="hidden" id="goods_id" value="$!obj.gg_goods.id" />
+	  	    </span>
+	  </div>
+	   <div class="mt15" id="store_price" style="display:none;">
+         <span  class="padleft55">商品价格：</span>
+         <span class="size200" id="store_price_info">&nbsp;</span>
+       </div>
+       <div class="mt15" id="store_inventory" style="display:none;">
+         <span  class="padleft55">商品库存：</span>
+         <span class="size200" id="store_inventory_info">&nbsp;</span>
+         <input type="hidden" id="store_inventory_info_hidden"  name="store_inventory_info" value="$!obj.gg_goods.goods_inventory"/>
+       </div>
+	  
+	   <div class="mt15">
+	  	 	<span class="padleft55"><sup style="color:red">*</sup>秒杀价格 :</span>	
+	  	 	<span class="size200">
+	  	  		 <input name="gg_price" type="text" id="gg_price" value="$!obj.gg_price"  />
+	  	    </span>
+	  </div>
+	  
+	   <div class="mt15">
+	  	 	<span class="padleft55"><sup style="color:red">*</sup>秒杀总数 :</span>	
+	  	 	<span class="size200">
+	  	  		 <input name="gg_count" type="text" id="gg_count" value="$!obj.gg_count"  />
+	  	  		 <strong>商品总数请少于商品库存数</strong>
+	  	    </span>
+	  </div>
+	  
+	  <div class="mt15">
+	  	 	<span class="padleft55">APP推荐 :</span>	
+	  	 	<span class="">
+	  	  		 <input name="weixin_shop_recommend" type="radio" id="weixin_shop_recommend1" value="1" #if($!obj.weixin_shop_recommend) checked="checked" #end />
+	  	 		<label for="weixin_shop_recommend1">是</label>
+	  	  		 <input name="weixin_shop_recommend" type="radio" id="weixin_shop_recommend0" value="0" #if(!$!obj.weixin_shop_recommend) checked="checked" #end />
+	  	  		 <label for="weixin_shop_recommend1">否</label>
+	  	    </span>
+	  </div>
+	  
+	  #if($!obj && $!obj.wx_photo)
+	  <div id="div_wx_photo" class="mt15">
+	  	 	<span class="padleft55">当前图片 :</span>	
+	  	 	<span class="size200">
+	  	  		 <img src="$!obj.wx_photo.path/$!obj.wx_photo.name" width="150" height="60" />
+	  	    </span>
+	  </div>
+      #end
+	  
+	  <div id="div_wx_photo" class="mt15">
+	  	 	<span class="padleft55">秒杀图片 :</span>	
+	  	 	<span class="size200">
+	  	  		 <input name="gg_acc" type="file" id="wx_photo" value="" />
+	  	  		 <strong>最佳尺寸：125像素 * 125像素</strong>
+	  	    </span>
+	  </div>
+	  
+	  <div class="mt15" style="height:400px;">
+	  	 	<span class="padleft55">秒杀说明 :</span>	
+	  	 	<span class="size200 seckill_explain">
+	  	  		 <textarea name="gg_content" cols="40" rows="6" id="gg_content">$!obj.gg_content</textarea>
+	  	    </span>
+	  </div>
+	  
+	  <div class="mt15 seckill_submit">
+	  	 <input type="submit" value="提交" onclick="return submitForm()"/>
+	  </div>
+	  
+  </form> 
+  
+  
+  
+   
+</div>
+
+</body>
+</html>

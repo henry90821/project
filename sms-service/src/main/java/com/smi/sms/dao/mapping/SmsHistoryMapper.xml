@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.sms.dao.SmsHistoryMapper">
+	<resultMap id="BaseResultMap" type="com.smi.sms.model.SmsHistory">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<id column="channel" property="channel" jdbcType="VARCHAR" />
+		<result column="companyType" property="companyType" jdbcType="VARCHAR" />
+		<result column="accounttype" property="accountType" jdbcType="INTEGER" />
+		<result column="reqno" property="reqNo" jdbcType="VARCHAR" />
+		<result column="phoneno" property="phoneNo" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="statuscode" property="statusCode" jdbcType="VARCHAR" />
+		<result column="createtime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="sendtime" property="sendTime" jdbcType="TIMESTAMP" />
+		<result column="note" property="note" jdbcType="VARCHAR" />
+		<result column="mobiCount" property="mobiCount" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, channel, companyType, accounttype, reqno, phoneno, content, statuscode,
+		createtime, sendtime, note, mobiCount
+	</sql>
+
+	<insert id="save" parameterType="SmsHistory">
+		insert into sms_history (id, channel,companyType, accounttype, reqno,
+		phoneno, content, statuscode,
+		createtime, sendtime, note, mobiCount)
+		values (
+		#{id,jdbcType=INTEGER}, 
+		#{channel,jdbcType=VARCHAR}, 
+		#{companyType,jdbcType=VARCHAR},
+		#{accountType,jdbcType=INTEGER},
+		#{reqNo,jdbcType=VARCHAR},
+		#{phoneNo,jdbcType=VARCHAR}, 
+		#{content,jdbcType=VARCHAR}, 
+		#{statusCode,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{sendTime,jdbcType=TIMESTAMP},
+		#{note,jdbcType=VARCHAR},
+		#{mobiCount,jdbcType=INTEGER})
+	</insert>
+
+	<update id="updateByReqNo" parameterType="SmsHistory">
+		update sms_history
+		<set>
+			<if test="companyType != null">
+				companyType = #{companyType,jdbcType=VARCHAR},
+			</if>
+			<if test="statusCode != null">
+				statuscode = #{statusCode,jdbcType=VARCHAR},
+			</if>
+			<if test="sendTime != null">
+				sendtime = #{sendTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="note != null">
+				note = #{note,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where reqno = #{reqNo,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="loadByReqNo" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from sms_history
+		where reqno = #{reqNo,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="listByPhoneNo" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from sms_history
+		where phoneno = #{phoneNo,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="listAll" resultType="QueryResult"
+		parameterType="PageQuery" >
+		SELECT
+		h.*, d.`description` statusDesc FROM `sms_history` h LEFT JOIN `code_dict` d ON h.`statuscode` = d.`code`
+		<where>
+			<if test="reqNo != null">
+				reqno = #{reqNo, jdbcType=VARCHAR}
+			</if>
+			<if test="phoneNo != null">
+				and phoneno = #{phoneNo,jdbcType=VARCHAR}
+			</if>
+			<if test="statusCode != null">
+				and statuscode = #{statusCode, jdbcType=VARCHAR}
+			</if>
+			<if test="channel != null">
+				and channel = #{channel, jdbcType=VARCHAR}
+			</if>
+			
+			<if test="startDate != null">
+				and createtime &gt;= #{startDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="endDate != null">
+				and createtime &lt;= #{endDate, jdbcType=TIMESTAMP}
+			</if>
+		</where>
+		
+	</select>
+	
+</mapper>

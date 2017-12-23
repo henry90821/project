@@ -1,0 +1,181 @@
+# ----------------------------------------
+# CORE PROPERTIES
+# ----------------------------------------
+
+# BANNER
+banner:
+  charset: UTF-8
+
+spring:
+  # IDENTITY
+  application:
+    name: SMI Pay Center Service
+  # AOP
+  aop:
+    auto: true
+    proxy-target-class: false
+  # FILE ENCODING (FileEncodingApplicationListener)
+  mandatory-file-encoding: utf-8
+  # HTTP encoding (HttpEncodingProperties)
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  # JACKSON (JacksonProperties)
+  jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    connection-timeout: 2000
+    maximum-pool-size: 20
+    type: com.alibaba.druid.pool.DruidDataSource
+  # INTERNATIONALIZATION (MessageSourceAutoConfiguration)
+  messages:
+    encoding: utf-8
+    basename: i18n/common_zh_CN
+  # JSP support
+  mvc:
+    view:
+      prefix: /WEB-INF/pages/
+      suffix: .jsp
+
+# MAYBATIS PROPERTIES
+mybatis:
+  check-config-location: true
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mybatis-mapper/**/*.xml
+  type-aliases-package: #{type-aliases-package}
+  #type-handlers-package: #{type-handlers-package}
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  display-name: SMI Pay Center Service
+  error:
+    include-stacktrace: always
+    whitelabel:
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
+
+# LOGGING
+logging:
+  level.root: info
+
+# ----------------------------------------
+# ACTUATOR PROPERTIES
+# ----------------------------------------
+
+# ENDPOINTS (AbstractEndpoint subclasses)
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+management:
+  context-path: /system-manager
+  security:
+    enabled: true
+    role: ADMIN
+
+# ----------------------------------------
+# SECURITY PROPERTIES
+# ----------------------------------------
+# SECURITY (SecurityProperties)
+security:
+  basic:
+    enabled: true
+    path: /system-manager
+  user:
+    name: smiadmin
+    password: 123qwe
+#  # SECURITY OAUTH2
+#  oauth2:
+#    # RESOURCES (ResourceServerProperties)
+#    resource:
+#      id: smipay-service
+#    # CLIENT (OAuth2ClientProperties)
+#    client:
+#      client-id: smiadmin
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    url: jdbc:mysql://192.168.68.25:3306/smipay?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: fvt6eip
+
+  # REDIS (RedisProperties)
+#  redis:
+#    host: 192.168.68.23
+#    port: 6379
+
+# LOGGING
+logging:
+  level.com.smi: debug
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8080
+  context-path: /
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    url: jdbc:mysql://192.168.68.25:3306/smipay?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: fvt6eip
+  
+  # REDIS (RedisProperties)
+  redis:
+    host: 192.168.68.23
+    port: 6379
+
+# LOGGING
+logging:
+  path: /logs/smipay-service
+  level.com.smi: info
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8090
+  context-path: /
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    url: #{url}
+    username: #{username}
+    password: #{password}
+    
+  # REDIS (RedisProperties)
+  redis:
+    host: 192.168.86.19
+    port: 6379
+
+# LOGGING
+logging:
+  path: /logs/smipay-service
+  level.com.smi: info
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 9999
+  context-path: /

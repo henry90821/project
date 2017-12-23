@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>账户充值 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+<div class="phone_hd"><a class="back" href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>账户充值</div>
+<div class="pd5">
+  <form  method="post"  name="theForm" id="theForm" action="$!webPath/wap/buyer/predeposit2.htm">
+  <div class="mt50" style="height:49px;"></div>
+  <input type="hidden" name="pd_amount" id="pd_amount"> 
+  <input type = "hidden" value = "$!config.amountAllowed" id="amountAllowed"/>
+  <div class="recharge-hide recharge-show">
+       <div class="recharge-nav" style="height:auto">
+           <span class="tel">会员绑定的手机号 :</span>
+           <input class="telecom" id="mobile" name="mobile" type="text" value="$!user.mobile">
+           <div id="error_msg" style=" color:red; line-height:1rem; margin-left:40%; font-size12px;"></div>
+       </div>  
+		
+       <ul class="recharge-subject" id="recharge-subject"></ul>
+  </div>
+  
+  <div class="payfor">
+ 	<h1>&nbsp;</h1>
+  	<table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2">
+            	<span>
+            		注意：支持为他人充值，但该账户仅限星美生活账户。
+            	</span>
+            </td>
+          </tr>
+        </tbody>
+     </table>
+  </div>
+  
+  <div class="purpleRed_submit">
+      	<a href="javascript:void(0);" onClick="saveForm();">确定</a>
+  </div>
+  </form>
+</div>
+<div class="note" id="note" style="display:none"></div>
+<div class="brand_class_opcity" style="display:none"></div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+function saveForm(){
+	var curAmount = $(".curr").html();
+	$("#pd_amount").val(curAmount.substring(0, curAmount.length-1));
+	jQuery("#theForm").submit();
+}
+
+jQuery(document).ready(function(e) {
+	var amounts = $("#amountAllowed").val().split(",");
+	$.each(amounts, function(i,val){
+		if(i == 0) {
+			$("#recharge-subject").append("<li class='money curr'>" + val + "元</li>");
+		} else {
+			$("#recharge-subject").append("<li class='money'>" + val + "元</li>");	
+		}		
+	});
+	
+	 $("#recharge-subject").click(function(e){
+		if(e.target.className.indexOf("curr") > -1){return;}
+		$("li", this).removeClass("curr");
+		$(e.target).addClass("curr");
+		$("#pd_amount").val(e.target.innerHTML);
+	});
+	 
+	 jQuery("#theForm").validate({
+		 onkeyup:false,
+		 errorPlacement:function(error, element) {
+			 $("#error_msg").html(error); 
+		 },
+		 rules:{
+			    mobile:{
+				  required:true,
+		          remote:{
+				    url: "$!webPath/verify_username2.htm",     //后台处理程序
+		            type: "post",               //数据发送方式
+		            dataType: "json",           //接受数据格式   
+		            data: {                     //要传递的数据
+		                  "mobile": function(){return jQuery("#mobile").val();}
+				     }
+					}
+				}
+		 },
+		 messages:{
+			 mobile:{
+			  required:"账号绑定的手机号不能为空",
+			  remote:"手机号对应的账号不存在"
+			}
+		 }
+	 });
+});
+
+function isWeiXin(){
+    var ua = window.navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+        return true;
+    }else{
+        return false;
+    }
+}	
+</script>
+</body>
+</html>

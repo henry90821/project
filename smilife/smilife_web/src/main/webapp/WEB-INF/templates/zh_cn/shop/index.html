@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>#if($!config.website_title && $!config.website_title != "")$!config.website_title - #end$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+#if($!config.sina_login)
+$!config.sina_domain_code
+#end
+#if($!config.qq_login)
+$!config.qq_domain_code
+#end
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/index.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<style>
+    .newdomain {position: fixed; width: 800px; height: 420px; background: url(/resources/style/system/front/default/images/newdomain.jpg) no-repeat; z-index: 10000; left: 50%; top: 100px; margin-left: -400px; color: #000;}
+    .hide {display: none;}
+    .newdomain a {color:#0c6466;}
+    .newdomain .hd {padding: 92px 0 0 102px; width: 490px; font-size: 18px;}
+    .newdomain .bd {padding: 104px 0 0 318px; width:450px; text-align: right; font-size: 14px;}
+</style>
+</head>
+<body>
+<div class="newdomain hide" id="newdomain">
+    <div class="hd">星美汇原域名 <a href="javascript:void(0)">www.xingmeihui.com</a><br>将于2016年03月16日正式更换域名为<a href="http://www.xingmeihui.com">www.xingmeihui.com</a></div>
+    <div class="bd">近年来，随着星美的发展，和对产品进行整合和升级。<br>
+多个产品域名同时存在现状，已跟不上星美集团的业务节奏、<br>
+无法满足用户需求，以及整合品牌认知，<br>
+所以决定将 <a href="javascript:void(0)">www.xingmeihui.com</a> 变更为 <a href="http://www.xingmeihui.com">www.xingmeihui.com</a> 敬请知悉</div>
+</div>
+<!--[if IE 6]>
+<div class="top_tipe">
+	<div class="top_tipe_center">
+    	<em><img src="$!webPath/resources/style/system/front/default/images/ie6_warning.png" style="height:16px; width:16px;"/></em><b>温馨提示：您当前使用的浏览器版本过低，兼容性和安全性较差，建议您升级：</b><em><img src="$!webPath/resources/style/system/front/default/images/ie_b.png"/></em><b><a href="http://windows.microsoft.com/zh-cn/internet-explorer/download-ie?tp=1.0.0.0.0.KdMt0Yu">IE8浏览器</a>或</b><em><img src="$!webPath/resources/style/system/front/default/images/google_b.png" /></em><b><a href="http://www.google.cn/intl/zh-CN/chrome/">谷歌浏览器</a></b>
+        <span><a href="javascript:void(0);" onclick="javascript:jQuery('.top_tipe').hide();">x</a></span>
+    </div>
+</div>
+<![endif]-->
+
+<!-- 新增弹窗 -->
+<!-- <div class="black-cover"></div>
+<div class="black-msg-content animated fadeIn">
+	<a href="http://www.smi170.com/download.html" target="_blank">
+		<img src="$!webPath/resources/style/system/front/default/images/download_app_03.png" />
+	</a>
+	<a href="javascript:;" class="black-cover-colse"></a>
+</div> -->
+<!-- 新增弹窗 -->
+
+
+$!httpInclude.include("/top.htm")
+<div class="top_right_banner" id="ad1">
+    
+</div>
+<div id="head_unbomb"> $!httpInclude.include("/head.htm") </div>
+$!httpInclude.include("/nav.htm")
+<div id="rotary">
+	
+</div>
+
+<div class="main">
+  <div class="top_index">
+    <div class="top_mid">
+      <div class="top_mid">
+        <div class="banner_nothing"></div>
+       
+      </div>
+    </div>
+    <div class="top_mid_right">
+      <div class="top_mr_news">
+        <ul class="top_mr_tab">
+          <li class="this">公告</li>
+          <li>规则</li>
+          <li>安全</li>
+          <li>指南</li>
+         
+         #*
+         #foreach($articleclass in $acs)
+         #if($!articleclass.sequence==15)
+           <li>$!articleclass.className</li>
+         #end
+         *#
+         
+        </ul>
+        #foreach($param in ${articles.keySet()})
+        #if($!velocityCount==1)
+        #set($display="block") 
+        #else 
+        #set($display="none") 
+        #end
+        <ul class="top_mr_box"  style="display:$!display">
+          #foreach($article in ${articles.get($param)})
+          #if($!article.url!="")
+          #set($url="$!article.url")
+          #else
+          #set($url="$!webPath/article_$!{article.id}.htm")
+          #end
+          <li><b><a href="$!webPath/article_list_$!{article.articleClass.id}.htm" target="_blank">[$!article.articleClass.className]</a></b><a href="$!url" target="_blank">$!CommUtil.substring("$!article.title",26)</a></li>
+          #end
+        </ul>
+        #end </div>
+      <div class="top_mr_erWeiMa">         
+         <div class="ewm_img"></div>
+      </div>
+        
+      <form action="$!webPath/buyer/life_recharge.htm" method="post" id="recharge_form">
+      <div class="top_mid_recharge">
+        <ul id="top_mid_recharge_tab" class="top_mid_recharge_ul" >
+          <!-- <li class="this" id="top_mid_recharge_tab_callsRecharge" style="border-left:none;">话费充值</li> -->
+          <li class="this" id="top_mid_recharge_tab_livingCardRecharge">会员充值</li>
+          <!-- <li id="top_mid_recharge_tab_film">电影</li> -->
+        </ul>
+        
+	
+        <div class="top_mid_recharge_cz"  style="display:block;" id="top_mid_recharge_tab_livingCardRecharge_info">
+               <div class="top_mid_phone"> 
+               	  <input type = "hidden" value = "$!config.amountAllowed" id="amountAllowed"/> 
+                  <ul class="top_mid_phone_center_t">
+                    <li><span class="phone_sp_left">会员账号：</span><span class="phone_sp_right">
+                      <input name="mobile" type="text" class="phone_txt" id="mobile" autocomplete="off" placeholder="为会员绑定的手机号"/>
+                      <label class="error" style="display:none"></label>
+                       <b id="recharge_mobile_result">支持星美会员</b> </span>
+                    </li>
+                    <li><span class="phone_sp_left">面值：</span><span class="phone_sp_right">
+                      <select name="rc_amount" id="rc_amount" class="phone_sel"></select>
+                      </span>
+                    </li>
+                    <li><span class="phone_sp_right phone_sp_ml40">
+                      <input name="" type="submit"  class="phone_btn" value="立即充值"/>
+                      </span>
+                    </li>                    
+                  </ul>
+              </div>
+        </div>
+        <div class="top_mid_recharge_cz"  style="display:none;" id="top_mid_recharge_tab_film_info">
+          <ul id="top_mid_film_tab" class="top_mid_film_ul" >
+            <li class="this" id="top_mid_film_tab_being_hots" style="border-left:none;">正在热映</li>
+            <li id="top_mid_film_tab_soon_hots">即将上映</li>
+          </ul>
+          <div class="top_mid_film_dy" id="top_mid_film_tab_being_hots_info">
+          	<img src="$!webPath/resources/style/system/front/default/images/movie_img_01.jpg"/>
+            <img src="$!webPath/resources/style/system/front/default/images/movie_img_02.jpg"/>
+            <img src="$!webPath/resources/style/system/front/default/images/movie_img_03.jpg"/>
+          </div>
+          <div class="top_mid_film_dy" style="display:none;" id="top_mid_film_tab_soon_hots_info">
+            <img src="$!webPath/resources/style/system/front/default/images/movie_img_03.jpg"/>
+            <img src="$!webPath/resources/style/system/front/default/images/movie_img_01.jpg"/>
+            <img src="$!webPath/resources/style/system/front/default/images/movie_img_02.jpg"/>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="index_center_box">
+    <div class="index_sale"> #set($goodscases=$!goodsCaseViewTools.queryGoodsCase("index_top"))
+      #if($!goodscases.size()>0)
+      <div class="index_sale_tab" id="index_sale_tab"> <a href="javascript:void(0);" class="sale_change" mark="$!goodscases.get(0).id" id="sale_change">换一组</a>
+        <ul>
+          #set($first=1)
+          #foreach($obj in $goodscases)
+          <li #if($!first==1) class="this" #set($first=0) #end id="goodscase$!obj.id"  goods_random="1">$!obj.case_name<s></s></li>
+          #end
+        </ul>
+      </div>
+      #set($first=1)
+      #foreach($obj in $goodscases)
+      <div class="index_sale_box" #if($!first==1) #set($first=0) #else style="display:none" #end id="index_sale_box_$!obj.id"> #set($case_list=$!goodsCaseViewTools.queryCaseGoods($obj.case_content))
+        <div class="index_sale_con" id="index_sale_con_$!obj.id">#foreach($!casegoods in $case_list)
+          <ul class="index_sale_two">
+            #if($!casegoods.goods_main_photo)
+            #set($img="$!{casegoods.goods_main_photo.path}/$!{casegoods.goods_main_photo.name}_middle.$!{casegoods.goods_main_photo.ext}")
+            #else
+            #set($img="$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            #end
+            #set($goods_url="$!webPath/goods_$!{casegoods.id}_gcase.htm")
+            #if($!config.second_domain_open && $!casegoods.goods_type==1 && $!casegoods.goods_store.store_second_domain!="")
+            #set($goods_url="http://$!{casegoods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{casegoods.id}_gcase.htm")
+            #end
+            <li class="sale_two_img"> <a href="$!goods_url" target="_blank"> <span class="img_cspan">
+              <p><img data-original="$!img" onerror="this.src='$!webPath$!{config.goodsImage.path}/$!{config.goodsImage.name}';" src="" width="170" height="170" /></p>
+              </span></a> </li>
+            <li class="sale_two_name"><a href="$!goods_url" target="_blank">$!casegoods.goods_name</a></li>
+            <li class="sale_two_price">售价：<strong>¥$!casegoods.goods_current_price</strong></li>
+          </ul>
+          #end </div>
+      </div>
+      #end
+      #end </div>
+    <div class="index_brand_right">
+      <div class="brand">
+        <h3><span><a href="$!webPath/brand/index.htm" target="_blank">更多</a></span>推荐品牌</h3>
+        <ul>
+          #foreach($gb in $!goodsBrands)
+          #set($gb_url="$!webPath/brand_goods_$!{gb.id}.htm")
+          <li>#if($!{gb.brandLogo})<img src="$!{gb.brandLogo.path}/$!{gb.brandLogo.name}" width="142" height="66" /><a href="$!gb_url" target="_blank">$!{gb.name}</a>#end</li>
+          #end
+        </ul>
+      </div>
+        
+      <div class="brand_bottom_adv" id="ad2">
+        
+      </div>
+    </div>
+  </div>
+  
+  <div id="contain_floor"></div>
+  
+  #if($!img_partners.size()>0 ||$!$text_partners.size()>0)
+  <div class="friendlink">
+    <h1>友情链接</h1>
+    <ul class="linkimg">
+      #foreach($info in $img_partners)
+      <li> <a href="$!info.url" target="_blank"><img src="$!info.image.path/$!info.image.name" width="92" height="35" /></a></li>
+      #end
+    </ul>
+    <div class="linka">#foreach($info in $text_partners)<a href="$!info.url" target="_blank">$!info.title</a>#end </div>
+  </div>
+  #end
+  </div>
+    <div class="pinkfooter">
+        <div class="main">
+            <div class="shopping">
+                #foreach($ac in $acs)
+                <div class="shopone">
+                    <h3>$!ac.className</h3>
+                    <ul>
+                        #foreach($article in $ac.articles)
+                       		 #if($article.display==true)
+                        			#if($!article.url!="")
+                      				#set($url="$!article.url")
+                       				#else
+                                    #set($url="$!webPath/article_$!{article.id}.htm")
+                                    #end
+                                   <li><a href="$!url" target="_blank">$!CommUtil.substring("$!article.title",12)</a></li>
+                        	#end
+                        #end
+                    </ul>
+                </div>
+                #end
+            </div>
+             $!httpInclude.include("/footer.htm")
+            <div class="clear"></div>
+        </div>
+    </div>
+    <script src="$!webPath/resources/js/index.js"></script>
+    <script>
+        require(["jquery"], function(){
+            if(location.host != "www.xingmeihui.com"){
+                //$("#newdomain").removeClass("hide").delay(5000).fadeOut();
+            }
+        });
+    </script>
+    <!--<script src="http://apps.bdimg.com/libs/require.js/2.1.11/require.min.js" data-main=""></script>-->
+</body>
+</html>

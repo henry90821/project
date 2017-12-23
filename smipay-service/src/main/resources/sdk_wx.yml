@@ -1,0 +1,90 @@
+# ----------------------------------------
+# WX配置文件根据实际情况配置测试、生产环境配套参数
+# ----------------------------------------
+
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+  
+wxsdk:
+  #商户ID
+  partner: 1316792901
+  #商户密钥
+  partnerkey: SMI2016893KSHIEYI983UISLP0932988
+  #公众号appid
+  h5appid: wx172c25161190e29e
+  #公众号appsecret
+  h5secret:  ef1f0eb06dc5217421e23ac40c02e95c
+  #h5证书路径
+  certpath:  /assets/wx1316792901.p12
+  #客户端商户号
+  apppartner: 1266670001
+  #客户端商户密钥
+  apppartnerkey: smi170SMI170123qweasdzxcrtyfghvb
+  #客户端appid
+  appid: wx869f2c3d6d0f6d27
+  #客户端secret
+  secret: 01932f3bd8d9bb88fbc82d3b0f318935
+  #APP证书路径
+  appcertpath:  /assets/wx1266670001.p12
+  #回调地址
+  notify_url: http://smi25.xingmeihui.com/smipay/wxcallback.do
+  
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+  
+wxsdk:
+  #商户ID
+  partner: 1316792901
+  #商户密钥
+  partnerkey: SMI2016893KSHIEYI983UISLP0932988
+  #公众号appid
+  h5appid: wx172c25161190e29e
+  #公众号appsecret
+  h5secret:  ef1f0eb06dc5217421e23ac40c02e95c
+  #h5证书路径
+  certpath:  /assets/wx1316792901.p12
+  #客户端商户号
+  apppartner: 1266670001
+  #客户端商户密钥
+  apppartnerkey: smi170SMI170123qweasdzxcrtyfghvb
+  #客户端appid
+  appid: wx869f2c3d6d0f6d27
+  #客户端secret
+  secret: 01932f3bd8d9bb88fbc82d3b0f318935
+  #APP证书路径
+  appcertpath:  /assets/wx1266670001.p12
+  #回调地址
+  notify_url: http://smi25.xingmeihui.com/smipay/wxcallback.do
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+wxsdk:
+  #商户ID
+  partner: 1316792901
+  #商户密钥
+  partnerkey: SMI2016893KSHIEYI983UISLP0932988
+  #公众号appid
+  h5appid: wx172c25161190e29e
+  #公众号appsecret
+  h5secret:  ef1f0eb06dc5217421e23ac40c02e95c
+  #h5证书路径
+  certpath:  /assets/wx1316792901.p12
+  #客户端商户号
+  apppartner: 1266670001
+  #客户端商户密钥
+  apppartnerkey: smi170SMI170123qweasdzxcrtyfghvb
+  #客户端appid
+  appid: wx869f2c3d6d0f6d27
+  #客户端secret
+  secret: 01932f3bd8d9bb88fbc82d3b0f318935
+  #APP证书路径
+  appcertpath:  /assets/wx1266670001.p12
+  #回调地址
+  notify_url: http://smi25.xingmeihui.com/smipay/wxcallback.do

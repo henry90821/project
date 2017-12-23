@@ -1,0 +1,41 @@
+# ----------------------------------------
+# COMMON PROPERTIES
+# ----------------------------------------
+
+smi-oauth:
+  # 允许授权访问的URL
+  authenticated-url: #{authenticated-url}
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+
+smi-oauth:
+  # 是否开启OAuth2认证服务,默认为FALSE
+  enabled: #{enabled}
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+
+smi-oauth:
+  # 是否开启OAuth2认证服务,默认为FALSE
+  enabled: #{enabled}
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+smi-oauth:
+  # 是否开启OAuth2认证服务,默认为FALSE
+  enabled: #{enabled}

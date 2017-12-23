@@ -1,0 +1,59 @@
+# ----------------------------------------
+# COMMON PROPERTIES
+# ----------------------------------------
+
+smi-swagger:
+  # 标题
+  title: 星美活动会员中心接口管理系统
+  # 描述信息
+  description: #{description}
+  # 服务条款网址
+  terms-service-url: #{terms-service-url}
+  # 联系方式
+  contact: yanghailong@smimovie.com
+  # 是否允许提供API服务,默认为TRUE
+  enable: #{enable}
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+
+smi-swagger:
+  # 是否允许提供接口文档页面服务,默认为FALSE
+  allow-page: true
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+
+smi-swagger:
+  # 是否允许提供接口文档页面服务,默认为FALSE
+  allow-page: #{isAllowPage}
+  
+---
+# PreProduct environment
+spring:
+  # PROFILES
+  profiles: preProduct
+
+smi-swagger:
+  # 是否允许提供接口文档页面服务,默认为FALSE
+  allow-page: #{isAllowPage}  
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+smi-swagger:
+  # 是否允许提供接口文档页面服务,默认为FALSE
+  allow-page: #{isAllowPage}

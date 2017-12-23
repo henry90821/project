@@ -1,0 +1,135 @@
+# ----------------------------------------
+# CORE PROPERTIES
+# ----------------------------------------
+
+# BANNER
+banner:
+  charset: UTF-8
+
+spring:
+  # IDENTITY
+  application:
+    name: #{smi-boot-parent}
+  # AOP
+  aop:
+    auto: true
+    proxy-target-class: false
+  # FILE ENCODING (FileEncodingApplicationListener)
+  mandatory-file-encoding: utf-8
+  # HTTP encoding (HttpEncodingProperties)
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  # JACKSON (JacksonProperties)
+  jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    connection-timeout: 2000
+    maximum-pool-size: 20
+    type: com.alibaba.druid.pool.DruidDataSource
+  # INTERNATIONALIZATION (MessageSourceAutoConfiguration)
+  messages:
+    encoding: utf-8
+    basename: i18n/common_zh_CN
+
+# MAYBATIS PROPERTIES
+mybatis:
+  check-config-location: true
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mybatis-mapper/**/*.xml
+  type-aliases-package: #{type-aliases-package}
+  #type-handlers-package: #{type-handlers-package}
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  display-name: #{display-name}
+  error:
+    include-stacktrace: always
+    whitelabel:
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
+
+# LOGGING
+logging:
+  level.root: info
+
+# ----------------------------------------
+# ACTUATOR PROPERTIES
+# ----------------------------------------
+
+# ENDPOINTS (AbstractEndpoint subclasses)
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+      url: #{url}
+      username: #{username}
+      password: #{password}
+
+# LOGGING
+logging:
+  level.com.smi: debug
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8080
+  context-path: #{context-path}
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+      url: #{url}
+      username: #{username}
+      password: #{password}
+
+# LOGGING
+logging:
+  path: #{path}
+  level.com.smi: warn
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8080
+  context-path: #{context-path}
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+        url: #{url}
+        username: #{username}
+        password: #{password}
+
+# LOGGING
+logging:
+  path: #{path}
+  level.com.smi: warn
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 9999
+  context-path: #{context-path}

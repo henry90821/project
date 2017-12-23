@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <bean id="crmInvokeUtil" class="com.tydic.shop.util.CrmInvokeUtil">
+        <property name="url" value="${BAP.URL.CRM}"/>
+        <property name="tempType" value="2"/>
+    </bean>
+    <bean id="feeInvokeUtil" class="com.tydic.shop.util.FeeInvokeUtil">
+        <property name="url" value="${BAP.URL.FEE}"/>
+        <property name="tempType" value="2"/>
+    </bean>
+    <bean id="invokeUtil" class="com.tydic.shop.util.InvokeUtil">
+        <property name="url" value="${BAP.URL.ECP}"/>
+        <property name="tempType" value="1"/>
+    </bean>
+    <bean id="thirdInvokeUtil" class="com.tydic.shop.util.ThirdInvokeUtil">
+        <property name="url" value="${BAP.URL.THIRD}"/>
+        <property name="tempType" value="1"/>
+    </bean>
+</beans>

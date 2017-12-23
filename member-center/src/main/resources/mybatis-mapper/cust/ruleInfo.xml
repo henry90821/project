@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.RuleInfoMapper">
+	<!-- 规则查询 -->
+	<select id="qryRuleInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT R.RULE_ID,
+       		   R.RULE_NAME,
+      		   R.RULE_DESC,
+       	       R.STATUS_CD,
+       		   TO_CHAR(R.CRT_DATE,'YYYY-MM-DD') CRT_DATE,
+       		   R.VER_NO,
+       		   R.RULE_TYPE,
+       		   TO_CHAR(R.EXP_DATE,'YYYY-MM-DD') EXP_DATE
+  		FROM RULE R,RULE_SYS_VER_REL B
+ 		WHERE R.STATUS_CD = '1000'
+ 		  AND B.STATUS_CD = '1000'
+   		  AND R.RULE_ID = B.RULE_ID
+   		  AND R.VER_NO = B.VER_NO
+   		<if test="BUSI_TYPE != null and BUSI_TYPE != ''">
+   			AND R.BUSI_TYPE = #{BUSI_TYPE} 
+   		</if>
+   		<if test="SYS_ID != null and SYS_ID != ''">
+   			AND B.SYS_ID = #{SYS_ID} 
+   		</if>
+	</select>
+	<!-- AND (B.SYS_ID = #{SYS_ID} OR B.SYS_ID = -1) -->
+	
+	<!-- 规则触发表达式查询 -->
+	<select id="qryRuleExp" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT A.EXPRESSION_ID,
+			A.RULE_ID,
+       		A.L_PARAM_TYPE,
+       		A.L_PARAM_VAL,
+       		A.R_PARAM_TYPE,
+       		A.R_PARAM_VAL,
+       		A.OPER_CHAR,
+       		A.OPER_DESC,
+       		TO_CHAR(A.CRT_DATE,'YYYY-MM-DD') CRT_DATE,
+       		A.SYSTEM_USER_ID
+  		FROM RULE_EXPRESSION A
+ 		WHERE A.RULE_ID = #{RULE_ID}
+	</select>
+	
+	<!-- 规则处理sql查询 -->
+	<select id="qryRuleSql" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT A.SQL_ID, A.SQL_TEXT, A.SEQ,A.SQL_DESC ,A.DB_ID
+  			FROM RULE_TIGGER_SQL A
+ 			WHERE A.OBJ_TYPE= #{OBJ_TYPE}
+   			  AND A.OBJ_ID= #{OBJ_ID}
+ 			ORDER BY A.SEQ
+	</select>
+	
+	<!-- SQL参数查询 -->
+	<select id="qrySqlParam" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT A.PARAM_FROM, A.PARAM_NAME, A.PARAM_VAL, A.IN_OUT_TYPE,A.SEQ_ID
+        FROM SQL_DYNAMIC_PARAM A
+ 		WHERE A.SQL_ID = #{SQL_ID}
+ 		  AND A.IN_OUT_TYPE = #{IN_OUT_TYPE}
+	</select>
+	
+	<!-- 规则处理查询 -->
+	<select id="qryRuleHandle" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT A.HANDLE_CODE,
+			   A.HANDLE_VALUE
+		FROM RULE_HANDLE A 
+		WHERE A.RULE_ID = #{RULE_ID}
+	</select>
+</mapper>

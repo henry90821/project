@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.InfoLoginUserMapper">
+  <resultMap id="BaseResultMap" type="com.smi.mc.model.cust.InfoLoginUser">
+    <id column="LOGIN_USER_ID" jdbcType="VARCHAR" property="loginUserId" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="LOGIN_USER_TYPE" jdbcType="VARCHAR" property="loginUserType" />
+    <result column="SYSTEM_ID" jdbcType="VARCHAR" property="systemId" />
+    <result column="LOGIN_USER" jdbcType="VARCHAR" property="loginUser" />
+    <result column="STATUS_CD" jdbcType="VARCHAR" property="statusCd" />
+    <result column="CRT_DATE" jdbcType="DATE" property="crtDate" />
+    <result column="MOD_DATE" jdbcType="DATE" property="modDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LOGIN_USER_ID, CUST_ID, LOGIN_USER_TYPE, SYSTEM_ID, LOGIN_USER, STATUS_CD, CRT_DATE, 
+    MOD_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.smi.mc.model.cust.InfoLoginUserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from INFO_LOGIN_USER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from INFO_LOGIN_USER
+    where LOGIN_USER_ID = #{loginUserId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from INFO_LOGIN_USER
+    where LOGIN_USER_ID = #{loginUserId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.mc.model.cust.InfoLoginUserExample">
+    delete from INFO_LOGIN_USER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.mc.model.cust.InfoLoginUser">
+    insert into INFO_LOGIN_USER (LOGIN_USER_ID, CUST_ID, LOGIN_USER_TYPE, 
+      SYSTEM_ID, LOGIN_USER, STATUS_CD, 
+      CRT_DATE, MOD_DATE)
+    values (#{loginUserId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{loginUserType,jdbcType=VARCHAR}, 
+      #{systemId,jdbcType=VARCHAR}, #{loginUser,jdbcType=VARCHAR}, #{statusCd,jdbcType=VARCHAR}, 
+      #{crtDate,jdbcType=DATE}, #{modDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.mc.model.cust.InfoLoginUser">
+    insert into INFO_LOGIN_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="loginUserId != null">
+        LOGIN_USER_ID,
+      </if>
+      <if test="custId != null">
+        CUST_ID,
+      </if>
+      <if test="loginUserType != null">
+        LOGIN_USER_TYPE,
+      </if>
+      <if test="systemId != null">
+        SYSTEM_ID,
+      </if>
+      <if test="loginUser != null">
+        LOGIN_USER,
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD,
+      </if>
+      <if test="crtDate != null">
+        CRT_DATE,
+      </if>
+      <if test="modDate != null">
+        MOD_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="loginUserId != null">
+        #{loginUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUserType != null">
+        #{loginUserType,jdbcType=VARCHAR},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUser != null">
+        #{loginUser,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDate != null">
+        #{crtDate,jdbcType=DATE},
+      </if>
+      <if test="modDate != null">
+        #{modDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.mc.model.cust.InfoLoginUserExample" resultType="java.lang.Integer">
+    select count(*) from INFO_LOGIN_USER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update INFO_LOGIN_USER
+    <set>
+      <if test="record.loginUserId != null">
+        LOGIN_USER_ID = #{record.loginUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.custId != null">
+        CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginUserType != null">
+        LOGIN_USER_TYPE = #{record.loginUserType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.systemId != null">
+        SYSTEM_ID = #{record.systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginUser != null">
+        LOGIN_USER = #{record.loginUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusCd != null">
+        STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crtDate != null">
+        CRT_DATE = #{record.crtDate,jdbcType=DATE},
+      </if>
+      <if test="record.modDate != null">
+        MOD_DATE = #{record.modDate,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update INFO_LOGIN_USER
+    set LOGIN_USER_ID = #{record.loginUserId,jdbcType=VARCHAR},
+      CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      LOGIN_USER_TYPE = #{record.loginUserType,jdbcType=VARCHAR},
+      SYSTEM_ID = #{record.systemId,jdbcType=VARCHAR},
+      LOGIN_USER = #{record.loginUser,jdbcType=VARCHAR},
+      STATUS_CD = #{record.statusCd,jdbcType=VARCHAR},
+      CRT_DATE = #{record.crtDate,jdbcType=DATE},
+      MOD_DATE = #{record.modDate,jdbcType=DATE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.mc.model.cust.InfoLoginUser">
+    update INFO_LOGIN_USER
+    <set>
+      <if test="custId != null">
+        CUST_ID = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUserType != null">
+        LOGIN_USER_TYPE = #{loginUserType,jdbcType=VARCHAR},
+      </if>
+      <if test="systemId != null">
+        SYSTEM_ID = #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginUser != null">
+        LOGIN_USER = #{loginUser,jdbcType=VARCHAR},
+      </if>
+      <if test="statusCd != null">
+        STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDate != null">
+        CRT_DATE = #{crtDate,jdbcType=DATE},
+      </if>
+      <if test="modDate != null">
+        MOD_DATE = #{modDate,jdbcType=DATE},
+      </if>
+    </set>
+    where LOGIN_USER_ID = #{loginUserId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.mc.model.cust.InfoLoginUser">
+    update INFO_LOGIN_USER
+    set CUST_ID = #{custId,jdbcType=VARCHAR},
+      LOGIN_USER_TYPE = #{loginUserType,jdbcType=VARCHAR},
+      SYSTEM_ID = #{systemId,jdbcType=VARCHAR},
+      LOGIN_USER = #{loginUser,jdbcType=VARCHAR},
+      STATUS_CD = #{statusCd,jdbcType=VARCHAR},
+      CRT_DATE = #{crtDate,jdbcType=DATE},
+      MOD_DATE = #{modDate,jdbcType=DATE}
+    where LOGIN_USER_ID = #{loginUserId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 会员账号查询 -->
+	<select id="qryInfoLoginUser" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		t.LOGIN_USER_ID,
+		t.CUST_ID,
+		t.LOGIN_USER_TYPE,
+		t.SYSTEM_ID,
+		t.LOGIN_USER,
+		t.STATUS_CD,
+		t.CRT_DATE,
+		t.MOD_DATE
+		FROM INFO_LOGIN_USER t
+		<where>
+			1 = 1
+			<if test="CUST_ID != null and CUST_ID != ''">
+				AND t.CUST_ID = #{CUST_ID}
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				AND t.STATUS_CD = #{STATUS_CD}
+			</if>
+			<if test="LOGIN_USER != null and LOGIN_USER != ''">
+				AND t.LOGIN_USER = #{LOGIN_USER}
+			</if>
+			<if test="STATUS_CD_REQ != null and STATUS_CD_REQ != ''">
+				AND t.STATUS_CD != #{STATUS_CD_REQ}
+			</if>
+		</where>
+	</select>
+    
+    <!-- 会员账号查询   排除注销的账号 -->
+     <select id="qryInfoLoginUserForCheck" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		t.LOGIN_USER_ID,
+		t.CUST_ID,
+		t.LOGIN_USER_TYPE,
+		t.SYSTEM_ID,
+		t.LOGIN_USER,
+		t.STATUS_CD,
+		t.CRT_DATE,
+		t.MOD_DATE
+		FROM INFO_LOGIN_USER t
+		<where>
+			1 = 1 AND t.STATUS_CD !='1100'
+			<if test="LOGIN_USER != null and LOGIN_USER != ''">
+				AND t.LOGIN_USER = #{LOGIN_USER}
+			</if>
+			<if test="CUST_ID != null and CUST_ID != ''">
+				AND t.CUST_ID = #{CUST_ID}
+			</if>
+			<if test="STATUS_CD !=null and STATUS_CD!=''">
+				AND t.STATUS_CD in (#{STATUS_CD})
+			</if>
+			<if test="STATUS_CD_TWO != null and STATUS_CD_TWO != ''">
+			and t.STATUS_CD in (1000,1098)
+		    </if>
+		</where>
+	</select>
+	
+	<!-- 会员账号新增 -->
+	<insert id="addInfoLoginUser" parameterType="java.util.Map">
+		INSERT INTO
+		INFO_LOGIN_USER
+		(LOGIN_USER_ID,
+		CUST_ID,
+		LOGIN_USER_TYPE,
+		SYSTEM_ID,
+		LOGIN_USER,
+		STATUS_CD,
+		CRT_DATE,
+		MOD_DATE)
+		VALUES
+		(#{LOGIN_USER_ID,jdbcType=VARCHAR},
+		#{CUST_ID,jdbcType=VARCHAR},
+		#{LOGIN_USER_TYPE,jdbcType=VARCHAR},
+		#{SYSTEM_ID,jdbcType=VARCHAR},
+		#{LOGIN_USER,jdbcType=VARCHAR},
+		#{STATUS_CD,jdbcType=VARCHAR},
+		sysdate,
+		sysdate)
+	</insert>
+
+	<!-- 会员账号修改 -->
+	<update id="updateInfoLoginUser" parameterType="java.util.Map">
+
+		UPDATE INFO_LOGIN_USER
+		<set>
+			<if test="CUST_ID != null and CUST_ID != ''">
+				CUST_ID = #{CUST_ID},
+			</if>
+			<if test="LOGIN_USER_TYPE != null and LOGIN_USER_TYPE != ''">
+				LOGIN_USER_TYPE = #{LOGIN_USER_TYPE},
+			</if>
+			<if test="SYSTEM_ID != null and SYSTEM_ID != ''">
+				SYSTEM_ID = #{SYSTEM_ID},
+			</if>
+			<if test="LOGIN_USER != null and LOGIN_USER != ''">
+				LOGIN_USER = #{LOGIN_USER},
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				STATUS_CD = #{STATUS_CD},
+			</if>
+			<if test="CRT_DATE != null ">
+				CRT_DATE = #{CRT_DATE,jdbcType=TIMESTAMP},
+			</if>
+			<if test="MOD_DATE != null">
+				MOD_DATE = #{MOD_DATE,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		WHERE LOGIN_USER_ID = #{LOGIN_USER_ID}
+	</update>
+	
+	<!-- 根据账号到info_login_user表获取custId -->
+	<select id="getCustIdByLoginUser" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT CUST_ID FROM INFO_LOGIN_USER WHERE LOGIN_USER = #{loginUser} AND STATUS_CD = '1000' order by crt_date desc 
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+  
+  $("#bank_position option[value=$!bank_position]").attr("selected", "selected");
+});
+
+</script>
+</head>
+<body>
+
+<div class="cont">
+   <h1 class="seth">银联在线</h1>
+
+    <div class="nav_list">
+
+        <ul>
+            <li><a href="$!webPath/admin/payment_list.htm" id="pay_platform"><b>支付方式列表</b></a></li>
+            <li><a href="javascript:void(0);" class="this" id="chinapaybank_platform"><b>银联在线列表</b></a></li>
+            <li><a href="$!webPath/admin/chinapaybank_add.htm" id="chinapaybank_add_platform"><b>新增银行</b></a></li>
+        </ul>
+
+    </div>
+  <form action="$!webPath/admin/chinapaybank_list.htm" method="post" name="ListForm" id="ListForm" >
+  <div class="search">
+    <ul>
+      <li>
+      <span>位置</span>
+      <span class="size200">
+        <select id="bank_position" name="bank_position" style="width: 100px">
+            <option id="bank_position_" value="">全部</option>
+            <option id="bank_position_0" value="0">内部</option>
+			<option id="bank_position_1" value="1">外部</option>
+        </select>
+      </span>
+      &nbsp;&nbsp; 
+      <span>银行名称</span>
+      <span class="size200">
+        <input name="bank_name" type="text" id="bank_name" value="$!bank_name" />
+      </span>
+      &nbsp;&nbsp; 
+      <span>网关号</span>
+      <span class="size200">
+        <input name="bank_gate_id" type="text" id="bank_gate_id" value="$!bank_gate_id" />
+      </span>
+      &nbsp;&nbsp; 
+      <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+      </li>
+    </ul>
+  </div>
+    <div class="fshoptb">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+      <tr>
+        <th width="20%"><span class="form_btna">银行名称</span></th>
+        <th width="20%"><span class="form_btna">网关号</span></th>
+        <th width="20%"><span class="form_btna">银行图片</span></th>
+        <th width="10%"><span class="form_btna">位置</span></th>
+        <th width="10%"><span class="form_btna">位置索引</span></th>
+        <th width="20%"><span class="form_btna">操作</span></th>
+      </tr>
+      #foreach($obj in $objs)
+      <tr #if($!obj.payoff_type==-1)style="color:#F00" #end>
+        <td align="center">$!obj.bank_name</td>
+        <td align="center">$!obj.bank_gate_id</td>
+        <td align="center"><img src="$!obj.bank_img_url" width="90" height="30" /></td>
+        <td align="center">#if($!obj.bank_position==1) 外部  #else 内部 #end</td>
+        <td align="center">$!obj.bank_index</td>
+        <td align="center" class="hui oprate_con">
+        <a href="$!webPath/admin/chinapaybank_edit.htm?id=$!obj.id&currentPage=$!currentPage" class="blue">编辑</a> | 
+        <a href="$!webPath/admin/chinapaybank_del.htm?mulitId=$!obj.id&currentPage=$!currentPage" class="blue">删除</a>
+        </td>
+      </tr>
+     #end
+    </table>
+  </div>
+  <div class="operate_bar2">
+    <div class="fenye">
+        <input name="status" type="hidden" id="status" value="$!status" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        $!gotoPageFormHTML
+    </div>   
+  </div>
+  </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<title>星美福袋_$!config.website_title - $!config.title - $!{config.poweredby}</title>
+	<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+	<link href="$!webPath/resources/style/system/front/wap/css/style2.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="phone_main">
+		<form name="theForm" id="theForm" action="$!webPath/wap/search.htm" method="post">
+			<div class="search_line">
+				<div class="sp0_logo">
+					<a href="$!webPath/wap/index.htm"></a>
+				</div> 
+				<span class="sp1">
+					<label class="hotwords" id="hotwords"></label>
+					<input type="text" name="keyword" id="keyword" />
+					 <b class="sp3">
+						<img src="$!webPath/resources/style/system/front/wap/images/search_icon.png" width="25" height="25" onclick="search_form();"/>
+					  </b>
+				</span>
+				<span class="sp2">
+					#if(!$!user)
+					  <a href="$!webPath/wap/buyer/center.htm" rel="nofollow">登录</a>
+					#else 
+					  <a href="$!webPath/xmh_logout.htm">退出</a>  
+					#end
+				</span>
+			</div>
+		</form>
+		<section class="pd_box">
+			<img src="$!webPath/resources/style/system/front/wap/images/fd_01.png" />  
+			<img src="$!webPath/resources/style/system/front/wap/images/fd_02.png" />
+			<img src="$!webPath/resources/style/system/front/wap/images/fd_03.png" />
+			<img src="$!webPath/resources/style/system/front/wap/images/fd_04.png" />
+			<img src="$!webPath/resources/style/system/front/wap/images/fd_05.png" />
+			<img src="$!webPath/resources/style/system/front/wap/images/fd_06.png" />
+		</section>
+		<section class="fd_main">
+			<div class="fd_div_bg">
+				<div class="fd_goods_bg">
+					<ul>
+						<div class="left_dl">
+							<img src="$!webPath/resources/style/system/front/wap/images/fd_dl.png" />
+						</div>
+						<div class="right_dl">
+							<img src="$!webPath/resources/style/system/front/wap/images/fd_dl.png" />
+						</div>
+						<li><a href="http://www.xingmeihui.com/wap/goods.htm?id=13105"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods3.jpg" /></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods.htm?id=13106"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods4.jpg" /></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods.htm?id=13108"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods5.jpg" /></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods.htm?id=13109"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods6.jpg" /></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods.htm?id=13123"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods1.jpg" /></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods.htm?id=13124"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods2.jpg" /></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods_13252.htm"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods7.jpg"/></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods_13253.htm"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods8.jpg"/></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods_13254.htm"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods9.jpg"/></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods_13256.htm"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods10.jpg"/></a></li>
+						<li><a href="http://www.xingmeihui.com/wap/goods_13255.htm"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods11.jpg"/></a></li>
+						<li><a href="$!webPath/mapPage.htm"><img src="$!webPath/resources/style/system/front/wap/images/fd_goods12.jpg"/></a></li>
+					</ul>	
+				</div>
+				<div class="fd_goods_bm"></div>
+				<!-- <div class="fd_cx_store"><a href="$!webPath/mapPage.htm"><img src="$!webPath/resources/style/system/front/wap/images/maplink.png"></a></div> -->
+			</div>
+		</section>
+		
+		$!httpInclude.include("/wap/footer.htm?op=index") 
+		$!httpInclude.include("/wap/layer.htm")
+	</div>
+	
+	<script src="$!webPath/resources/js/TouchSlide.1.1.js"></script>
+	<script type="text/javascript">
+		jQuery(document).ready(function() { 
+		$("#keyword").focus(function(){
+			$("#hotwords").hide();
+		}).blur(function(){
+			if($.trim(this.value) == ""){
+				$("#hotwords").show();
+			}
+		}).val("");
+		//获取数据库（$!config.preInputKeys），把数据值有，号换成空格
+		var preInputKeys="$!config.preInputKeys";
+		$("#hotwords").html(preInputKeys.replace(/,/g, " ")).click(function(){
+			$("#keyword").focus();
+		});
+		$("#searchBtn").click(function(){
+			if($("#hotwords").css("display") != "none"){
+				$("#keyword").val($("#hotwords").hide().html());
+			}
+		});
+
+		timeCount("time_down_info");
+		 if(isWeiXin()){
+			   jQuery(".phone_top").hide();
+			 }else{
+				 jQuery(".phone_top").show();
+			 }
+		});
+		
+		function search_form(){
+			jQuery("#theForm").submit();
+		}
+		
+		function isWeiXin(){
+			var ua = window.navigator.userAgent.toLowerCase();
+			if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+				return true;
+			}else{
+				return false;
+			}
+		}
+	</script>	
+</body>
+</html>

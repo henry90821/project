@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>member-center</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.0</version>
+
+    <name>member-center</name>
+    <description>会员中心</description>
+
+    <parent>
+        <groupId>com.smi</groupId>
+        <artifactId>smi-boot-parent</artifactId>
+        <version>1.1.7.UNDERTOW-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+	<dependencies>
+		<dependency>
+		  <groupId>com.oracle</groupId>
+		  <artifactId>ojdbc14</artifactId>
+		  <version>10.2.0.5.0</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>net.sf.json-lib</groupId>
+		  <artifactId>json-lib</artifactId>
+		  <version>2.2.2</version>
+		  <type>pom</type>
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.apache.httpcomponents</groupId>
+		  <artifactId>httpclient</artifactId>
+		  <version>4.5.2</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>net.sf.json-lib</groupId>
+		  <artifactId>json-lib</artifactId>
+		  <version>2.4</version>
+		  <classifier>jdk15</classifier>
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.bouncycastle</groupId>
+		  <artifactId>bcprov-jdk15on</artifactId>
+		  <version>1.49</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>net.sf.ezmorph</groupId>
+		  <artifactId>ezmorph</artifactId>
+		  <version>1.0.6</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.mule</groupId>
+		  <artifactId>mule-core</artifactId>
+		  <version>3.8.0</version>
+		</dependency>
+		
+	   <dependency>
+		  <groupId>com.smi</groupId>
+		  <artifactId>passport-client</artifactId>
+		   <version>1.2</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-redis</artifactId>
+        </dependency>
+		
+	</dependencies>
+  
+    <build>
+        <finalName>member-center</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.smi.mc.MemberCenterApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,69 @@
+<style>
+.select_all { padding:3px 3px; height:15px; margin-left:5px; margin-top:-2px; float:left; background:#fff; border:1px solid #ccc; border-radius:3px; text-align:center; line-height:15px; }
+.select_all_input { margin-left:5px; margin-top:-2px; float:left; border:1px solid #ccc; border-radius:3px; text-align:center; }
+.select_all_input input { position:absolute; width:63px; float:left; border-radius:3px; border:1px solid #7FC7E9; }
+.select_all_input i { height:20px; line-height:20px; clear:both; float:left; clear:both; }
+.select_all_input i a { width:30px; float:left; display:block; margin-right:40px; height:15px; margin-top:2px; line-height:15px; border:1px solid #fff; background:#FFF; border-radius:3px; }
+.select_all_input i a:Hover { background:#7FC7E9; border:#7FC7E9 1px solid; color:#fff; }
+.select_all_input b { float:left; margin-left:35px; }
+</style>
+
+注意：批量修改支持加法（“+”）、减法（“-”）操作，例如在批量管理输入框内输入“+20”，确认后该列所有数值全部增加20。
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tabledetail" >
+  <tr style="background:#CCC"> #foreach($spec in $specs)
+    <td width="27%">$!spec.name</td>
+    #end
+    <td width="27%"><b style="float:left;">库存</b> <span class="select_all" id="select_all_count" mark="count"><img src="$!webPath/resources/style/system/front/default/images/batch.png" style="cursor:pointer"/></span> <span class="select_all_input" mark="count" style="display:none;"><b>
+      <input name="" type="text" mark="all_count" />
+      </b><i><a href="javascript:void(0);" mark="count" id="sure_count">确定</a></i></span></td>
+    <td width="46%" ><b style="float:left;">价格</b> <span class="select_all" id="select_all_price" mark="price"><img src="$!webPath/resources/style/system/front/default/images/batch.png" style="cursor:pointer"/></span> <span class="select_all_input" mark="price" style="display:none;"><b>
+      <input name="" type="text" mark="all_price" />
+      </b><i><a href="javascript:void(0);" mark="price" id="sure_price">确定</a></i></span></td>
+  </tr>
+  #foreach($gsp in $gsps)
+  <tr> #set($id="")
+    #foreach($c_gsp in $gsp)
+    #set($id=$!{c_gsp.id}+"_"+$id)
+    <td>$!c_gsp.value</td>
+    #end
+    <td><input name="$!{id}" type="text" id="inventory_details_count_$!id" style="border:1px solid #A7A6AA; height:20px; line-height:20px; padding-left:5px;margin-bottom:5px;" value="0"></td>
+    <td><input name="$!{id}" type="text" id="inventory_details_price_$!id" style="border:1px solid #A7A6AA; height:20px; line-height:20px; padding-left:5px;margin-bottom:5px;" value="0"></td>
+  </tr>
+  #end
+</table>
+<script>
+jQuery(document).ready(function(){
+	jQuery("span[id^=select_all_]").click(function(){
+		var mark =	jQuery(this).attr("mark");
+		jQuery("span.select_all_input[mark='"+mark+"']").show();
+		jQuery(this).hide();
+	});	
+	jQuery("a[id^=sure_]").click(function(){
+		var mark =jQuery(this).attr("mark");
+		var val = jQuery("input[mark=all_"+mark+"]").val();
+		jQuery("#select_all_"+mark).show();
+		jQuery("span.select_all_input[mark='"+mark+"']").hide();
+		jQuery("input[id^=inventory_details_"+mark+"_]").each(function(){
+			if(val!=""){
+				var reg = new RegExp("^[0-9]*$");
+				var reg2 = new RegExp("^[\+]{1}[0-9]*$");
+				var reg3 = new RegExp("^[\-]{1}[0-9]*$");
+				if(!reg.test(val)){
+					if(reg2.test(val)){
+						var num=parseInt(jQuery(this).val())+parseInt(val.replace("+",""));
+						if(num>=0)
+						jQuery(this).val(num);	
+					}else if(reg3.test(val)){
+						var num=parseInt(jQuery(this).val())-parseInt(val.replace("-",""));
+						if(num>=0)
+						jQuery(this).val(num);	
+					}
+				}else{
+					jQuery(this).val(val);	
+				}
+			}												   							   
+		 });	
+	});			
+});////
+
+</script>

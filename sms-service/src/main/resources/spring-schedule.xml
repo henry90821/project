@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd 
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd ">
+
+	<!-- 启动触发器的配置开始 -->
+    <bean id="startQuertz"
+        class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="myJobSendMsgTrigger" />
+                <ref bean="myJobCleanCacheTrigger" />
+            </list>
+        </property>
+    </bean>
+    <!-- 启动触发器的配置结束 -->
+ 
+    <!-- quartz-2.x的配置 -->
+    <bean id="myJobSendMsgTrigger"
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="myJobSendMsgDetail" />
+        </property>
+        <property name="cronExpression">
+            <!-- 没秒钟执行一次  -->
+            <value>*/1 * * * * ?</value>
+        </property>
+    </bean>
+    <bean id="myJobCleanCacheTrigger"
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="myJobCleanCacheDetail" />
+        </property>
+        <property name="cronExpression">
+            <!-- 每天晚上12点执行 
+            <value>0 0 0 * * ?</value>
+            -->
+            <value>0 0 0 * * ?</value>
+        </property>
+    </bean>
+    <!-- 调度的配置结束 -->
+ 
+    <!-- job的配置开始 -->
+    <bean id="myJobSendMsgDetail"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="sendJob" />
+        </property>
+        <property name="targetMethod">
+            <value>work</value>
+        </property>
+    </bean>
+    <bean id="myJobCleanCacheDetail"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="cleanCacheJob" />
+        </property>
+        <property name="targetMethod">
+            <value>work</value>
+        </property>
+    </bean>
+    <!-- job的配置结束 -->
+ 
+    <!-- 工作的bean -->
+    <bean id="sendJob" class="com.smi.sms.scheduler.SendJob" />
+    <bean id="cleanCacheJob" class="com.smi.sms.scheduler.CleanCacheJob" />
+	
+</beans>

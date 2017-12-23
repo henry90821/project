@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>0元试用详情-$!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/jquery.rating.css" type="text/css" rel="stylesheet"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.metadata.js"></script>
+<script src="$!webPath/resources/js/swfupload.js"></script>
+<script src="$!webPath/resources/js/swfupload.queue.js"></script>
+<script>
+jQuery(document).ready(function(){
+#if($!obj.evaluate_status==0&&$!obj.apply_status==5)
+jQuery("#theForm").validate({
+			ignore: "",
+		   rules:{
+		      use_experience:{required:true}
+		   },		 
+		  messages:{
+		     use_experience:{required:"使用体验不能为空"}	 
+	     },
+		 submitHandler:function(){
+	       var params = jQuery("#theForm").serialize();
+		   jQuery(".save").attr("disbaled","disbaled");
+		   jQuery.ajax({type:'POST',url:'$!webPath/buyer/freeapplylog_save.htm',data:params,
+					  success:function(ret){
+						showDialog("msg_info","","评价成功！",2,"succeed",300,function(){
+						   window.location.href="$!webPath/buyer/freeapply_logs.htm";
+						});			
+		  }});
+	  }
+ });
+#end
+
+var swf_upload$!obj.id;
+var photo_count$!obj.id=0;
+var settings_object$!obj.id = {//定义参数配置对象
+    	upload_url : "$!webPath/buyer/upload_freeapplylog_info.htm;jsessionid=$!jsessionid",
+        flash_url : "$!webPath/resources/flash/swfupload.swf",
+        file_post_name : "$!obj.id",
+        post_params : {
+		  "fal_id":"$!obj.id"
+        },
+        use_query_string : false,
+        requeue_on_error : false,
+        file_types : "*.jpg;*.gif;*.bmp;*.png;*.jpeg;*.tbi",
+        file_types_description: "晒单图片",
+        file_size_limit : "2048",
+        file_upload_limit : 4,
+        file_queue_limit : 4,
+        debug : false,
+        prevent_swf_caching : true,
+        preserve_relative_urls : false,
+ 
+        button_placeholder_id : "upload_imgs_$!obj.id",
+        button_image_url : "$!webPath/resources/style/common/images/evaluate_upload_img.png",
+        button_text_left_padding : 3,
+        button_text_top_padding : 5,
+        button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
+        button_disabled : false,
+        button_cursor : SWFUpload.CURSOR.HAND,
+        button_window_mode : SWFUpload.WINDOW_MODE.TRANSPARENT,
+		file_dialog_start_handler:fileDialogStart$!obj.id,
+		file_dialog_complete_handler:fileDialogComplete$!obj.id,
+        upload_success_handler:uploadSuccess$!obj.id		
+};   
+swf_upload$!obj.id = new SWFUpload(settings_object$!obj.id);//实例化一个SWFUpload，传入参数配置对象
+//fileDialogStart事件函数:在文件选取窗口将要弹出时触发
+function fileDialogStart$!obj.id (){
+	  var stats = this.getStats();
+	  stats.successful_uploads=photo_count$!obj.id;
+	  this.setStats(stats);
+}
+//fileDialogComplete事件函数:当文件选取完毕且选取的文件经过处理后（指添加到上传队列），会立即触发该事件。可以在该事件中调用this.startUpload()方法来实现文件的自动上传
+function fileDialogComplete$!obj.id (numFilesSelected, numFilesQueued) {
+	try {
+	    var upload=0;
+		var stats = this.getStats();
+		var select_count=4-photo_count$!obj.id;
+		if (select_count!=0&&numFilesSelected > select_count) {
+			showDialog("msg_info","","当前最多能上传"+select_count+"张晒单图片",2,"warning",3,function(){});
+			this.cancelQueue();
+			upload=1;
+		}
+		if(stats.successful_uploads>=4){
+			showDialog("msg_info","","已经上传4张图片,如要修改请先删除图片！",2,"warning",3,function(){});
+			this.cancelQueue();
+			upload=1;
+		}
+		if(upload==0){
+		   this.startUpload();
+		}
+	} catch (ex)  {
+        this.debug(ex);
+	}
+}
+//uploadSuccess事件函数:当一个文件上传成功后会触发该事件
+function uploadSuccess$!obj.id (file, serverData){//单个图片上传成功
+	  var obj=eval("("+serverData+")");
+	  photo_count$!obj.id++;
+	  var stats = this.getStats(); 
+	  if(!obj.ret){
+	  	showDialog("msg_info","",obj.msg,2,"warning",3,function(){});
+	  }else{
+	  if(obj.url!=""){
+		jQuery(eva_imgsdl_$!obj.id).append("<dd id='dd_"+obj.id+"'><img id='evaluate_image_"+obj.id+"' src="+obj.url+" /><span id='del_"+obj.id+"' onclick='delimg("+obj.id+")' style='display:none'><a href='javascript:void(0)'>删除</a></span></dd>");
+		
+		var str=jQuery("#evaluate_photos_$!obj.id").val()+","+obj.id;	  
+		jQuery("#evaluate_photos_$!obj.id").val(str);
+		
+		jQuery("#evaluate_image_"+obj.id).hover(function(){
+			jQuery("#del_"+obj.id).show();
+			},function(){});
+		jQuery("#del_"+obj.id).hover(function(){},function(){
+			jQuery("#del_"+obj.id).hide();
+		});
+		jQuery("#del_"+obj.id).click(function (){
+			var str=jQuery("#evaluate_photos_$!obj.id").val();
+			str=str.replace(""+obj.id,"");
+			jQuery("#evaluate_photos_$!obj.id").val(str);
+			photo_count$!obj.id --;
+			jQuery("#dd_"+obj.id).remove();
+			});
+	  }
+	  }
+	}
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="usercenter"> $!httpInclude.include("/buyer/nav.htm?op=free")
+    <div class="usercenter_right">
+      <div class="myorder">
+        <h4><strong>0元试用详情</strong></h4>
+      </div>
+      <div class="user_list">
+        <div class="user_list_title">
+          <ul class="user_title_ul">
+             <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm">全部</a></li>
+             <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm?status=waiting">待审核</a></li>
+              <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm?status=yes">审核通过</a></li>
+               <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm?status=no">审核未通过</a></li>
+                <li class="this"><i></i><a href="javascript:void(0);">0元试用详情</a></li>
+          </ul>
+        </div>       
+        <div class="add_usercenter">      
+        <form action="$!webPath/buyer/freeapplylog_save.htm" id="theForm" name="theForm">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" class="user_base_table">
+            <tr>
+                    <td width="15%" align="right"> 0元试用名称：</td>
+                    <td>$!obj.freegoods_name</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 申请时间：</td>
+                    <td>$!CommUtil.formatShortDate($!obj.addTime)</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 审核状态：</td>
+                    <td>#if($!obj.apply_status==0) 待审核 #end #if($!obj.apply_status==5) 审核通过 #end  #if($!obj.apply_status==-5) 审核未通过 #end</td>
+                  </tr> 
+                  <tr>
+                    <td align="right"> 收货人：</td>
+                    <td>$!obj.receiver_Name</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 收货地区：</td>
+                    <td>$!obj.receiver_area</td>
+                  </tr>  
+                  <tr>
+                    <td align="right"> 详细地址：</td>
+                    <td>$!obj.receiver_area_info</td>
+                  </tr> 
+                  <tr>
+                    <td align="right"> 邮政编码：</td>
+                    <td>$!obj.receiver_zip</td>
+                  </tr>  
+                   <tr>
+                    <td align="right"> 联系电话：</td>
+                    <td>$!obj.receiver_telephone</td>
+                  </tr> 
+                   <tr>
+                    <td align="right"> 手机号：</td>
+                    <td>$!obj.receiver_mobile</td>
+                  </tr>  
+                   #if($!obj.apply_status==5)
+                   #set($ex = $!shipTools.queryExpressCompany($!{obj.express_info}))
+                    <tr>
+                    <td align="right"> 快递公司：</td>
+                    <td>$!ex.company_name </td>
+                  </tr>   
+                    <tr>
+                    <td align="right"> 快递单号：</td>
+                    <td>$!obj.shipCode</td>
+                  </tr>          
+                  #end
+                  #if($!obj.evaluate_status==1)
+                  </tr>   
+                    <tr>
+                    <td align="right"> 使用体验：</td>
+                    <td>$!obj.use_experience</td>
+                  </tr> 
+                   <tr>
+                    <td align="right"> 晒单：</td>
+                    <td>
+                    	#if($!pids)
+							#foreach($photo in $photos)						
+								<img src="$!{photo.path}/$!{photo.name}" width="85" height="80"/>&nbsp;&nbsp;						
+							#end
+						#end
+					</td>
+                  </tr> 
+                  #end
+                  #if($!obj.evaluate_status==0&&$!obj.apply_status==5)
+                  <tr>
+              <td align="right">使用体验：</td>
+               <td><span style="color:#F00"> <textarea style="box-shadow:2px 0px 5px #CCC; border:1px solid #CCC;" name="use_experience" cols="40" rows="6" id="use_experience"></textarea></span>
+                </td>
+            </tr> 
+            <input type="hidden" name="evaluate_photos_$!obj.id" id="evaluate_photos_$!obj.id" autocomplete="off"/>
+              <tr> 
+              <td align="right"> <span class="bask_star_left"> <b>晒单：</b> </span></td>
+              <td>
+                <div class="bask_product_right">
+                  <dl id="eva_imgsdl_$!obj.id">
+                    <style>
+                  	.swfupload{ height:29px; width:90px; float:left;}
+                  </style>
+                    <dt><a href="javascript:void(0)" id="upload_imgs_$!obj.id" name="upload_imgs_$!obj.id">添加图片</a></dt>
+                  </dl>
+                </div>
+               </td>
+              </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>
+              <input type="hidden" id="id" value="$!obj.id" name="id" />
+                <input type="submit" name=""  value="评价" style="cursor:pointer;"  class="save"  />
+              </td>
+            </tr> 
+            	  #end
+          </table>
+          </form>
+        </div> 
+      </div>
+    </div>
+  </div>
+  $!httpInclude.include("/footer.htm")
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.pay.dao.RefundLogDao" >
+  <resultMap id="BaseResultMap" type="com.smi.pay.model.RefundLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="appcode" property="appcode" jdbcType="VARCHAR" />
+    <result column="reqno" property="reqno" jdbcType="VARCHAR" />
+    <result column="sign" property="sign" jdbcType="VARCHAR" />
+    <result column="custid" property="custId" jdbcType="VARCHAR" />
+    
+    <result column="refund_fee" property="refundFee" jdbcType="INTEGER" />
+    <result column="refund_no" property="refundNo" jdbcType="VARCHAR" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="commodity" property="packageValue" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime"   />
+    
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="msg" property="msg" jdbcType="VARCHAR" />
+    <result column="return_detail" property="returnDetail" jdbcType="VARCHAR" />    
+   
+              
+  </resultMap>
+ 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from refund_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.smi.pay.model.RefundLog" >  
+    insert into refund_log (appcode,reqno,sign,custid,refund_fee,refund_no,bill_no,memo,commodity,create_time)
+    values (#{appcode}, #{reqno},#{sign},#{custId},#{refundFee},#{refundNo},#{billNo},#{memo},#{packageValue},#{createTime})
+   <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id"> 
+     SELECT LAST_INSERT_ID() 
+   </selectKey> 
+ 
+  </insert>
+   
+  <update id="update" parameterType="com.smi.pay.model.RefundLog" >   
+    update refund_log
+    set code = #{code}, msg = #{msg}, return_detail = #{returnDetail}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getAll" resultMap="BaseResultMap">
+  select  * from refund_log where 1=1 
+   <if test="appcode != null and appcode != ''">
+    	 and appcode = '${appcode}' 
+    </if>
+    <if test="billNo != null and billNo != ''">
+    	 and bill_no like '%${billNo}%' 
+    </if>
+    
+    <if test="code != null and code != '' ">
+    	 and code = '${code}'
+    </if>
+    
+    <if test="beginDate != null and beginDate != ''">
+    	AND create_time &gt;= CONCAT(#{beginDate},' 00:00:00')  
+    </if> 
+    <if test="endDate != null and endDate != ''">
+    	AND create_time &lt;= CONCAT(#{endDate},' 23:59:59')  
+    </if>
+    
+  </select>
+  
+  <select id="load" resultMap="BaseResultMap">
+     select  * from refund_log where id= #{id,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

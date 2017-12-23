@@ -1,0 +1,63 @@
+# ----------------------------------------
+# COMMON PROPERTIES
+# ----------------------------------------
+member-center:
+  # token会话时间(默认7天)
+  token_time_out: 604800
+  # token前缀
+  token_prefix: "mc:token:"
+  
+  # 会员登陆接口地址,校验账户和密码
+  check_login_url: /memberInfo/checkLoginAccountAndPwd
+  # 会员中心验证支付密码URL
+  cust_checkpwd_url: /cust/checkPayPwd
+  # 会员中心判断用户是否设置了支付密码URL
+  cust_judge_setpaypwd_url: /cust/isSetPayPwd
+  # 会员中心设置支付密码URL
+  cust_setpaypwd_url: /cust/setPayPwd
+  # 会员中心登录密码重置URL
+  cust_rest_loginpwd_url: /cust/restOrUpdatePwd
+  # 会员新增接口URL
+  cust_add_url: /memberInfo/custAdd
+  # 会员资料修改接口URL
+  cust_update_url: /memberInfo/custUpdate
+  # 会员资料查询接口URL
+  cust_query_url: /memberInfo/showCustInfoByCustId
+  # 会员根据手机号码查询资料URL
+  cust_querybynum_url: /memberInfo/getInfoLoginUserByLoginUser
+  # 发送短信验证码接口URL
+  sms_verifycode_url: /memberInfo/getVerifyCode
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+
+member-center:
+  # 会员中心接口URL
+  cust_url: http://192.168.68.21:8084/member/inside
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+
+member-center:
+  # 会员中心接口URL http://192.168.94.9:8084/member/inside
+  cust_url: http://192.168.68.21:8084/member/inside
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+member-center:
+  # 会员中心接口URL
+  cust_url: http://192.168.38.103:8088/inside

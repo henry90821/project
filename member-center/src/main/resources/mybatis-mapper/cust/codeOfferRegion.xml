@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CodeOfferRegionMapper">
+	<!-- 业务区域关系查询查询 -->
+	<select id="qryOfferIdByRegion" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	  SELECT 
+	  	t.OFFER_REGION_ID,
+	  	t.OFFER_ID,
+	  	t.REGION_ID,
+	  	TO_CHAR(t.CRT_DATE,'yyyy-MM-dd hh24:mi:ss') CRT_DATE,
+	  	t.STATUS_CD 
+	  FROM CODE_OFFER_REGION t
+	  <where>
+	  	1=1
+	  	 <if test="REGION_ID != null and REGION_ID != ''">
+			AND	t.REGION_ID = #{REGION_ID}
+		</if>
+		 <if test="STATUS_CD != null and STATUS_CD != ''">
+			AND	t.STATUS_CD = #{STATUS_CD}
+		</if>
+		 <if test="OFFER_ID != null and OFFER_ID != ''">
+			AND	t.OFFER_ID = #{OFFER_ID}
+		</if>
+	  </where>
+	</select>
+</mapper>

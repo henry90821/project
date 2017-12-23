@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.mc.dao.cust.CustRelMapper">
+
+    <!-- 会员关系新增 -->
+    <insert id="addCustRel" parameterType="java.util.Map">
+	insert into INFO_CUST_REL
+	(CUST_REL_ID,
+	CUST_ID_M,
+	CUST_ID_S,
+	REL_TYPE,
+	STATUS_CD,
+	CRT_DATE,
+	MOD_DATE)
+	values
+	(#{CUST_REL_ID},#{CUST_ID_M},#{CUST_ID_S},#{REL_TYPE},#{STATUS_CD},sysdate,sysdate)
+</insert>
+    
+    <!-- 会员关系修改 -->
+	<update id="updateCustRel" parameterType="java.util.Map">
+		update INFO_CUST_REL t
+		set t.STATUS_CD = #{STATUS_CD}，
+		t.MOD_DATE = sysdate
+		where t.CUST_REL_ID = #{CUST_REL_ID};
+	</update>
+    
+    <!-- 会员关系查询 -->
+    <select id="qryCustRel" parameterType="java.util.Map"
+    resultType="java.util.Map">
+    select t.CUST_REL_ID,
+     t.CUST_ID_M, 
+     t.CUST_ID_S, 
+     t.REL_TYPE, 
+     t.STATUS_CD, 
+     t.CRT_DATE, 
+     t.MOD_DATE 
+      from INFO_CUST_REL t 
+      where 1=1
+       <if test="CUST_ID_M != null and CUST_ID_M != ''">
+			and	t.CUST_ID_M = #{CUST_ID_M}
+		</if>
+		<if test="CUST_ID_S != null and CUST_ID_S != ''">
+			and	t.CUST_ID_S = #{CUST_ID_S}
+		</if>
+		<if test="REL_TYPE != null and REL_TYPE != ''">
+			and	t.REL_TYPE = #{REL_TYPE}
+		</if>
+		<if test="STATUS_CD != null and STATUS_CD != ''">
+			and	t.STATUS_CD = #{STATUS_CD}
+		</if>
+    </select>
+    </mapper>
+    
