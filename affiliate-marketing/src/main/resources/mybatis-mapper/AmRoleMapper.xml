@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.am.dao.AmRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.smi.am.dao.model.AmRole" >
+    <id column="r_roleId" property="rRoleid" jdbcType="INTEGER" />
+    <result column="r_roleName" property="rRolename" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    r_roleId, r_roleName
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.smi.am.dao.model.AmRoleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from am_role
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from am_role
+    where r_roleId = #{rRoleid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from am_role
+    where r_roleId = #{rRoleid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.am.dao.model.AmRoleExample" >
+    delete from am_role
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.am.dao.model.AmRole" >
+    insert into am_role (r_roleId, r_roleName)
+    values (#{rRoleid,jdbcType=INTEGER}, #{rRolename,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.am.dao.model.AmRole" >
+    insert into am_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rRoleid != null" >
+        r_roleId,
+      </if>
+      <if test="rRolename != null" >
+        r_roleName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rRoleid != null" >
+        #{rRoleid,jdbcType=INTEGER},
+      </if>
+      <if test="rRolename != null" >
+        #{rRolename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.am.dao.model.AmRoleExample" resultType="java.lang.Integer" >
+    select count(*) from am_role
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update am_role
+    <set >
+      <if test="record.rRoleid != null" >
+        r_roleId = #{record.rRoleid,jdbcType=INTEGER},
+      </if>
+      <if test="record.rRolename != null" >
+        r_roleName = #{record.rRolename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update am_role
+    set r_roleId = #{record.rRoleid,jdbcType=INTEGER},
+      r_roleName = #{record.rRolename,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.am.dao.model.AmRole" >
+    update am_role
+    <set >
+      <if test="rRolename != null" >
+        r_roleName = #{rRolename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where r_roleId = #{rRoleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.am.dao.model.AmRole" >
+    update am_role
+    set r_roleName = #{rRolename,jdbcType=VARCHAR}
+    where r_roleId = #{rRoleid,jdbcType=INTEGER}
+  </update>
+</mapper>

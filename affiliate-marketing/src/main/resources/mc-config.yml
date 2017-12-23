@@ -1,0 +1,48 @@
+# ----------------------------------------
+# COMMON PROPERTIES
+# ----------------------------------------
+member-center:
+  #投放渠道
+  ACCOUNT_DELIVERY: "999"
+  SMILIFE_DELIVERY: "001"
+  MTX_DELIVERY: "002"
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+
+member-center:
+  # 会员中心查询内部接口
+  cust_qry_url: http://192.168.68.21:8084/member/inside/cust/qryCust
+  # 会员中心接口URL
+  cust_url: http://192.168.68.21:8084/member/inside
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+
+member-center:
+  # 会员中心查询内部接口
+  cust_qry_url: http://192.168.68.21:8084/member/inside/cust/qryCust
+  # 会员中心接口URL
+  cust_url: http://192.168.68.21:8084/member/inside
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+
+member-center:
+  # 会员中心查询内部接口
+  cust_qry_url: http://192.168.38.103:8088/inside/cust/qryCust
+  # 会员中心接口URL
+  cust_url: http://192.168.38.103:8088/inside

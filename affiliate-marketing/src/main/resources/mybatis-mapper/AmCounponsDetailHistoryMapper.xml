@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.am.dao.AmCounponsDetailHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.smi.am.dao.model.AmCounponsDetailHistory" >
+    <id column="cdh_detailId" property="cdhDetailid" jdbcType="INTEGER" />
+    <result column="cdh_counponsId" property="cdhCounponsid" jdbcType="VARCHAR" />
+    <result column="cd_loginMobile" property="cdLoginmobile" jdbcType="VARCHAR" />
+    <result column="cdh_custId" property="cdhCustid" jdbcType="VARCHAR" />
+    <result column="cdh_counponsChannelType" property="cdhCounponschanneltype" jdbcType="INTEGER" />
+    <result column="cdh_isGitPackageCounpons" property="cdhIsgitpackagecounpons" jdbcType="INTEGER" />
+    <result column="cdh_gitPackageId" property="cdhGitpackageid" jdbcType="INTEGER" />
+    <result column="cdh_usedTime" property="cdhUsedtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    cdh_detailId, cdh_counponsId, cd_loginMobile, cdh_custId, cdh_counponsChannelType, 
+    cdh_isGitPackageCounpons, cdh_gitPackageId, cdh_usedTime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.smi.am.dao.model.AmCounponsDetailHistoryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from am_counpons_detail_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from am_counpons_detail_history
+    where cdh_detailId = #{cdhDetailid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from am_counpons_detail_history
+    where cdh_detailId = #{cdhDetailid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.am.dao.model.AmCounponsDetailHistoryExample" >
+    delete from am_counpons_detail_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.am.dao.model.AmCounponsDetailHistory" >
+    insert into am_counpons_detail_history (cdh_detailId, cdh_counponsId, cd_loginMobile, 
+      cdh_custId, cdh_counponsChannelType, cdh_isGitPackageCounpons, 
+      cdh_gitPackageId, cdh_usedTime)
+    values (#{cdhDetailid,jdbcType=INTEGER}, #{cdhCounponsid,jdbcType=VARCHAR}, #{cdLoginmobile,jdbcType=VARCHAR}, 
+      #{cdhCustid,jdbcType=VARCHAR}, #{cdhCounponschanneltype,jdbcType=INTEGER}, #{cdhIsgitpackagecounpons,jdbcType=INTEGER}, 
+      #{cdhGitpackageid,jdbcType=INTEGER}, #{cdhUsedtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.am.dao.model.AmCounponsDetailHistory" >
+    insert into am_counpons_detail_history
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cdhDetailid != null" >
+        cdh_detailId,
+      </if>
+      <if test="cdhCounponsid != null" >
+        cdh_counponsId,
+      </if>
+      <if test="cdLoginmobile != null" >
+        cd_loginMobile,
+      </if>
+      <if test="cdhCustid != null" >
+        cdh_custId,
+      </if>
+      <if test="cdhCounponschanneltype != null" >
+        cdh_counponsChannelType,
+      </if>
+      <if test="cdhIsgitpackagecounpons != null" >
+        cdh_isGitPackageCounpons,
+      </if>
+      <if test="cdhGitpackageid != null" >
+        cdh_gitPackageId,
+      </if>
+      <if test="cdhUsedtime != null" >
+        cdh_usedTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cdhDetailid != null" >
+        #{cdhDetailid,jdbcType=INTEGER},
+      </if>
+      <if test="cdhCounponsid != null" >
+        #{cdhCounponsid,jdbcType=VARCHAR},
+      </if>
+      <if test="cdLoginmobile != null" >
+        #{cdLoginmobile,jdbcType=VARCHAR},
+      </if>
+      <if test="cdhCustid != null" >
+        #{cdhCustid,jdbcType=VARCHAR},
+      </if>
+      <if test="cdhCounponschanneltype != null" >
+        #{cdhCounponschanneltype,jdbcType=INTEGER},
+      </if>
+      <if test="cdhIsgitpackagecounpons != null" >
+        #{cdhIsgitpackagecounpons,jdbcType=INTEGER},
+      </if>
+      <if test="cdhGitpackageid != null" >
+        #{cdhGitpackageid,jdbcType=INTEGER},
+      </if>
+      <if test="cdhUsedtime != null" >
+        #{cdhUsedtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.am.dao.model.AmCounponsDetailHistoryExample" resultType="java.lang.Integer" >
+    select count(*) from am_counpons_detail_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update am_counpons_detail_history
+    <set >
+      <if test="record.cdhDetailid != null" >
+        cdh_detailId = #{record.cdhDetailid,jdbcType=INTEGER},
+      </if>
+      <if test="record.cdhCounponsid != null" >
+        cdh_counponsId = #{record.cdhCounponsid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cdLoginmobile != null" >
+        cd_loginMobile = #{record.cdLoginmobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cdhCustid != null" >
+        cdh_custId = #{record.cdhCustid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cdhCounponschanneltype != null" >
+        cdh_counponsChannelType = #{record.cdhCounponschanneltype,jdbcType=INTEGER},
+      </if>
+      <if test="record.cdhIsgitpackagecounpons != null" >
+        cdh_isGitPackageCounpons = #{record.cdhIsgitpackagecounpons,jdbcType=INTEGER},
+      </if>
+      <if test="record.cdhGitpackageid != null" >
+        cdh_gitPackageId = #{record.cdhGitpackageid,jdbcType=INTEGER},
+      </if>
+      <if test="record.cdhUsedtime != null" >
+        cdh_usedTime = #{record.cdhUsedtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update am_counpons_detail_history
+    set cdh_detailId = #{record.cdhDetailid,jdbcType=INTEGER},
+      cdh_counponsId = #{record.cdhCounponsid,jdbcType=VARCHAR},
+      cd_loginMobile = #{record.cdLoginmobile,jdbcType=VARCHAR},
+      cdh_custId = #{record.cdhCustid,jdbcType=VARCHAR},
+      cdh_counponsChannelType = #{record.cdhCounponschanneltype,jdbcType=INTEGER},
+      cdh_isGitPackageCounpons = #{record.cdhIsgitpackagecounpons,jdbcType=INTEGER},
+      cdh_gitPackageId = #{record.cdhGitpackageid,jdbcType=INTEGER},
+      cdh_usedTime = #{record.cdhUsedtime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.am.dao.model.AmCounponsDetailHistory" >
+    update am_counpons_detail_history
+    <set >
+      <if test="cdhCounponsid != null" >
+        cdh_counponsId = #{cdhCounponsid,jdbcType=VARCHAR},
+      </if>
+      <if test="cdLoginmobile != null" >
+        cd_loginMobile = #{cdLoginmobile,jdbcType=VARCHAR},
+      </if>
+      <if test="cdhCustid != null" >
+        cdh_custId = #{cdhCustid,jdbcType=VARCHAR},
+      </if>
+      <if test="cdhCounponschanneltype != null" >
+        cdh_counponsChannelType = #{cdhCounponschanneltype,jdbcType=INTEGER},
+      </if>
+      <if test="cdhIsgitpackagecounpons != null" >
+        cdh_isGitPackageCounpons = #{cdhIsgitpackagecounpons,jdbcType=INTEGER},
+      </if>
+      <if test="cdhGitpackageid != null" >
+        cdh_gitPackageId = #{cdhGitpackageid,jdbcType=INTEGER},
+      </if>
+      <if test="cdhUsedtime != null" >
+        cdh_usedTime = #{cdhUsedtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where cdh_detailId = #{cdhDetailid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.am.dao.model.AmCounponsDetailHistory" >
+    update am_counpons_detail_history
+    set cdh_counponsId = #{cdhCounponsid,jdbcType=VARCHAR},
+      cd_loginMobile = #{cdLoginmobile,jdbcType=VARCHAR},
+      cdh_custId = #{cdhCustid,jdbcType=VARCHAR},
+      cdh_counponsChannelType = #{cdhCounponschanneltype,jdbcType=INTEGER},
+      cdh_isGitPackageCounpons = #{cdhIsgitpackagecounpons,jdbcType=INTEGER},
+      cdh_gitPackageId = #{cdhGitpackageid,jdbcType=INTEGER},
+      cdh_usedTime = #{cdhUsedtime,jdbcType=TIMESTAMP}
+    where cdh_detailId = #{cdhDetailid,jdbcType=INTEGER}
+  </update>
+</mapper>

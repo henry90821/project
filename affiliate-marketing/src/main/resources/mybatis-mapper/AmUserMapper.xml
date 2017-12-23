@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.am.dao.AmUserMapper">
+	<resultMap id="BaseResultMap" type="com.smi.am.dao.model.AmUser">
+		<id column="u_id" property="uId" jdbcType="INTEGER" />
+		<result column="u_roleType" property="uRoletype" jdbcType="INTEGER" />
+		<result column="u_jobNum" property="uJobnum" jdbcType="VARCHAR" />
+		<result column="u_departId" property="uDepartid" jdbcType="INTEGER" />
+		<result column="u_name" property="uName" jdbcType="VARCHAR" />
+		<result column="u_userName" property="uUsername" jdbcType="VARCHAR" />
+		<result column="u_password" property="uPassword" jdbcType="VARCHAR" />
+		<result column="u_createUser" property="uCreateuser" jdbcType="VARCHAR" />
+		<result column="u_createDate" property="uCreatedate" jdbcType="TIMESTAMP" />
+		<result column="u_lastModDate" property="uLastmoddate"
+			jdbcType="TIMESTAMP" />
+		<result column="u_lastModUser" property="uLastmoduser"
+			jdbcType="VARCHAR" />
+		<result column="u_lastLoginDate" property="uLastlogindate"
+			jdbcType="TIMESTAMP" />
+		<result column="u_deleteState" property="uDeleteState"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="UserResultMap" type="com.smi.am.dao.model.AmUserRes">
+		<result column="u_departmentName" property="departmentName"
+			jdbcType="VARCHAR" />
+		<result column="u_userName" property="userName" jdbcType="VARCHAR" />
+		<result column="u_jobNum" property="jobNum" jdbcType="VARCHAR" />
+		<result column="u_roleName" property="roleName" jdbcType="VARCHAR" />
+		<result column="u_name" property="name" jdbcType="VARCHAR" />
+		<result column="u_lastLoginDate" property="lastLogindate"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		u_id, u_roleType, u_jobNum, u_departId, u_name, u_userName,
+		u_password,
+		u_createUser,
+		u_createDate, u_lastModDate, u_lastModUser,
+		u_lastLoginDate
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.smi.am.dao.model.AmUserExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from am_user
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+
+	<!-- 查询账户是否存在 -->
+	<select id="selectIsExistUsername" resultType="java.lang.Integer" 
+	parameterType="com.smi.am.dao.model.AmUser">
+		select
+		count(*)
+		from am_user
+		where
+		<if test="uUsername != null">
+			u_userName=#{uUsername,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<!-- 查询角色列表 -->
+	<select id="selectUserByParam" resultMap="UserResultMap"
+		parameterType="com.smi.am.dao.model.AmUser">
+		SELECT
+		u_name,
+		u_jobNum,
+		u_username,
+		u_lastLoginDate,
+		(SELECT
+		d_departmentName from am_department WHERE d_departmentId=u_departId
+		)u_departmentName,
+		(SELECT r_roleName from am_role WHERE
+		r_roleId=u_roleType
+		)u_roleName
+		from am_user where
+		1=1
+		<if test="uJobnum != null">
+			AND u_jobNum  like '%' #{uJobnum,jdbcType=VARCHAR} '%'
+		</if>
+		<if test="uName != null">
+			AND u_name like '%' #{uName,jdbcType=VARCHAR} '%'
+		</if>
+		<if test="uDepartid != null">
+			AND u_departId=#{uDepartid,jdbcType=INTEGER}
+		</if>
+		<if test="uRoletype != null">
+			AND u_roleType=#{uRoletype,jdbcType=INTEGER}
+		</if>
+		AND u_deleteState=0 ORDER BY u_createDate DESC
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from am_user
+		where u_id = #{uId,jdbcType=INTEGER}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		am_user
+		where u_id = #{uId,jdbcType=INTEGER}
+	</delete>
+
+	<delete id="deleteRoleByUsername" parameterType="java.util.Map">
+		delete from am_user
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+
+
+	<!-- 根据账户查密码 -->
+	<select id="selectPwdByUsername" resultType="java.lang.String"
+		parameterType="java.lang.String">
+		select u_password
+		from am_user
+		where u_userName =
+		#{uUsername,jdbcType=VARCHAR}
+	</select>
+
+
+	<!-- 根据账户逻辑删除角色 -->
+	<update id="updateDeleteStateByUsername" parameterType="java.util.Map">
+		update
+		am_user
+		set u_deleteState=1,u_lastModDate =
+		#{uLastmoddate,jdbcType=TIMESTAMP},u_lastModUser =
+		#{uLastmoduser,jdbcType=VARCHAR} where
+		u_userName=#{userName,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 根据账户更新密码 -->
+	<update id="updatePwdByUsername" parameterType="java.util.Map">
+		update am_user
+		set u_password=#{uPassword,jdbcType=VARCHAR},u_lastModDate =
+		#{uLastmoddate,jdbcType=TIMESTAMP},u_lastModUser =
+		#{uLastmoduser,jdbcType=VARCHAR} where
+		u_userName=#{uUsername,jdbcType=VARCHAR}
+	</update>
+	<!-- 新增管理员 -->
+	<insert id="insertManger" parameterType="com.smi.am.dao.model.AmUser">
+		insert into am_user
+		(u_id,
+		u_roleType, u_jobNum,
+		u_departId, u_name, u_userName,
+		u_password,
+		u_createUser, u_createDate,
+		u_lastModDate, u_lastModUser,
+		u_lastLoginDate
+		)
+		values (#{uId,jdbcType=INTEGER},
+		#{uRoletype,jdbcType=INTEGER},
+		#{uJobnum,jdbcType=VARCHAR},
+		#{uDepartid,jdbcType=INTEGER}, #{uName,jdbcType=VARCHAR},
+		#{uUsername,jdbcType=VARCHAR},
+		#{uPassword,jdbcType=VARCHAR},
+		#{uCreateuser,jdbcType=VARCHAR},
+		#{uCreatedate,jdbcType=TIMESTAMP},
+		#{uLastmoddate,jdbcType=TIMESTAMP}, #{uLastmoduser,jdbcType=VARCHAR},
+		#{uLastlogindate,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.smi.am.dao.model.AmUser">
+		insert into am_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="uId != null">
+				u_id,
+			</if>
+			<if test="uRoletype != null">
+				u_roleType,
+			</if>
+			<if test="uJobnum != null">
+				u_jobNum,
+			</if>
+			<if test="uDepartid != null">
+				u_departId,
+			</if>
+			<if test="uName != null">
+				u_name,
+			</if>
+			<if test="uUsername != null">
+				u_userName,
+			</if>
+			<if test="uPassword != null">
+				u_password,
+			</if>
+			<if test="uCreateuser != null">
+				u_createUser,
+			</if>
+			<if test="uCreatedate != null">
+				u_createDate,
+			</if>
+			<if test="uLastmoddate != null">
+				u_lastModDate,
+			</if>
+			<if test="uLastmoduser != null">
+				u_lastModUser,
+			</if>
+			<if test="uLastlogindate != null">
+				u_lastLoginDate,
+			</if>
+		      <if test="uDeletestate != null" >
+		        u_deleteState,
+		      </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="uId != null">
+				#{uId,jdbcType=INTEGER},
+			</if>
+			<if test="uRoletype != null">
+				#{uRoletype,jdbcType=INTEGER},
+			</if>
+			<if test="uJobnum != null">
+				#{uJobnum,jdbcType=VARCHAR},
+			</if>
+			<if test="uDepartid != null">
+				#{uDepartid,jdbcType=INTEGER},
+			</if>
+			<if test="uName != null">
+				#{uName,jdbcType=VARCHAR},
+			</if>
+			<if test="uUsername != null">
+				#{uUsername,jdbcType=VARCHAR},
+			</if>
+			<if test="uPassword != null">
+				#{uPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="uCreateuser != null">
+				#{uCreateuser,jdbcType=VARCHAR},
+			</if>
+			<if test="uCreatedate != null">
+				#{uCreatedate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uLastmoddate != null">
+				#{uLastmoddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uLastmoduser != null">
+				#{uLastmoduser,jdbcType=VARCHAR},
+			</if>
+			<if test="uLastlogindate != null">
+				#{uLastlogindate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.smi.am.dao.model.AmUserExample"
+		resultType="java.lang.Integer">
+		select count(*) from am_user
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update am_user
+		<set>
+			<if test="record.uId != null">
+				u_id = #{record.uId,jdbcType=INTEGER},
+			</if>
+			<if test="record.uRoletype != null">
+				u_roleType = #{record.uRoletype,jdbcType=INTEGER},
+			</if>
+			<if test="record.uJobnum != null">
+				u_jobNum = #{record.uJobnum,jdbcType=VARCHAR},
+			</if>
+			<if test="record.uDepartid != null">
+				u_departId = #{record.uDepartid,jdbcType=INTEGER},
+			</if>
+			<if test="record.uName != null">
+				u_name = #{record.uName,jdbcType=VARCHAR},
+			</if>
+			<if test="record.uUsername != null">
+				u_userName = #{record.uUsername,jdbcType=VARCHAR},
+			</if>
+			<if test="record.uPassword != null">
+				u_password = #{record.uPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="record.uCreateuser != null">
+				u_createUser = #{record.uCreateuser,jdbcType=VARCHAR},
+			</if>
+			<if test="record.uCreatedate != null">
+				u_createDate = #{record.uCreatedate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.uLastmoddate != null">
+				u_lastModDate =
+				#{record.uLastmoddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.uLastmoduser != null">
+				u_lastModUser = #{record.uLastmoduser,jdbcType=VARCHAR},
+			</if>
+		      <if test="record.uLastlogindate != null" >
+		        u_lastLoginDate = #{record.uLastlogindate,jdbcType=TIMESTAMP},
+		      </if>
+		      <if test="record.uDeletestate != null" >
+		        u_deleteState = #{record.uDeletestate,jdbcType=INTEGER},
+		      </if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update am_user
+		set u_id = #{record.uId,jdbcType=INTEGER},
+		u_roleType =
+		#{record.uRoletype,jdbcType=INTEGER},
+		u_jobNum =
+		#{record.uJobnum,jdbcType=VARCHAR},
+		u_departId =
+		#{record.uDepartid,jdbcType=INTEGER},
+		u_name =
+		#{record.uName,jdbcType=VARCHAR},
+		u_userName =
+		#{record.uUsername,jdbcType=VARCHAR},
+		u_password =
+		#{record.uPassword,jdbcType=VARCHAR},
+		u_createUser =
+		#{record.uCreateuser,jdbcType=VARCHAR},
+		u_createDate =
+		#{record.uCreatedate,jdbcType=TIMESTAMP},
+		u_lastModDate =
+		#{record.uLastmoddate,jdbcType=TIMESTAMP},
+		u_lastModUser =
+		#{record.uLastmoduser,jdbcType=VARCHAR},
+	      u_lastLoginDate = #{record.uLastlogindate,jdbcType=TIMESTAMP},
+	      u_deleteState = #{record.uDeletestate,jdbcType=INTEGER}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.smi.am.dao.model.AmUser">
+		update am_user
+		<set>
+			<if test="uRoletype != null">
+				u_roleType = #{uRoletype,jdbcType=INTEGER},
+			</if>
+			<if test="uJobnum != null">
+				u_jobNum = #{uJobnum,jdbcType=VARCHAR},
+			</if>
+			<if test="uDepartid != null">
+				u_departId = #{uDepartid,jdbcType=INTEGER},
+			</if>
+			<if test="uName != null">
+				u_name = #{uName,jdbcType=VARCHAR},
+			</if>
+			<if test="uUsername != null">
+				u_userName = #{uUsername,jdbcType=VARCHAR},
+			</if>
+			<if test="uPassword != null">
+				u_password = #{uPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="uCreateuser != null">
+				u_createUser = #{uCreateuser,jdbcType=VARCHAR},
+			</if>
+			<if test="uCreatedate != null">
+				u_createDate = #{uCreatedate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uLastmoddate != null">
+				u_lastModDate = #{uLastmoddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uLastmoduser != null">
+				u_lastModUser = #{uLastmoduser,jdbcType=VARCHAR},
+			</if>
+			<if test="uLastlogindate != null">
+				u_lastLoginDate = #{uLastlogindate,jdbcType=TIMESTAMP},
+			</if>
+		      <if test="uDeletestate != null" >
+		        u_deleteState = #{uDeletestate,jdbcType=INTEGER},
+		      </if>
+		</set>
+		where u_id = #{uId,jdbcType=INTEGER}
+	</update>
+	  <update id="updateByPrimaryKey" parameterType="com.smi.am.dao.model.AmUser" >
+	    update am_user
+	    set u_roleType = #{uRoletype,jdbcType=INTEGER},
+	      u_jobNum = #{uJobnum,jdbcType=VARCHAR},
+	      u_departId = #{uDepartid,jdbcType=INTEGER},
+	      u_name = #{uName,jdbcType=VARCHAR},
+	      u_userName = #{uUsername,jdbcType=VARCHAR},
+	      u_password = #{uPassword,jdbcType=VARCHAR},
+	      u_createUser = #{uCreateuser,jdbcType=VARCHAR},
+	      u_createDate = #{uCreatedate,jdbcType=TIMESTAMP},
+	      u_lastModDate = #{uLastmoddate,jdbcType=TIMESTAMP},
+	      u_lastModUser = #{uLastmoduser,jdbcType=VARCHAR},
+	      u_lastLoginDate = #{uLastlogindate,jdbcType=TIMESTAMP},
+	      u_deleteState = #{uDeletestate,jdbcType=INTEGER}
+	    where u_id = #{uId,jdbcType=INTEGER}
+	  </update>
+</mapper>

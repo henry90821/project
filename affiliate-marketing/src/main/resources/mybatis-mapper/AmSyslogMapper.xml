@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.am.dao.AmSyslogMapper" >
+  <resultMap id="BaseResultMap" type="com.smi.am.dao.model.AmSyslog" >
+    <id column="sl_id" property="slId" jdbcType="INTEGER" />
+    <result column="sl_userName" property="slUsername" jdbcType="VARCHAR" />
+    <result column="sl_name" property="slName" jdbcType="VARCHAR" />
+    <result column="sl_roleName" property="slRolename" jdbcType="VARCHAR" />
+    <result column="sl_areaId" property="slAreaid" jdbcType="INTEGER" />
+    <result column="sl_roleType" property="slRoletype" jdbcType="INTEGER" />
+    <result column="sl_loginIp" property="slLoginip" jdbcType="VARCHAR" />
+    <result column="sl_logTitle" property="slLogtitle" jdbcType="VARCHAR" />
+    <result column="sl_logDetail" property="slLogdetail" jdbcType="VARCHAR" />
+    <result column="sl_operateDate" property="slOperatedate" jdbcType="TIMESTAMP" />
+    <result column="sl_remark" property="slRemark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    sl_id, sl_userName, sl_name, sl_roleName, sl_areaId, sl_roleType, sl_loginIp, sl_logTitle, 
+    sl_logDetail, sl_operateDate, sl_remark
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.smi.am.dao.model.AmSyslogExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from am_syslog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from am_syslog
+    where sl_id = #{slId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from am_syslog
+    where sl_id = #{slId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.am.dao.model.AmSyslogExample" >
+    delete from am_syslog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.am.dao.model.AmSyslog" >
+    insert into am_syslog (sl_id, sl_userName, sl_name, 
+      sl_roleName, sl_areaId, sl_roleType, 
+      sl_loginIp, sl_logTitle, sl_logDetail, 
+      sl_operateDate, sl_remark)
+    values (#{slId,jdbcType=INTEGER}, #{slUsername,jdbcType=VARCHAR}, #{slName,jdbcType=VARCHAR}, 
+      #{slRolename,jdbcType=VARCHAR}, #{slAreaid,jdbcType=INTEGER}, #{slRoletype,jdbcType=INTEGER}, 
+      #{slLoginip,jdbcType=VARCHAR}, #{slLogtitle,jdbcType=VARCHAR}, #{slLogdetail,jdbcType=VARCHAR}, 
+      #{slOperatedate,jdbcType=TIMESTAMP}, #{slRemark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.am.dao.model.AmSyslog" >
+    insert into am_syslog
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="slId != null" >
+        sl_id,
+      </if>
+      <if test="slUsername != null" >
+        sl_userName,
+      </if>
+      <if test="slName != null" >
+        sl_name,
+      </if>
+      <if test="slRolename != null" >
+        sl_roleName,
+      </if>
+      <if test="slAreaid != null" >
+        sl_areaId,
+      </if>
+      <if test="slRoletype != null" >
+        sl_roleType,
+      </if>
+      <if test="slLoginip != null" >
+        sl_loginIp,
+      </if>
+      <if test="slLogtitle != null" >
+        sl_logTitle,
+      </if>
+      <if test="slLogdetail != null" >
+        sl_logDetail,
+      </if>
+      <if test="slOperatedate != null" >
+        sl_operateDate,
+      </if>
+      <if test="slRemark != null" >
+        sl_remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="slId != null" >
+        #{slId,jdbcType=INTEGER},
+      </if>
+      <if test="slUsername != null" >
+        #{slUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="slName != null" >
+        #{slName,jdbcType=VARCHAR},
+      </if>
+      <if test="slRolename != null" >
+        #{slRolename,jdbcType=VARCHAR},
+      </if>
+      <if test="slAreaid != null" >
+        #{slAreaid,jdbcType=INTEGER},
+      </if>
+      <if test="slRoletype != null" >
+        #{slRoletype,jdbcType=INTEGER},
+      </if>
+      <if test="slLoginip != null" >
+        #{slLoginip,jdbcType=VARCHAR},
+      </if>
+      <if test="slLogtitle != null" >
+        #{slLogtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="slLogdetail != null" >
+        #{slLogdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="slOperatedate != null" >
+        #{slOperatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="slRemark != null" >
+        #{slRemark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.am.dao.model.AmSyslogExample" resultType="java.lang.Integer" >
+    select count(*) from am_syslog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update am_syslog
+    <set >
+      <if test="record.slId != null" >
+        sl_id = #{record.slId,jdbcType=INTEGER},
+      </if>
+      <if test="record.slUsername != null" >
+        sl_userName = #{record.slUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.slName != null" >
+        sl_name = #{record.slName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.slRolename != null" >
+        sl_roleName = #{record.slRolename,jdbcType=VARCHAR},
+      </if>
+      <if test="record.slAreaid != null" >
+        sl_areaId = #{record.slAreaid,jdbcType=INTEGER},
+      </if>
+      <if test="record.slRoletype != null" >
+        sl_roleType = #{record.slRoletype,jdbcType=INTEGER},
+      </if>
+      <if test="record.slLoginip != null" >
+        sl_loginIp = #{record.slLoginip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.slLogtitle != null" >
+        sl_logTitle = #{record.slLogtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.slLogdetail != null" >
+        sl_logDetail = #{record.slLogdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.slOperatedate != null" >
+        sl_operateDate = #{record.slOperatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.slRemark != null" >
+        sl_remark = #{record.slRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update am_syslog
+    set sl_id = #{record.slId,jdbcType=INTEGER},
+      sl_userName = #{record.slUsername,jdbcType=VARCHAR},
+      sl_name = #{record.slName,jdbcType=VARCHAR},
+      sl_roleName = #{record.slRolename,jdbcType=VARCHAR},
+      sl_areaId = #{record.slAreaid,jdbcType=INTEGER},
+      sl_roleType = #{record.slRoletype,jdbcType=INTEGER},
+      sl_loginIp = #{record.slLoginip,jdbcType=VARCHAR},
+      sl_logTitle = #{record.slLogtitle,jdbcType=VARCHAR},
+      sl_logDetail = #{record.slLogdetail,jdbcType=VARCHAR},
+      sl_operateDate = #{record.slOperatedate,jdbcType=TIMESTAMP},
+      sl_remark = #{record.slRemark,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.am.dao.model.AmSyslog" >
+    update am_syslog
+    <set >
+      <if test="slUsername != null" >
+        sl_userName = #{slUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="slName != null" >
+        sl_name = #{slName,jdbcType=VARCHAR},
+      </if>
+      <if test="slRolename != null" >
+        sl_roleName = #{slRolename,jdbcType=VARCHAR},
+      </if>
+      <if test="slAreaid != null" >
+        sl_areaId = #{slAreaid,jdbcType=INTEGER},
+      </if>
+      <if test="slRoletype != null" >
+        sl_roleType = #{slRoletype,jdbcType=INTEGER},
+      </if>
+      <if test="slLoginip != null" >
+        sl_loginIp = #{slLoginip,jdbcType=VARCHAR},
+      </if>
+      <if test="slLogtitle != null" >
+        sl_logTitle = #{slLogtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="slLogdetail != null" >
+        sl_logDetail = #{slLogdetail,jdbcType=VARCHAR},
+      </if>
+      <if test="slOperatedate != null" >
+        sl_operateDate = #{slOperatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="slRemark != null" >
+        sl_remark = #{slRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sl_id = #{slId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.am.dao.model.AmSyslog" >
+    update am_syslog
+    set sl_userName = #{slUsername,jdbcType=VARCHAR},
+      sl_name = #{slName,jdbcType=VARCHAR},
+      sl_roleName = #{slRolename,jdbcType=VARCHAR},
+      sl_areaId = #{slAreaid,jdbcType=INTEGER},
+      sl_roleType = #{slRoletype,jdbcType=INTEGER},
+      sl_loginIp = #{slLoginip,jdbcType=VARCHAR},
+      sl_logTitle = #{slLogtitle,jdbcType=VARCHAR},
+      sl_logDetail = #{slLogdetail,jdbcType=VARCHAR},
+      sl_operateDate = #{slOperatedate,jdbcType=TIMESTAMP},
+      sl_remark = #{slRemark,jdbcType=VARCHAR}
+    where sl_id = #{slId,jdbcType=INTEGER}
+  </update>
+</mapper>

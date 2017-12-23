@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.am.dao.AmCounponsDetailsMapper">
+	<resultMap id="BaseResultMap" type="com.smi.am.dao.model.AmCounponsDetails">
+		<id column="cd_detailId" property="cdDetailid" jdbcType="INTEGER" />
+		<result column="cd_counponsId" property="cdCounponsid"
+			jdbcType="VARCHAR" />
+		<result column="cd_custId" property="cdCustid" jdbcType="VARCHAR" />
+		<result column="cd_counponsChannelType" property="cdCounponschanneltype"
+			jdbcType="INTEGER" />
+		<result column="cd_used" property="cdUsed" jdbcType="INTEGER" />
+		<result column="cd_isGitPackageCounpons" property="cdIsgitpackagecounpons"
+			jdbcType="INTEGER" />
+		<result column="cd_gitPackageId" property="cdGitpackageid"
+			jdbcType="INTEGER" />
+		<result column="cd_loginMobile" property="cdLoginmobile" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="CouponsResultMap" type="com.smi.am.dao.model.AmCoupons">
+		<id column="c_couponsId" property="cCouponsid" jdbcType="VARCHAR" />
+		<result column="c_couponsName" property="cCouponsname"
+			jdbcType="VARCHAR" />
+		<result column="c_couponsType" property="cCouponstype"
+			jdbcType="INTEGER" />
+		<result column="c_deliveringWay" property="cDeliveringway"
+			jdbcType="INTEGER" />
+		<result column="c_channel" property="cChannel" jdbcType="VARCHAR" />
+		<result column="c_userChannel" property="cUserchannel"
+			jdbcType="INTEGER" />
+		<result column="c_couponsMsg" property="cCouponsmsg" jdbcType="VARCHAR" />
+		<result column="c_avaliabledOrderAmt" property="cAvaliabledorderamt"
+			jdbcType="DOUBLE" />
+		<result column="c_dailyLimit" property="cDailylimit" jdbcType="INTEGER" />
+		<result column="c_preSendCount" property="cPresendcount"
+			jdbcType="INTEGER" />
+		<result column="c_permanent" property="cPermanent" jdbcType="INTEGER" />
+		<result column="c_limitStart" property="cLimitstart" jdbcType="TIMESTAMP" />
+		<result column="c_limitEnd" property="cLimitend" jdbcType="TIMESTAMP" />
+		<result column="c_cumulative" property="cCumulative" jdbcType="INTEGER" />
+		<result column="c_activityArea" property="cActivityarea"
+			jdbcType="VARCHAR" />
+		<result column="c_activityStore" property="cActivitystore"
+			jdbcType="VARCHAR" />
+		<result column="c_activityStartTime" property="cActivitystarttime"
+			jdbcType="TIMESTAMP" />
+		<result column="c_provideAll" property="cProvideall" jdbcType="INTEGER" />
+		<result column="c_auditStatus" property="cAuditstatus"
+			jdbcType="INTEGER" />
+		<result column="c_createDate" property="cCreatedate" jdbcType="TIMESTAMP" />
+		<result column="c_createUser" property="cCreateuser" jdbcType="VARCHAR" />
+		<result column="c_lastModDate" property="cLastmoddate"
+			jdbcType="TIMESTAMP" />
+		<result column="c_lastModUser" property="cLastmoduser"
+			jdbcType="VARCHAR" />
+		<result column="c_activityEndTime" property="cActivityendtime"
+			jdbcType="TIMESTAMP" />
+		<result column="c_detailsInfo" property="cDetailsinfo"
+			jdbcType="VARCHAR" />
+		<result column="c_isDetele" property="cIsdetele" jdbcType="INTEGER" />
+		<result column="c_remainNum" property="cRemainnum" jdbcType="INTEGER" />
+		<result column="ct_counponsName" property="ctCouponsName" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 会员卡包返回优惠券vo -->
+	<resultMap type="com.smi.am.service.vo.CustCouponsVo" id="CustCouponsVoMap">
+	    <result column="c_limitStart" property="cLimitstart" jdbcType="TIMESTAMP" />
+		<result column="c_limitEnd" property="cLimitend" jdbcType="TIMESTAMP" />
+		<result column="c_couponsId" property="cCouponsid" jdbcType="VARCHAR" />
+	    <result column="c_couponsName" property="cCouponsname" jdbcType="VARCHAR" />
+	</resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    cd_detailId, cd_counponsId, cd_loginMobile, cd_custId, cd_counponsChannelType, cd_used, 
+    cd_isGitPackageCounpons, cd_gitPackageId
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.smi.am.dao.model.AmCounponsDetailsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from am_counpons_details
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from am_counpons_details
+		where cd_detailId =
+		#{cdDetailid,jdbcType=INTEGER}
+	</select>
+
+	<!-- 根据cd_used 统计已发数量 -->
+	<select id="selectCountByUsed" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
+		select count(*)
+		from am_counpons_details
+		where
+		cd_gitPackageId=#{gpId}
+	</select>
+
+	<!-- 根据会员卡号连表查询优惠券信息 -->
+	<select id="selectByCdCustId" resultMap="CustCouponsVoMap"
+		parameterType="java.lang.String">
+		select
+		b.c_couponsName,b.c_channel,b.c_limitEnd,b.c_limitStart,b.c_couponsId
+		from
+		am_counpons_details a inner join am_coupons b on a.
+		cd_counponsId=b.c_couponsId
+		where a.cd_custId =
+		#{custNbr,jdbcType=VARCHAR} AND b.c_isDetele=0
+	</select>
+
+
+	<!-- 查出未绑定礼包的优惠券信息 -->
+	<select id="selectIsGiftPackage" resultMap="CouponsResultMap">
+		SELECT
+		c.c_couponsId,
+		c.c_couponsName,
+		c.c_avaliabledOrderAmt,
+		c.c_couponsMsg,
+		c.c_permanent,
+		t.ct_counponsName,(
+		SELECT
+		COUNT(1)
+		FROM
+		am_counpons_details d
+		WHERE
+		c.c_couponsId = d.cd_counponsId
+		AND d.cd_used = 1
+		AND d.cd_isGitPackageCounpons = 1
+		)c_remainNum,
+		(
+		SELECT
+		COUNT(1)
+		FROM
+		am_counpons_details d
+		WHERE
+		c.c_couponsId = d.cd_counponsId
+		AND d.cd_isGitPackageCounpons = 1
+		)c_preSendCount,
+		c.c_limitStart,
+		c.c_limitEnd
+		FROM
+		am_coupons c
+		INNER JOIN am_counpons_type t on c.c_couponsType = t.ct_id
+		WHERE
+		c.c_couponsId IN (
+		SELECT DISTINCT
+		(cd_counponsId)
+		FROM
+		am_counpons_details
+		WHERE
+		cd_isGitPackageCounpons = 1
+		and cd_used = 1
+		and cd_gitPackageId is NULL and cd_custId is NULL
+		)
+       AND c_activityArea LIKE CONCAT('%',#{areaId},'%')
+       AND c.c_isDetele=0
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		am_counpons_details
+		where cd_detailId = #{cdDetailid,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.smi.am.dao.model.AmCounponsDetailsExample">
+		delete from am_counpons_details
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.smi.am.dao.model.AmCounponsDetails">
+		insert into
+		am_counpons_details (cd_detailId, cd_counponsId,
+		cd_custId,
+		cd_counponsChannelType, cd_used, cd_isGitPackageCounpons,
+		cd_gitPackageId)
+		values (#{cdDetailid,jdbcType=INTEGER},
+		#{cdCounponsid,jdbcType=VARCHAR},
+		#{cdCustid,jdbcType=VARCHAR},
+		#{cdCounponschanneltype,jdbcType=INTEGER}, #{cdUsed,jdbcType=INTEGER},
+		#{cdIsgitpackagecounpons,jdbcType=INTEGER},
+		#{cdGitpackageid,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.smi.am.dao.model.AmCounponsDetails">
+		insert into am_counpons_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="cdDetailid != null">
+				cd_detailId,
+			</if>
+			<if test="cdCounponsid != null">
+				cd_counponsId,
+			</if>
+			<if test="cdCustid != null">
+				cd_custId,
+			</if>
+			<if test="cdCounponschanneltype != null">
+				cd_counponsChannelType,
+			</if>
+			<if test="cdUsed != null">
+				cd_used,
+			</if>
+			<if test="cdIsgitpackagecounpons != null">
+				cd_isGitPackageCounpons,
+			</if>
+			<if test="cdGitpackageid != null">
+				cd_gitPackageId,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="cdDetailid != null">
+				#{cdDetailid,jdbcType=INTEGER},
+			</if>
+			<if test="cdCounponsid != null">
+				#{cdCounponsid,jdbcType=VARCHAR},
+			</if>
+			<if test="cdCustid != null">
+				#{cdCustid,jdbcType=VARCHAR},
+			</if>
+			<if test="cdCounponschanneltype != null">
+				#{cdCounponschanneltype,jdbcType=INTEGER},
+			</if>
+			<if test="cdUsed != null">
+				#{cdUsed,jdbcType=INTEGER},
+			</if>
+			<if test="cdIsgitpackagecounpons != null">
+				#{cdIsgitpackagecounpons,jdbcType=INTEGER},
+			</if>
+			<if test="cdGitpackageid != null">
+				#{cdGitpackageid,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.smi.am.dao.model.AmCounponsDetailsExample"
+		resultType="java.lang.Integer">
+		select count(*) from am_counpons_details
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+
+
+	<update id="batchUpdatePackageIdByCouponsId" parameterType="java.util.Map">
+		update am_counpons_details
+		<set>
+			<!-- <foreach collection="list" item="item" index="index" separator=";" 
+				open="begin" close="end;"> -->
+			<if test="cdCustid != null || cdCustid !=''">
+				cd_custId = #{cdCustid,jdbcType=VARCHAR},
+			</if>
+			<!-- </foreach> -->
+			<if test="cdGitpackageid != null and cdGitpackageid !=''">
+				cd_gitPackageId =
+				#{cdGitpackageid,jdbcType=INTEGER},
+			</if>
+			<if test="cdLoginMobile != null and cdLoginMobile !=''">
+				cd_loginMobile =
+				#{cdLoginMobile,jdbcType=VARCHAR}
+			</if>
+		</set>
+		where cd_detailId = (SELECT ddid FROM(SELECT
+		cd_detailId as ddid
+		FROM
+		am_counpons_details
+		WHERE
+		cd_counponsId =
+		#{cCouponsid,jdbcType=VARCHAR}
+		AND ISNULL(cd_gitPackageId)
+		LIMIT 0,1) tmps);
+	</update> 
+    <!-- 根据优惠券id批量更新礼包id以及会员卡号 -->
+	<update id="batchUpdatePackageIdByCouponsIds" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close=";" separator=";">
+		update am_counpons_details
+	        <set>
+	          <if test="item.cdCustid !=null and item.cdCustid !=''">
+	        	cd_custId = #{item.cdCustid,jdbcType=VARCHAR},
+	        	</if>
+	         <if test="item.cdGitpackageid !=null and item.cdGitpackageid !=''">
+	            cd_gitPackageId = #{item.cdGitpackageid,jdbcType=INTEGER},
+	            </if>
+	         <if test="item.cdLoginmobile !=null and item.cdLoginmobile !=''">
+	            cd_loginMobile = #{item.cdLoginmobile,jdbcType=VARCHAR}
+	            </if>
+	       	</set>
+	        <where>
+		        cd_detailId = 
+					( SELECT ddid FROM ( SELECT cd_detailId as ddid FROM am_counpons_details WHERE cd_counponsId = #{item.cdCounponsid,jdbcType=VARCHAR}
+					AND ISNULL( cd_gitPackageId ) LIMIT 0,1) tmps )
+			</where>	
+    	</foreach>   
+	</update>
+
+	<update id="UpdateCouponsIdAndCustNbrByPackageId" parameterType="java.util.Map">
+		update am_counpons_details
+		<set>
+			<if test="cdCustid != null || cdCustid !=''">
+				cd_custId = #{cdCustid,jdbcType=VARCHAR},
+			</if>
+			<if test="cCouponsid != null">
+				cd_counponsId =
+				#{cCouponsid,jdbcType=VARCHAR}
+			</if>
+		</set>
+		WHERE
+		cd_gitPackageId = #{cdGitpackageid,jdbcType=INTEGER}
+	</update>
+
+	<!-- 根据礼包id批量更新优惠券id以及会员卡号 -->
+	<update id="batchUpdateCouponsIdByPackageId" parameterType="java.util.List">
+	<foreach collection="list" item="item" index="index" open="" close=";" separator=";">
+		update am_counpons_details
+		<set>
+			<if test="item.cdCounponsid != null and item.cdCounponsid != ''">
+				cd_counponsId = #{item.cdCounponsid,jdbcType=VARCHAR},
+			</if>
+			<if test="item.cdCustid != null and item.cdCustid != ''" >
+				cd_custId = #{item.cdCustid,jdbcType=VARCHAR},
+			</if>
+			<if test="item.cdLoginmobile != null and item.cdLoginmobile !=''">
+				cd_loginMobile =
+				#{item.cdLoginmobile,jdbcType=VARCHAR}
+			</if>
+		</set>
+		 where cd_gitPackageId = #{item.cdGitpackageid,jdbcType=INTEGER}
+		</foreach>
+	</update>
+
+	<!-- 根据礼包id更新优惠券id -->
+	<update id="updateCouponsIdByPackageId" parameterType="java.util.Map">
+		update am_counpons_details
+		<set>
+			<if test="record.cdDetailid != null">
+				cd_detailId = #{cdDetailid,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdCounponsid != null">
+				cd_counponsId = #{cdCounponsid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.cdCustid != null">
+				cd_custId = #{cdCustid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.cdCounponschanneltype != null">
+				cd_counponsChannelType =
+				#{record.cdCounponschanneltype,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdUsed != null">
+				cd_used = #{record.cdUsed,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdIsgitpackagecounpons != null">
+				cd_isGitPackageCounpons =
+				#{record.cdIsgitpackagecounpons,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdGitpackageid != null">
+				cd_gitPackageId =
+				#{record.cdGitpackageid,jdbcType=INTEGER},
+			</if>
+		</set>
+		<if test="cdGitpackageid!= null">
+		</if>
+	</update>
+
+
+	<update id="updateByExampleSelective" parameterType="map">
+		update am_counpons_details
+		<set>
+			<if test="record.cdDetailid != null">
+				cd_detailId = #{record.cdDetailid,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdCounponsid != null">
+				cd_counponsId = #{record.cdCounponsid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.cdCustid != null">
+				cd_custId = #{record.cdCustid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.cdCounponschanneltype != null">
+				cd_counponsChannelType =
+				#{record.cdCounponschanneltype,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdUsed != null">
+				cd_used = #{record.cdUsed,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdIsgitpackagecounpons != null">
+				cd_isGitPackageCounpons =
+				#{record.cdIsgitpackagecounpons,jdbcType=INTEGER},
+			</if>
+			<if test="record.cdGitpackageid != null">
+				cd_gitPackageId =
+				#{record.cdGitpackageid,jdbcType=INTEGER},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update am_counpons_details
+		set cd_detailId =
+		#{record.cdDetailid,jdbcType=INTEGER},
+		cd_counponsId =
+		#{record.cdCounponsid,jdbcType=VARCHAR},
+		cd_custId =
+		#{record.cdCustid,jdbcType=VARCHAR},
+		cd_counponsChannelType =
+		#{record.cdCounponschanneltype,jdbcType=INTEGER},
+		cd_used =
+		#{record.cdUsed,jdbcType=INTEGER},
+		cd_isGitPackageCounpons =
+		#{record.cdIsgitpackagecounpons,jdbcType=INTEGER},
+		cd_gitPackageId =
+		#{record.cdGitpackageid,jdbcType=INTEGER}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.smi.am.dao.model.AmCounponsDetails">
+		update am_counpons_details
+		<set>
+			<if test="cdCounponsid != null">
+				cd_counponsId = #{cdCounponsid,jdbcType=VARCHAR},
+			</if>
+			<if test="cdCustid != null">
+				cd_custId = #{cdCustid,jdbcType=VARCHAR},
+			</if>
+			<if test="cdCounponschanneltype != null">
+				cd_counponsChannelType =
+				#{cdCounponschanneltype,jdbcType=INTEGER},
+			</if>
+			<if test="cdUsed != null">
+				cd_used = #{cdUsed,jdbcType=INTEGER},
+			</if>
+			<if test="cdIsgitpackagecounpons != null">
+				cd_isGitPackageCounpons =
+				#{cdIsgitpackagecounpons,jdbcType=INTEGER},
+			</if>
+			<if test="cdGitpackageid != null">
+				cd_gitPackageId = #{cdGitpackageid,jdbcType=INTEGER},
+			</if>
+		</set>
+		where cd_detailId = #{cdDetailid,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.smi.am.dao.model.AmCounponsDetails">
+		update
+		am_counpons_details
+		set cd_counponsId =
+		#{cdCounponsid,jdbcType=VARCHAR},
+		cd_custId =
+		#{cdCustid,jdbcType=VARCHAR},
+		cd_counponsChannelType =
+		#{cdCounponschanneltype,jdbcType=INTEGER},
+		cd_used =
+		#{cdUsed,jdbcType=INTEGER},
+		cd_isGitPackageCounpons =
+		#{cdIsgitpackagecounpons,jdbcType=INTEGER},
+		cd_gitPackageId =
+		#{cdGitpackageid,jdbcType=INTEGER}
+		where cd_detailId =
+		#{cdDetailid,jdbcType=INTEGER}
+	</update>
+
+
+	<insert id="batchInsertCouponsDetails"  parameterType="java.util.List">
+		INSERT INTO am_counpons_details
+		(cd_detailId,cd_counponsId,cd_custId,cd_counponsChannelType,cd_used,cd_isGitPackageCounpons,cd_gitPackageId,cd_loginMobile)
+		VALUES
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.cdDetailid},#{item.cdCounponsid},#{item.cdCustid},#{item.cdCounponschanneltype},
+			#{item.cdUsed},#{item.cdIsgitpackagecounpons},#{item.cdGitpackageid},#{item.cdLoginmobile}
+			)
+		</foreach>  
+    </insert>  
+	
+</mapper>

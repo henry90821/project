@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.am.dao.AmActivityShopMapper" >
+  <resultMap id="BaseResultMap" type="com.smi.am.dao.model.AmActivityShop" >
+    <id column="as_id" property="asId" jdbcType="INTEGER" />
+    <result column="as_activityAreaId" property="asActivityareaid" jdbcType="INTEGER" />
+    <result column="as_activityShop" property="asActivityshop" jdbcType="VARCHAR" />
+    <result column="as_orgId" property="asOrgid" jdbcType="VARCHAR" />
+    <result column="as_cinemaCode" property="asCinemacode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    as_id, as_activityAreaId, as_activityShop, as_orgId, as_cinemaCode
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.smi.am.dao.model.AmActivityShopExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from am_activity_shop
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from am_activity_shop
+    where as_id = #{asId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from am_activity_shop
+    where as_id = #{asId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.am.dao.model.AmActivityShopExample" >
+    delete from am_activity_shop
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.am.dao.model.AmActivityShop" >
+    insert into am_activity_shop (as_id, as_activityAreaId, as_activityShop, 
+      as_orgId, as_cinemaCode)
+    values (#{asId,jdbcType=INTEGER}, #{asActivityareaid,jdbcType=INTEGER}, #{asActivityshop,jdbcType=VARCHAR}, 
+      #{asOrgid,jdbcType=VARCHAR}, #{asCinemacode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.am.dao.model.AmActivityShop" >
+    insert into am_activity_shop
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="asId != null" >
+        as_id,
+      </if>
+      <if test="asActivityareaid != null" >
+        as_activityAreaId,
+      </if>
+      <if test="asActivityshop != null" >
+        as_activityShop,
+      </if>
+      <if test="asOrgid != null" >
+        as_orgId,
+      </if>
+      <if test="asCinemacode != null" >
+        as_cinemaCode,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="asId != null" >
+        #{asId,jdbcType=INTEGER},
+      </if>
+      <if test="asActivityareaid != null" >
+        #{asActivityareaid,jdbcType=INTEGER},
+      </if>
+      <if test="asActivityshop != null" >
+        #{asActivityshop,jdbcType=VARCHAR},
+      </if>
+      <if test="asOrgid != null" >
+        #{asOrgid,jdbcType=VARCHAR},
+      </if>
+      <if test="asCinemacode != null" >
+        #{asCinemacode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.am.dao.model.AmActivityShopExample" resultType="java.lang.Integer" >
+    select count(*) from am_activity_shop
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update am_activity_shop
+    <set >
+      <if test="record.asId != null" >
+        as_id = #{record.asId,jdbcType=INTEGER},
+      </if>
+      <if test="record.asActivityareaid != null" >
+        as_activityAreaId = #{record.asActivityareaid,jdbcType=INTEGER},
+      </if>
+      <if test="record.asActivityshop != null" >
+        as_activityShop = #{record.asActivityshop,jdbcType=VARCHAR},
+      </if>
+      <if test="record.asOrgid != null" >
+        as_orgId = #{record.asOrgid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.asCinemacode != null" >
+        as_cinemaCode = #{record.asCinemacode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update am_activity_shop
+    set as_id = #{record.asId,jdbcType=INTEGER},
+      as_activityAreaId = #{record.asActivityareaid,jdbcType=INTEGER},
+      as_activityShop = #{record.asActivityshop,jdbcType=VARCHAR},
+      as_orgId = #{record.asOrgid,jdbcType=VARCHAR},
+      as_cinemaCode = #{record.asCinemacode,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.am.dao.model.AmActivityShop" >
+    update am_activity_shop
+    <set >
+      <if test="asActivityareaid != null" >
+        as_activityAreaId = #{asActivityareaid,jdbcType=INTEGER},
+      </if>
+      <if test="asActivityshop != null" >
+        as_activityShop = #{asActivityshop,jdbcType=VARCHAR},
+      </if>
+      <if test="asOrgid != null" >
+        as_orgId = #{asOrgid,jdbcType=VARCHAR},
+      </if>
+      <if test="asCinemacode != null" >
+        as_cinemaCode = #{asCinemacode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where as_id = #{asId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.am.dao.model.AmActivityShop" >
+    update am_activity_shop
+    set as_activityAreaId = #{asActivityareaid,jdbcType=INTEGER},
+      as_activityShop = #{asActivityshop,jdbcType=VARCHAR},
+      as_orgId = #{asOrgid,jdbcType=VARCHAR},
+      as_cinemaCode = #{asCinemacode,jdbcType=VARCHAR}
+    where as_id = #{asId,jdbcType=INTEGER}
+  </update>
+</mapper>

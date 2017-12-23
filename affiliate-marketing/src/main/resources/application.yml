@@ -1,0 +1,150 @@
+# ----------------------------------------
+# CORE PROPERTIES
+# ----------------------------------------
+
+# BANNER
+banner:
+  charset: UTF-8
+
+spring:
+  # IDENTITY
+  application:
+    name: Affiliate Marketing
+  # AOP
+  aop:
+    auto: true
+    proxy-target-class: false
+  # FILE ENCODING (FileEncodingApplicationListener)
+  mandatory-file-encoding: utf-8
+  # HTTP encoding (HttpEncodingProperties)
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  # JACKSON (JacksonProperties)
+  jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    connection-timeout: 2000
+    maximum-pool-size: 20
+    type: com.alibaba.druid.pool.DruidDataSource
+  # INTERNATIONALIZATION (MessageSourceAutoConfiguration)
+  messages:
+    encoding: utf-8
+    basename: i18n/common_zh_CN
+
+# MAYBATIS PROPERTIES
+mybatis:
+  check-config-location: true
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mybatis-mapper/**/*.xml
+  type-aliases-package: #{type-aliases-package}
+  #type-handlers-package: #{type-handlers-package}
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  display-name: Affiliate Marketing
+  error:
+    include-stacktrace: always
+    whitelabel:
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
+
+# LOGGING
+logging:
+  level.root: info
+
+# ----------------------------------------
+# ACTUATOR PROPERTIES
+# ----------------------------------------
+
+# ENDPOINTS (AbstractEndpoint subclasses)
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+
+# ----------------------------------------
+# PROFILES PROPERTIES
+# ----------------------------------------
+
+---
+# Development environment
+spring:
+  # PROFILES
+  profiles: development
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    url: jdbc:mysql://192.168.68.23:3306/smi_am?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: root
+    password: fvt6eip
+  # REDIS (RedisProperties)
+  redis:
+    host: 192.168.68.23
+    port: 6379
+
+# LOGGING
+logging:
+  level.com.smi: debug
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8084
+  context-path: /am
+  session:
+    timeout: 1800
+
+---
+# Test environment
+spring:
+  # PROFILES
+  profiles: test
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    url: jdbc:mysql://192.168.68.21:3306/smi_am?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: root
+    password: fvt6eip
+  # REDIS (RedisProperties)
+  redis:
+    host: 192.168.68.23
+    port: 6379
+
+# LOGGING
+logging:
+  path: /logs/affiliate-marketing
+  level.com.smi: INFO
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 8087
+  context-path: /am
+
+---
+# Production environment
+spring:
+  # PROFILES
+  profiles: production
+  # DATASOURCE COMMON PROPERTIES
+  datasource:
+    url: jdbc:mysql://192.168.86.9:8066/smi_am?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: user_am
+    password: V4bTS2fFz822
+  # REDIS (RedisProperties)
+  redis:
+    host: 192.168.86.19
+    port: 6379
+
+# LOGGING
+logging:
+  path: /logs/affiliate-marketing
+  level.com.smi: info
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server:
+  port: 80
+  context-path: /am

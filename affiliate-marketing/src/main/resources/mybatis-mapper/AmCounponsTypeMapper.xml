@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smi.am.dao.AmCounponsTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.smi.am.dao.model.AmCounponsType" >
+    <id column="ct_id" property="ctId" jdbcType="INTEGER" />
+    <result column="ct_counponsName" property="ctCounponsname" jdbcType="VARCHAR" />
+    <result column="ct_counponsType" property="ctCounponstype" jdbcType="INTEGER" />
+    <result column="ct_remark" property="ctRemark" jdbcType="VARCHAR" />
+    <result column="ct_createDate" property="ctCreatedate" jdbcType="TIMESTAMP" />
+    <result column="ct_createUser" property="ctCreateuser" jdbcType="VARCHAR" />
+    <result column="ct_lastModDate" property="ctLastmoddate" jdbcType="TIMESTAMP" />
+    <result column="ct_lastModUser" property="ctLastmoduser" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 优惠券分类列表返回实体 -->
+   <resultMap id="CouponsTypeVoMap" type="com.smi.am.service.vo.CounponsTypeVo" >
+    <result column="ct_counponsName" property="ctCounponsname" jdbcType="VARCHAR" />
+    <result column="ct_counponsType" property="ctCounponstype" jdbcType="VARCHAR" />
+    <result column="ct_remark" property="ctRemark" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ct_id, ct_counponsName, ct_counponsType, ct_remark, ct_createDate, ct_createUser, 
+    ct_lastModDate, ct_lastModUser
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.smi.am.dao.model.AmCounponsTypeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from am_counpons_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from am_counpons_type
+    where ct_id = #{ctId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from am_counpons_type
+    where ct_id = #{ctId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.smi.am.dao.model.AmCounponsTypeExample" >
+    delete from am_counpons_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smi.am.dao.model.AmCounponsType" >
+    insert into am_counpons_type (ct_id, ct_counponsName, ct_counponsType, 
+      ct_remark, ct_createDate, ct_createUser, 
+      ct_lastModDate, ct_lastModUser)
+    values (#{ctId,jdbcType=INTEGER}, #{ctCounponsname,jdbcType=VARCHAR}, #{ctCounponstype,jdbcType=INTEGER}, 
+      #{ctRemark,jdbcType=VARCHAR}, #{ctCreatedate,jdbcType=TIMESTAMP}, #{ctCreateuser,jdbcType=VARCHAR}, 
+      #{ctLastmoddate,jdbcType=TIMESTAMP}, #{ctLastmoduser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smi.am.dao.model.AmCounponsType" >
+    insert into am_counpons_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ctId != null" >
+        ct_id,
+      </if>
+      <if test="ctCounponsname != null" >
+        ct_counponsName,
+      </if>
+      <if test="ctCounponstype != null" >
+        ct_counponsType,
+      </if>
+      <if test="ctRemark != null" >
+        ct_remark,
+      </if>
+      <if test="ctCreatedate != null" >
+        ct_createDate,
+      </if>
+      <if test="ctCreateuser != null" >
+        ct_createUser,
+      </if>
+      <if test="ctLastmoddate != null" >
+        ct_lastModDate,
+      </if>
+      <if test="ctLastmoduser != null" >
+        ct_lastModUser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ctId != null" >
+        #{ctId,jdbcType=INTEGER},
+      </if>
+      <if test="ctCounponsname != null" >
+        #{ctCounponsname,jdbcType=VARCHAR},
+      </if>
+      <if test="ctCounponstype != null" >
+        #{ctCounponstype,jdbcType=INTEGER},
+      </if>
+      <if test="ctRemark != null" >
+        #{ctRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctCreatedate != null" >
+        #{ctCreatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ctCreateuser != null" >
+        #{ctCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="ctLastmoddate != null" >
+        #{ctLastmoddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ctLastmoduser != null" >
+        #{ctLastmoduser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.smi.am.dao.model.AmCounponsTypeExample" resultType="java.lang.Integer" >
+    select count(*) from am_counpons_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update am_counpons_type
+    <set >
+      <if test="record.ctId != null" >
+        ct_id = #{record.ctId,jdbcType=INTEGER},
+      </if>
+      <if test="record.ctCounponsname != null" >
+        ct_counponsName = #{record.ctCounponsname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ctCounponstype != null" >
+        ct_counponsType = #{record.ctCounponstype,jdbcType=INTEGER},
+      </if>
+      <if test="record.ctRemark != null" >
+        ct_remark = #{record.ctRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ctCreatedate != null" >
+        ct_createDate = #{record.ctCreatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.ctCreateuser != null" >
+        ct_createUser = #{record.ctCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ctLastmoddate != null" >
+        ct_lastModDate = #{record.ctLastmoddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.ctLastmoduser != null" >
+        ct_lastModUser = #{record.ctLastmoduser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update am_counpons_type
+    set ct_id = #{record.ctId,jdbcType=INTEGER},
+      ct_counponsName = #{record.ctCounponsname,jdbcType=VARCHAR},
+      ct_counponsType = #{record.ctCounponstype,jdbcType=INTEGER},
+      ct_remark = #{record.ctRemark,jdbcType=VARCHAR},
+      ct_createDate = #{record.ctCreatedate,jdbcType=TIMESTAMP},
+      ct_createUser = #{record.ctCreateuser,jdbcType=VARCHAR},
+      ct_lastModDate = #{record.ctLastmoddate,jdbcType=TIMESTAMP},
+      ct_lastModUser = #{record.ctLastmoduser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smi.am.dao.model.AmCounponsType" >
+    update am_counpons_type
+    <set >
+      <if test="ctCounponsname != null" >
+        ct_counponsName = #{ctCounponsname,jdbcType=VARCHAR},
+      </if>
+      <if test="ctCounponstype != null" >
+        ct_counponsType = #{ctCounponstype,jdbcType=INTEGER},
+      </if>
+      <if test="ctRemark != null" >
+        ct_remark = #{ctRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="ctCreatedate != null" >
+        ct_createDate = #{ctCreatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ctCreateuser != null" >
+        ct_createUser = #{ctCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="ctLastmoddate != null" >
+        ct_lastModDate = #{ctLastmoddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ctLastmoduser != null" >
+        ct_lastModUser = #{ctLastmoduser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ct_id = #{ctId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smi.am.dao.model.AmCounponsType" >
+    update am_counpons_type
+    set ct_counponsName = #{ctCounponsname,jdbcType=VARCHAR},
+      ct_counponsType = #{ctCounponstype,jdbcType=INTEGER},
+      ct_remark = #{ctRemark,jdbcType=VARCHAR},
+      ct_createDate = #{ctCreatedate,jdbcType=TIMESTAMP},
+      ct_createUser = #{ctCreateuser,jdbcType=VARCHAR},
+      ct_lastModDate = #{ctLastmoddate,jdbcType=TIMESTAMP},
+      ct_lastModUser = #{ctLastmoduser,jdbcType=VARCHAR}
+    where ct_id = #{ctId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 优惠券分类列表查询 -->
+  <select id="getAllConponsType" resultMap="CouponsTypeVoMap">
+  	SELECT
+	tt.ct_counponsName,
+	pt.pt_typeName as ct_counponsType,
+	tt.ct_remark
+	FROM
+		am_counpons_type tt
+	INNER JOIN am_preferentialtype pt ON tt.ct_counponsType = pt.pt_id
+  </select>
+  
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smi.am.dao.SystemLogMapper">
+
+	<resultMap id="baseResultMap" type="com.smi.am.dao.model.SystemLog">
+		<id column="sl_id" property="slId" jdbcType="INTEGER" />
+		<result column="sl_userName" property="slUsername" jdbcType="VARCHAR" />
+		<result column="sl_name" property="slName" jdbcType="VARCHAR" />
+		<result column="sl_roleName" property="slRoleName" jdbcType="VARCHAR" />
+		<result column="sl_roleType" property="slRoleType" jdbcType="INTEGER" />
+		<result column="sl_loginIp" property="slLoginIp" jdbcType="VARCHAR" />
+		<result column="sl_logTitle" property="slLogTitle" jdbcType="VARCHAR" />
+		<result column="sl_logDetail" property="slLogDetail" jdbcType="BLOB" />
+		<result column="sl_operateDate" property="slOperateDate"
+			jdbcType="TIMESTAMP" />
+		<result column="sl_remark" property="slRemark" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 系统日志新增 -->
+	<insert id="addSystemLog" keyProperty="slId"
+		parameterType="com.smi.am.dao.model.SystemLog">
+		insert into
+		am_syslog(sl_userName,sl_name,sl_roleName,sl_roleType,sl_loginIp,sl_logTitle,sl_logDetail,sl_operateDate,sl_remark,sl_areaId)
+		values(#{slUsername,jdbcType=VARCHAR},#{slName,jdbcType=VARCHAR},#{slRoleName,jdbcType=VARCHAR},#{slRoleType,jdbcType=INTEGER},
+		#{slLoginIp,jdbcType=VARCHAR},#{slLogTitle,jdbcType=VARCHAR},#{slLogDetail,jdbcType=BLOB},#{slOperateDate,jdbcType=TIMESTAMP},
+		#{slRemark,jdbcType=VARCHAR},#{areaId,jdbcType=INTEGER})
+	</insert>
+	<!-- 系统日志查询 -->
+	<select id="selectSystemLog" resultMap="baseResultMap"
+		parameterType="java.util.Map">
+		select
+		a.sl_userName,
+		a.sl_name,
+		a.sl_roleName,
+		a.sl_loginIp,
+		a.sl_logTitle,
+		a.sl_logDetail,
+		a.sl_operateDate
+		from am_syslog a
+		<where>
+			1=1
+			<if test="slUsername!=null and slUsername !=''">
+				and a.sl_userName LIKE '%' #{slUsername,jdbcType=VARCHAR} '%'
+			</if>
+			<if test="slRoleType!=null and slRoleType !=''">
+				and a.sl_roleType=#{slRoleType,jdbcType=INTEGER}
+			</if>
+			<if test="slStartDate!=null">
+				and a.sl_operateDate
+				&gt;=#{slStartDate,jdbcType=TIMESTAMP}
+			</if>
+			<if test="slEndDate!=null">
+				and a.sl_operateDate &lt;=#{slEndDate,jdbcType=TIMESTAMP}
+			</if>
+			ORDER BY sl_operateDate DESC
+		</where>
+	</select>
+</mapper>
